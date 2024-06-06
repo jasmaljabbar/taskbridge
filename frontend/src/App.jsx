@@ -12,7 +12,7 @@ import AdminLogin from "./Components/admin_side/AdminLogin";
 import AdminDashboard from "./Components/admin_side/AdminDashboard";
 import AddUser from "./Components/admin_side/AddUser";
 import Navbar from "./Components/user_side/Home/Navbar";
-import { login } from "./features/auth/authSlice";
+import { login } from "./redux/auth/authSlice";
 import UserProfile from "./Components/user_side/UserProfile";
 import DebugTokenComponent from "./Components/Test";
 import HomePage from "./Components/user_side/Home";

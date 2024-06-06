@@ -13,8 +13,8 @@ const HomePage = () => {
 
   return (
     <div className="w-full h-screen">
-      <div className="w-full h-full flex items-center -mt-20">
-        <div className="ml-4 w-1/4 me-32 md:pt-28 md:block hidden">
+      <div className="w-full h-full flex items-center justify-center  -mt-20">
+        <div className="ml-4 w-1/4 me-32 md:pt-28 absolute left-0 md:block hidden">
           <img
             src={Img1}
             alt="Login"

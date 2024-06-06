@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { admin_login, login } from "../../features/auth/authSlice";
+import { admin_login, login } from "../../redux/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 function AdminLogin() {

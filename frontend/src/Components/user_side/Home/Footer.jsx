@@ -1,5 +1,4 @@
 import React from "react";
-import Img1 from "../../../statics/user_side/images/login.jpg";
 
 const Footer = () => {
   return (

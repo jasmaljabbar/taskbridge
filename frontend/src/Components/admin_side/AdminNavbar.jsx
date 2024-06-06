@@ -2,7 +2,7 @@ import React from "react";
 import { api } from "../../api/api";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../features/auth/authSlice";
+import { logout } from "../../redux/auth/authSlice";
 function AdminNavbar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
