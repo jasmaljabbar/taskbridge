@@ -11,12 +11,15 @@ import Login from "./Components/user_side/Login";
 import AdminLogin from "./Components/admin_side/AdminLogin";
 import AdminDashboard from "./Components/admin_side/AdminDashboard";
 import AddUser from "./Components/admin_side/AddUser";
-import Navbar from "./Components/user_side/Home/Navbar";
-import { login } from "./redux/auth/authSlice";
+import Navbar from "./Components/common/Navbar";
+import { login } from "./redux/reducers/authSlice";
 import UserProfile from "./Components/user_side/UserProfile";
 import DebugTokenComponent from "./Components/Test";
 import HomePage from "./Components/user_side/Home";
 import NotFound from "./Components/common/NotFount";
+import Signup from "./Components/tasker_side/Signup";
+import Home from "./Components/tasker_side/Home";
+import Dashboard from "./Components/tasker_side/Dashboard";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -24,7 +27,7 @@ const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
 
 const App = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const isAdmin = useSelector((state) => state.auth.isadmin);
+  const isAdmin = useSelector((state) => state.auth.isAdmin);
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
@@ -70,7 +73,7 @@ const App = () => {
             />
           }
         />
-        {/* addmin_side */}
+        {/* admin_side */}
         <Route
           path="/admin_login"
           element={
@@ -86,7 +89,7 @@ const App = () => {
           element={
             <ProtectedRoute
               element={<AddUser />}
-              isAuthenticated={isAuthenticated}
+              isAuthenticated={isAuthenticated && isAdmin}
               redirectTo="/login"
             />
           }
@@ -101,44 +104,42 @@ const App = () => {
             />
           }
         />
-        <Route path="/debuging" element={<DebugTokenComponent />} />
+        <Route path="/debugging" element={<DebugTokenComponent />} />
         <Route path="*" element={<NotFound />} />
+
+        {/* Tasker_side */}
+        <Route
+          path="/tasker_signup"
+          element={
+            <ProtectedRoute
+              element={<Signup />}
+              isAuthenticated={isAuthenticated}
+              redirectTo="/login"
+            />
+          }
+        />
+        <Route
+          path="/tasker_home"
+          element={
+            <ProtectedRoute
+              element={<Home />}
+              isAuthenticated={isAuthenticated}
+              redirectTo="/login"
+            />
+          }
+        />
+        <Route
+          path="/tasker_dashboard"
+          element={
+            <ProtectedRoute
+              element={<Dashboard />}
+              isAuthenticated={isAuthenticated}
+              redirectTo="/login"
+            />
+          }
+        />
       </Routes>
     </Router>
-  );
-};
-
-const AdminRoutes = () => {
-  return (
-    <Routes>
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute
-            element={<AdminDashboard />}
-            isAuthenticated={
-              useSelector((state) => state.auth.isAuthenticated) &&
-              useSelector((state) => state.auth.isAdmin)
-            }
-            redirectTo="/admin_login"
-          />
-        }
-      />
-      <Route
-        path="/adduser"
-        element={
-          <ProtectedRoute
-            element={<AddUser />}
-            isAuthenticated={
-              useSelector((state) => state.auth.isAuthenticated) &&
-              useSelector((state) => state.auth.isAdmin)
-            }
-            redirectTo="/admin_login"
-          />
-        }
-      />
-      {/* Add more admin-specific routes here */}
-    </Routes>
   );
 };
 

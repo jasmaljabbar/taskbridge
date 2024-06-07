@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserData,Tasker
+from .models import UserData
 
 admin.site.register(UserData)
-admin.site.register(Tasker)
+

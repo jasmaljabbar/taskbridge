@@ -45,11 +45,4 @@ class UserData(AbstractUser):
         return self.name
 
 
-class Tasker(models.Model):
-    user = models.OneToOneField(UserData, on_delete=models.CASCADE, related_name='tasker_profile')
-    full_name = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=15)
-    tasks = models.TextField()
 
-    def __str__(self):
-        return self.full_name
