@@ -3,13 +3,13 @@ import axios from 'axios';
 const API_URL = 'http://127.0.0.1:8000/task_workers/';
 
 const tasker_register = async (taskerData) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.access;
+  const user = JSON.parse(localStorage.getItem('token'));
+  
 
   try {
     const response = await axios.post(API_URL +'become_tasker/', taskerData,{
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${user}`
       }
     });
     if (response.data){
@@ -20,6 +20,25 @@ const tasker_register = async (taskerData) => {
     throw error.response ? error.response.data : error;
   }
 };
+
+const tasker_login = async (userData) => {
+  try {
+      const config = {
+          headers: {
+              "Content-Type": "application/json",
+          },
+      };
+      const response = await axios.post(API_URL + 'login/', userData, config);
+     
+      if (response.data) {
+          localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response.data;
+  } catch (error) {
+      throw error.response ? error.response.data : error;
+  }
+};
+
 
 const getWorkCategories = async () => {
   try {
@@ -32,6 +51,7 @@ const getWorkCategories = async () => {
 
 const tasker_authService = {
   tasker_register,
+  tasker_login,
   getWorkCategories,
 };
 

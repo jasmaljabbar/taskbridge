@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { tasker_register } from "../../redux/reducers/tasker_authSlice";
 import tasker_authService from "../../redux/actions/tasker_authService";
 import Select from "react-select";
+import { logout } from "../../redux/reducers/authSlice";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -65,7 +66,14 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await dispatch(tasker_register(formData));
+    try {
+      await dispatch(tasker_register(formData));
+      await dispatch(logout()).unwrap();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert(`Failed to log out: ${error}`);
+    }
     if (isAuthenticated) {
       navigate("/login");
       setFormData({
@@ -173,7 +181,7 @@ const Signup = () => {
         <p className="mt-4 block text-sm font-medium leading-6 text-gray-900 text-center">
           Already have an account?{" "}
           <span
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/tasker_login")}
             className="text-blue-700 cursor-pointer"
           >
             Log in

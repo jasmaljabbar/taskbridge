@@ -1,8 +1,24 @@
 import React from "react";
 import tasker_img from "../../../statics/tasker_side/images/group-61.jpg";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../redux/reducers/authSlice";
+
 
 const Become_tasker = () => {
+
+  const navigate = useNavigate()
+  const dispatch = useDispatch(); 
+  const tasker_login = async () =>{
+    try {
+      await dispatch(logout()).unwrap();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert(`Failed to log out: ${error}`);
+    }
+  }
+
   return (
     <div className="container mx-auto p-6 pt-36">
       <div className="flex justify-between items-center bg-white p-8 rounded-lg shadow-md">
@@ -31,14 +47,17 @@ const Become_tasker = () => {
             </select>
             <p className="mb-4">₹7500 per month</p>
             <button className="bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-700 transition duration-300">
-                <Link to={"/tasker_signup"}>
-                 Get started
-                </Link>
+              <Link to={"/tasker_signup"}>Get started</Link>
             </button>
           </form>
           <p className="mt-4">
             Already have an account?{" "}
-            <span className="text-blue-700 cursor-pointer">Sign in</span>
+            <span
+              onClick={() => tasker_login()}
+              className="text-blue-700 cursor-pointer"
+            >
+              Sign in
+            </span>
           </p>
         </div>
       </div>

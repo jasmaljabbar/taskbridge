@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../redux/reducers/authSlice";
+
+import toast from "react-hot-toast";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -22,13 +24,18 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirm_password) {
-      alert("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
     dispatch(register(formData));
-
     navigate("/login");
   };
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+  }, [isError, message]);
 
   return (
     <div className="flex justify-center items-center h-full p-10">
@@ -78,10 +85,12 @@ function Register() {
             Register
           </button>
         </form>
-        {isError && <p className="mt-4 text-red-600">{message}</p>}
         <p className="mt-4 block text-sm font-medium leading-6 text-gray-900">
           Already have an account?{" "}
-          <span onClick={() => navigate("/login")} className="text-blue-700">
+          <span
+            onClick={() => navigate("/login")}
+            className="text-blue-700 cursor-pointer"
+          >
             Log in
           </span>
         </p>

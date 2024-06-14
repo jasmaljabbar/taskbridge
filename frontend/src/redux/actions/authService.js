@@ -1,10 +1,8 @@
 import axios from 'axios';
 
+export const API_URL = 'http://127.0.0.1:8000/account/api/';
 
-
-const API_URL = 'http://127.0.0.1:8000/account/api/';
-
-const API_URL_ADMIN = 'http://127.0.0.1:8000/adminside/'
+export const API_URL_ADMIN = 'http://127.0.0.1:8000/adminside/'
 
 const register = async (userData) => {
     try {
@@ -26,9 +24,6 @@ const login = async (userData) => {
             },
         };
         const response = await axios.post(API_URL + 'login/', userData, config);
-        if (response.data) {
-            localStorage.setItem("user", JSON.stringify(response.data));
-        }
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;

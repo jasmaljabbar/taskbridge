@@ -22,7 +22,6 @@ function AdminLogin() {
         email: adminInfo.email,
         password: adminInfo.password,
       };
-      console.log("============================here1");
       await dispatch(admin_login(userData));
       navigate("/dashboard");
     } catch (error) {

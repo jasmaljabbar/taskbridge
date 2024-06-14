@@ -8,8 +8,52 @@ import Add1 from "../user_side/Home/Add1";
 import Services from "../user_side/Home/Services";
 import Footer from "../user_side/Home/Footer";
 
+// import axios from 'axios';
+
+// const API_URL = 'http://127.0.0.1:8000/account/api';
+
+// axios.defaults.withCredentials = true;
+// axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+
+
 const HomePage = () => {
-  useEffect(() => {});
+  // useEffect(() => {
+  //   const fetchProfile = async () => {
+  //     const user = JSON.parse(localStorage.getItem("user"));
+  //     const accessToken = user?.access;
+
+  //     if (!accessToken) {
+  //       console.error("No access token available");
+  //       return;
+  //     }
+
+  //     try {
+  //       const response = await axios.get(
+  //         "http://127.0.0.1:8000/account/api/home/",
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${accessToken}`,
+  //           },
+  //           withCredentials: true,
+  //         }
+  //       );
+
+  //       const userInfo = response.data.user;
+  //       if (userInfo) {
+  //         sessionStorage.setItem("username", userInfo.username);
+  //         sessionStorage.setItem("email", userInfo.email);
+  //         console.log("====================================");
+  //         console.log(userInfo.username, userInfo.email);
+  //         console.log("====================================");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching username and email:", error);
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, []);
 
   return (
     <div className="w-full h-screen">

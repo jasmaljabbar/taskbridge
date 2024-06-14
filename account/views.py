@@ -1,12 +1,18 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import UserSerializer
+from .serializers import UserSerializer,LoginSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 import os
 from django.conf import settings
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class LoginView(TokenObtainPairView):
+    serializer_class = LoginSerializer
+    
+
 
 class RegisterView(APIView):
     def post(self, request):
@@ -23,24 +29,9 @@ class HomeView(APIView):
         user_info = {
             "username": user.name,
             "email": user.email,
-            "profile_pic": user.profile_pic.url if user.profile_pic else None,
         }
         content = {"user": user_info}
         return Response(content)
-
-    def post(self, request):
-        user = request.user
-        image_file = request.data.get("image")
-
-        if user.profile_pic:
-            old_profile_pic_path = os.path.join(settings.MEDIA_ROOT, str(user.profile_pic))
-            if os.path.exists(old_profile_pic_path):
-                os.remove(old_profile_pic_path)
-
-        user.profile_pic = image_file
-        user.save()
-        return Response(status=status.HTTP_200_OK)
-
 
 
 class LogoutView(APIView):

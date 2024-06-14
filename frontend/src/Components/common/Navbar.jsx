@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 import { logout } from "../../redux/reducers/authSlice";
 
 const Navbar = () => {
@@ -8,6 +9,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const token = useSelector((state) => state.auth.token);
+
+  let user = null;
+  if (token) {
+    user = jwtDecode(token);
+  }
 
   const handleLogout = async () => {
     try {
@@ -59,9 +66,17 @@ const Navbar = () => {
           )}
 
           {/* Become a Tasker Button */}
-          <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
-            <Link to={"/tasker_home"}>Become a Tasker</Link>
-          </button>
+          {user ? (
+            user.is_staff ? (
+              <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
+                <Link to={"/tasker/tasker_dashboard"}>Go to Tasker side</Link>
+              </button>
+            ) : (
+              <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
+                <Link to={"/tasker_home"}>Become a Tasker</Link>
+              </button>
+            )
+          ) : null}
 
           {/* Mobile Menu Button */}
           <button

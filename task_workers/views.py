@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Tasker, WorkCategory
+from rest_framework import status
 from .serializers import TaskerSerializer, UserSerializer, WorkCategorySerializer
 
 class WorkCategoryListView(generics.ListAPIView):
@@ -22,7 +23,7 @@ class TaskerSignupView(generics.CreateAPIView):
         print(f'User authenticated: {request.user.is_authenticated}')
 
         if not request.user.is_authenticated:
-            return Response({'error': 'User is not authenticated'}, status=401)
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
         user = request.user
         
@@ -40,7 +41,7 @@ class TaskerSignupView(generics.CreateAPIView):
         response_data['refresh'] = str(refresh)
         response_data['access'] = str(refresh.access_token)
         
-        return Response(response_data, status=201)
+        return Response(response_data, status=status.HTTP_201_CREATED)
 
 class LoginView(generics.GenericAPIView):
     serializer_class = UserSerializer
@@ -51,10 +52,11 @@ class LoginView(generics.GenericAPIView):
         password = request.data.get('password')
         user = authenticate(email=email, password=password)
         
-        if user is not None:
+        if user is not None and user.is_staff:
             refresh = RefreshToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-            })
-        return Response({'error': 'Invalid Credentials'}, status=400)
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)

@@ -6,11 +6,13 @@ import { FaPen, FaTrashCan } from "react-icons/fa6";
 import EditUser from "./EditUser";
 import AdminNavbar from "./AdminNavbar";
 import { useSelector } from "react-redux";
+import { API_URL_ADMIN } from "../../redux/actions/authService";
 
 function AdminDashboard() {
-  const [usersInfo, setUsersInfo] = useState({ isEditing: false });
+  const [usersInfo, setUsersInfo] = useState([]); // Initialize as an array
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
+
   const handleDelete = async (id) => {
     try {
       const response = await axios.post(
@@ -36,27 +38,34 @@ function AdminDashboard() {
     );
     setUsersInfo(updated);
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/adminside/dashboard/"
+          `${API_URL_ADMIN}dashboard/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
         );
-
         setUsersInfo(response.data);
-        console.log(usersInfo);
       } catch (error) {
         alert(error.message);
       }
     };
-    fetchData();
-  }, []);
+
+    if (accessToken) {
+      fetchData();
+    }
+  }, [accessToken]);
 
   return (
     <div>
       <AdminNavbar />
-      <div className="flex flex-col  items-center h-screen w-full mt-3 ">
-        <h1 className=" text-purple-950 text-4xl font-bold ">Users</h1>
+      <div className="flex flex-col items-center h-screen w-full mt-3">
+        <h1 className="text-purple-950 text-4xl font-bold">Users</h1>
         <button
           type="button"
           onClick={() => navigate("/adduser")}
@@ -125,9 +134,8 @@ function AdminDashboard() {
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div>
-                        {" "}
                         {item.is_active ? (
-                          <p className=" h-2.5 w-2.5 rounded-full me-2">
+                          <p className="h-2.5 w-2.5 rounded-full me-2">
                             Active
                           </p>
                         ) : (
@@ -140,7 +148,6 @@ function AdminDashboard() {
                   </td>
                   <td className="px-6 py-4 flex flex-row">
                     <FaPen onClick={() => handleModal(item.id)} />
-
                     <FaTrashCan
                       className="ml-3"
                       onClick={() => handleDelete(item.id)}

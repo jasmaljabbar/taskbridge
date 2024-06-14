@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
+import { useSelector } from "react-redux";
 
 const UserProfile = () => {
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const accessToken = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const accessToken = user?.access;
-
       if (!accessToken) {
         console.error("No access token available");
         return;
