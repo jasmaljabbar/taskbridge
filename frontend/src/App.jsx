@@ -20,32 +20,38 @@ import NotFound from "./Components/common/NotFount";
 import Signup from "./Components/tasker_side/Signup";
 import Home from "./Components/tasker_side/Home";
 import Dashboard from "./Components/tasker_side/Dashboard";
-import TaskerLogin from "./Components/tasker_side/TaskerLogin";
+
 import { Toaster } from "react-hot-toast";
 import Sidebar from "./Components/tasker_side/Sidebar";
-import AdminLayout from "./Components/tasker_side/Home/AdminLayout";
+import AdminLayout from "./Components/admin_side/Home/AdminLayout";
+import TaskerLayout from "./Components/tasker_side/Home/TaskerLayout";
+import Tasker_Listing from "./Components/admin_side/Tasker_Listing";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
 };
 
 const App = () => {
-  // const {user} = useSelector((state)=>state.auth)
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const isAdmin = useSelector((state) => state.auth.isadmin);
-  const is_staff = useSelector((state) => state.auth.is_staff);
-  const token = useSelector((state) => state.auth.token);
+  const accessToken = localStorage.getItem("token");
   const dispatch = useDispatch();
+  const {
+    isAuthenticated,
+    isAdmin,
+    is_staff: isStaff,
+  } = useSelector((state) => state.auth);
+  console.log('====================================');
+  console.log(isAdmin,"---------");
+  console.log('====================================');
 
   useEffect(() => {
-    if (token) {
-      if(isAdmin){
-        dispatch(admin_login({token}));
-      }else{
-        dispatch(login({ token }));
+    if (accessToken) {
+      if (isAdmin) {
+        dispatch(admin_login({ accessToken }));
+      } else {
+        dispatch(login({ accessToken }));
       }
     }
-  }, [dispatch, token]);
+  }, [dispatch, accessToken, isAdmin]);
 
   return (
     <>
@@ -53,7 +59,6 @@ const App = () => {
 
       <Router>
         <Navbar />
-        {/* <Sidebar /> */}
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<HomePage />} />
@@ -87,59 +92,17 @@ const App = () => {
               />
             }
           />
-          {/* admin_side */}
-          <Route
-            path="/admin_login"
-            element={
-              <ProtectedRoute
-                element={<AdminLogin />}
-                isAuthenticated={!isAuthenticated}
-                redirectTo="/dashboard"
-              />
-            }
-          />
-          <Route
-            path="/adduser"
-            element={
-              <ProtectedRoute
-                element={<AddUser />}
-                isAuthenticated={isAuthenticated && isAdmin}
-                redirectTo="/login"
-              />
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute
-                element={<AdminDashboard />}
-                isAuthenticated={isAuthenticated && isAdmin}
-                redirectTo="/admin_login"
-              />
-            }
-          />
           <Route path="/debugging" element={<DebugTokenComponent />} />
           <Route path="*" element={<NotFound />} />
 
           {/* Tasker_side */}
-
           <Route
             path="/tasker_signup"
             element={
               <ProtectedRoute
                 element={<Signup />}
-                isAuthenticated={isAuthenticated}
-                redirectTo="/login"
-              />
-            }
-          />
-          <Route
-            path="/tasker_login"
-            element={
-              <ProtectedRoute
-                element={<TaskerLogin />}
-                isAuthenticated={isAuthenticated}
-                redirectTo="/login"
+                isAuthenticated={!isAuthenticated}
+                redirectTo="/tasker_home"
               />
             }
           />
@@ -149,32 +112,57 @@ const App = () => {
               <ProtectedRoute
                 element={<Home />}
                 isAuthenticated={isAuthenticated}
-                redirectTo="/login"
+                redirectTo="/tasker_login"
               />
             }
           />
           <Route
-            path="tasker"
+            path="/tasker"
             element={
               <ProtectedRoute
-                element={<AdminLayout />}
-                isAuthenticated={isAuthenticated && is_staff}
-                redirectTo="/login"
+                element={<TaskerLayout />}
+                isAuthenticated={isAuthenticated && isStaff}
+                redirectTo="/tasker_login"
               />
             }
           >
             <Route path="tasker_dashboard" element={<Dashboard />} />
           </Route>
-          {/* <Route
-            path="/tasker_dashboard"
+
+          {/* admin_side */}
+          <Route
+            path="/admin_login"
             element={
               <ProtectedRoute
-                element={<Dashboard />}
-                isAuthenticated={isAuthenticated && is_staff}
-                redirectTo="/login"
+                element={<AdminLogin />}
+                isAuthenticated={!isAuthenticated}
+                redirectTo="/admin"
               />
             }
-          /> */}
+          />
+          <Route
+            path="/adduser"
+            element={
+              <ProtectedRoute
+                element={<AddUser />}
+                isAuthenticated={isAuthenticated && isAdmin}
+                redirectTo="/admin_login"
+              />
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute
+                element={<AdminLayout />}
+                isAuthenticated={isAuthenticated}
+                redirectTo="/admin_login"
+              />
+            }
+          >
+            <Route path="/admin_dashboard" element={<AdminDashboard />} />
+            <Route path="/tasker_showing" element={<Tasker_Listing />} />
+          </Route>
         </Routes>
       </Router>
     </>

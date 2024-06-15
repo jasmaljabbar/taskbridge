@@ -29,22 +29,6 @@ export const tasker_register = createAsyncThunk(
   }
 );
 
-export const tasker_login = createAsyncThunk(
-  'tasker/tasker_login',
-  async (user, thunkAPI) => {
-    try {
-      return await tasker_authService.tasker_login(user);
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      return thunkAPI.rejectWithValue(message);
-    }
-  }
-);
 
 const tasker_authSlice = createSlice({
   name: 'tasker_auth',
@@ -68,24 +52,7 @@ const tasker_authSlice = createSlice({
         state.error = action.payload; // Store the error message
         state.isSuccess = false;
       })
-      .addCase(tasker_login.pending, (state) => {
-        state.loading = true;
-        state.error = null; // Reset error when starting a new request
-      })
-      .addCase(tasker_login.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isAuthenticated = true;
-        state.user = action.payload;
-        state.istasker = true;
-        state.isSuccess = true;
-        localStorage.setItem('user', JSON.stringify(action.payload));
-      })
-      .addCase(tasker_login.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload; // Store the error message
-        state.isSuccess = false;
-        state.user = null;
-      });
+     
   },
 });
 

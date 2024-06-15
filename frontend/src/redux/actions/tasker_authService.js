@@ -21,24 +21,6 @@ const tasker_register = async (taskerData) => {
   }
 };
 
-const tasker_login = async (userData) => {
-  try {
-      const config = {
-          headers: {
-              "Content-Type": "application/json",
-          },
-      };
-      const response = await axios.post(API_URL + 'login/', userData, config);
-     
-      if (response.data) {
-          localStorage.setItem("user", JSON.stringify(response.data));
-      }
-      return response.data;
-  } catch (error) {
-      throw error.response ? error.response.data : error;
-  }
-};
-
 
 const getWorkCategories = async () => {
   try {
@@ -51,7 +33,6 @@ const getWorkCategories = async () => {
 
 const tasker_authService = {
   tasker_register,
-  tasker_login,
   getWorkCategories,
 };
 

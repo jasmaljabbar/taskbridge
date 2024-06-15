@@ -23,7 +23,7 @@ function AdminLogin() {
         password: adminInfo.password,
       };
       await dispatch(admin_login(userData));
-      navigate("/dashboard");
+      navigate("/admin/admin_dashboard");
     } catch (error) {
       console.error("Login error:", error);
     }
@@ -37,7 +37,7 @@ function AdminLogin() {
       <button
         type="button"
         onClick={back}
-        class="focus:outline-none float-right  text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+        className="focus:outline-none float-right  text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
       >
         Back to Home
       </button>
