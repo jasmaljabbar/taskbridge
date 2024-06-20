@@ -26,6 +26,7 @@ import AdminLayout from "./Components/admin_side/Home/AdminLayout";
 import TaskerLayout from "./Components/tasker_side/Home/TaskerLayout";
 import Tasker_Listing from "./Components/admin_side/Tasker_Listing";
 import UserList from "./Components/admin_side/UserList";
+import Otp from "./Components/user_side/Otp";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -40,9 +41,7 @@ const App = () => {
     is_staff: isStaff,
   } = useSelector((state) => state.auth);
 
-  console.log("====================================");
-  console.log(isadmin);
-  console.log("====================================");
+
 
   useEffect(() => {
     if (accessToken) {
@@ -68,6 +67,16 @@ const App = () => {
             element={
               <ProtectedRoute
                 element={<Register />}
+                isAuthenticated={!isAuthenticated}
+                redirectTo="/home"
+              />
+            }
+          />
+          <Route
+            path="/otp"
+            element={
+              <ProtectedRoute
+                element={<Otp/>}
                 isAuthenticated={!isAuthenticated}
                 redirectTo="/home"
               />

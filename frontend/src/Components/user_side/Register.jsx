@@ -28,7 +28,7 @@ function Register() {
       return;
     }
     dispatch(register(formData));
-    navigate("/login");
+    navigate("/otp");
   };
 
   useEffect(() => {

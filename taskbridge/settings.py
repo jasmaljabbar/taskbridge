@@ -62,6 +62,9 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+
 ROOT_URLCONF = "taskbridge.urls"
 
 TEMPLATES = [
@@ -182,3 +185,16 @@ EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
 EMAIL_HOST_USER = '520dc1d6a8476f'
 EMAIL_HOST_PASSWORD = 'b0e4a440066463'
 EMAIL_PORT = '2525'
+
+
+# sending otp 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Replace with your preferred backend
+
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email host
+EMAIL_PORT = 587  # Replace with your email port
+EMAIL_USE_TLS = True  # Set to False if your email server doesn't use TLS
+EMAIL_HOST_USER = 'jasmaljabbarghazali@gmail.com'  # Replace with your email username
+EMAIL_HOST_PASSWORD = 'qrso bjfb yeit mxjk'  # Replace with your email password
+DEFAULT_FROM_EMAIL = 'jasmaljabbarghazali@gmail.com' 
+
