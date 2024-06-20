@@ -56,7 +56,6 @@ class DeleteUser(APIView):
 
     def post(self, request):
         user_id = request.data.get("id")
-        print("kkkkkkkkkkkkkkkkkkkkk")
         try:
             user = UserData.objects.get(id=user_id)
             user.delete()
@@ -106,3 +105,11 @@ class EditUser(APIView):
             )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Tasker_Listing(APIView):
+    def get(self, request):
+        users = UserData.objects.filter(is_staff=True,is_superuser = False)
+
+        serializer = UserDataSerializer(users, many=True)
+        return Response(serializer.data)

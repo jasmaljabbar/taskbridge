@@ -10,6 +10,7 @@ const Signup = () => {
   const [formData, setFormData] = useState({
     full_name: "",
     phone_number: "",
+    aadhar_number: "", // Added Aadhar number
     tasks: [],
     city: "",
     state: "",
@@ -79,6 +80,7 @@ const Signup = () => {
       setFormData({
         full_name: "",
         phone_number: "",
+        aadhar_number: "", // Added Aadhar number
         tasks: [],
         city: "",
         state: "",
@@ -116,15 +118,18 @@ const Signup = () => {
             />
           </div>
           <div>
-            <label className="mb-1 block">Tasks</label>
-            <Select
-              onChange={handleSelectChange}
-              options={workCategories}
-              isMulti
+            <label className="mb-1 block">Aadhar Number</label>{" "}
+            {/* New Aadhar field */}
+            <input
+              onChange={handleChange}
+              value={formData.aadhar_number}
+              name="aadhar_number"
               className="border rounded-md border-black p-3 w-full"
-              placeholder="Select tasks"
+              type="text"
+              placeholder="Aadhar Number"
             />
           </div>
+          
           <div>
             <label className="mb-1 block">City</label>
             <input
@@ -134,6 +139,16 @@ const Signup = () => {
               className="border rounded-md border-black p-3 w-full"
               type="text"
               placeholder="City"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block">Tasks</label>
+            <Select
+              onChange={handleSelectChange}
+              options={workCategories}
+              isMulti
+              className="border rounded-md border-black p-3 w-full"
+              placeholder="Select tasks"
             />
           </div>
           <div>

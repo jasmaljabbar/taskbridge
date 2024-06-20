@@ -9,7 +9,6 @@ import { useSelector, useDispatch } from "react-redux";
 import Register from "./Components/user_side/Register";
 import Login from "./Components/user_side/Login";
 import AdminLogin from "./Components/admin_side/AdminLogin";
-import AdminDashboard from "./Components/admin_side/AdminDashboard";
 import AddUser from "./Components/admin_side/AddUser";
 import Navbar from "./Components/common/Navbar";
 import { admin_login, login } from "./redux/reducers/authSlice";
@@ -26,6 +25,7 @@ import Sidebar from "./Components/tasker_side/Sidebar";
 import AdminLayout from "./Components/admin_side/Home/AdminLayout";
 import TaskerLayout from "./Components/tasker_side/Home/TaskerLayout";
 import Tasker_Listing from "./Components/admin_side/Tasker_Listing";
+import UserList from "./Components/admin_side/UserList";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -36,22 +36,23 @@ const App = () => {
   const dispatch = useDispatch();
   const {
     isAuthenticated,
-    isAdmin,
+    isadmin,
     is_staff: isStaff,
   } = useSelector((state) => state.auth);
-  console.log('====================================');
-  console.log(isAdmin,"---------");
-  console.log('====================================');
+
+  console.log("====================================");
+  console.log(isadmin);
+  console.log("====================================");
 
   useEffect(() => {
     if (accessToken) {
-      if (isAdmin) {
+      if (isadmin) {
         dispatch(admin_login({ accessToken }));
       } else {
         dispatch(login({ accessToken }));
       }
     }
-  }, [dispatch, accessToken, isAdmin]);
+  }, [dispatch, accessToken, isadmin]);
 
   return (
     <>
@@ -101,7 +102,7 @@ const App = () => {
             element={
               <ProtectedRoute
                 element={<Signup />}
-                isAuthenticated={!isAuthenticated}
+                isAuthenticated={isAuthenticated}
                 redirectTo="/tasker_home"
               />
             }
@@ -145,7 +146,7 @@ const App = () => {
             element={
               <ProtectedRoute
                 element={<AddUser />}
-                isAuthenticated={isAuthenticated && isAdmin}
+                isAuthenticated={isAuthenticated && isadmin}
                 redirectTo="/admin_login"
               />
             }
@@ -155,13 +156,13 @@ const App = () => {
             element={
               <ProtectedRoute
                 element={<AdminLayout />}
-                isAuthenticated={isAuthenticated}
+                isAuthenticated={isAuthenticated && isadmin}
                 redirectTo="/admin_login"
               />
             }
           >
-            <Route path="/admin_dashboard" element={<AdminDashboard />} />
-            <Route path="/tasker_showing" element={<Tasker_Listing />} />
+            <Route path="user_list" element={<UserList />} />
+            <Route path="tasker_showing" element={<Tasker_Listing />} />
           </Route>
         </Routes>
       </Router>

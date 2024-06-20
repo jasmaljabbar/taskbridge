@@ -35,7 +35,11 @@ function Login() {
 
       const a = await dispatch(login(userData));
       const user = jwtDecode(a.payload.access);
-      user.is_admin ? navigate("/admin/admin_dashboard ") : user.is_staff ? navigate("/tasker/tasker_dashboard") : navigate("/")
+      user.is_admin
+        ? navigate("/admin/user_list ")
+        : user.is_staff
+        ? navigate("/tasker/tasker_dashboard")
+        : navigate("/");
     } catch (error) {
       console.error("Login error:", error);
     }

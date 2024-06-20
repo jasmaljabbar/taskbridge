@@ -4,12 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/reducers/authSlice";
 
-
 const Become_tasker = () => {
-
-  const navigate = useNavigate()
-  const dispatch = useDispatch(); 
-  const tasker_login = async () =>{
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const tasker_login = async () => {
     try {
       await dispatch(logout()).unwrap();
       navigate("/login");
@@ -17,7 +15,7 @@ const Become_tasker = () => {
       console.error("Logout error:", error);
       alert(`Failed to log out: ${error}`);
     }
-  }
+  };
 
   return (
     <div className="container mx-auto p-6 pt-36">

@@ -6,10 +6,8 @@ const user = JSON.parse(localStorage.getItem('user'));
 const token = JSON.parse(localStorage.getItem('token'));
 const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
 
-const ar = jwtDecode(token)
-console.log('====================================');
-console.log(ar,);
-console.log('====================================');
+
+
 
 const initialState = {
     user: user ? user : null,
@@ -136,6 +134,8 @@ const authSlice = createSlice({
                 // state.isSuccess = true;
                 // state.isadmin = user.isadmin; 
                 state.is_staff = user.is_staff;
+                state.isadmin = user.is_admin;     
+         ;
                 localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('token', JSON.stringify(action.payload.access));
                 localStorage.setItem('refreshToken', JSON.stringify(action.payload.refresh));
@@ -153,7 +153,7 @@ const authSlice = createSlice({
                 state.message = '';
             })
             .addCase(admin_login.fulfilled, (state, action) => {
-                const user = jwtDecode(action.payload.access)
+                const user = jwtDecode(action.payload.access);
                 state.isLoading = false;
                 state.isAuthenticated = true;
                 state.user = action.payload;

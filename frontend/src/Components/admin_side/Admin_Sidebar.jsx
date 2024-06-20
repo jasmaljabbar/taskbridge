@@ -4,7 +4,9 @@ import { MdOutlineSubdirectoryArrowRight } from "react-icons/md";
 import { MdOutlineHelpOutline } from "react-icons/md";
 import { MdOutlineMenuBook } from "react-icons/md";
 import { MdDashboard } from "react-icons/md";
+import { FaUsers } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { GrUserWorker } from "react-icons/gr";
 
 const Admin_Sidebar = () => {
   return (
@@ -14,28 +16,26 @@ const Admin_Sidebar = () => {
       </h2>
       <nav className="mt-10">
         <div className="mb-4">
-          <p className="text-gray-400 uppercase text-sm mb-2">General</p>
           <Link
-            to={"/admin/admin_dashboard"}
+            to={""}
             className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
           >
             <MdDashboard className="mr-3" /> Dashboard
           </Link>
         </div>
         <div className="mb-4">
-          <p className="text-gray-400 uppercase text-sm mb-2">Examples</p>
           <Link
             to={"/admin/tasker_showing"}
             className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
           >
-            <FaTable className="mr-3" /> Tables
+            <GrUserWorker className="mr-3" /> Taskers
           </Link>
 
           <Link
-            to=""
+            to={"/admin/user_list"}
             className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
           >
-            <MdOutlineSubdirectoryArrowRight className="mr-3" /> Forms
+            <FaUsers className="mr-3" /> Users
           </Link>
           <Link
             to="#"

@@ -15,7 +15,6 @@ const Navbar = () => {
   if (token) {
     user = jwtDecode(token);
   }
-
   const handleLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
@@ -67,7 +66,11 @@ const Navbar = () => {
 
           {/* Become a Tasker Button */}
           {user ? (
-            user.is_staff ? (
+            user.is_admin ? (
+              <button className="bg-green-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600">
+                <Link to={"/admin/user_list"}>Go to Admin side</Link>
+              </button>
+            ) : user.is_staff ? (
               <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
                 <Link to={"/tasker/tasker_dashboard"}>Go to Tasker side</Link>
               </button>

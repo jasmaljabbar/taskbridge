@@ -8,8 +8,8 @@ import AdminNavbar from "./AdminNavbar";
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
 
-function AdminDashboard() {
-  const [usersInfo, setUsersInfo] = useState([]); // Initialize as an array
+function UserList() {
+  const [usersInfo, setUsersInfo] = useState([]); 
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
@@ -171,4 +171,4 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
+export default UserList;

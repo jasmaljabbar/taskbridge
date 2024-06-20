@@ -21,7 +21,7 @@ class TaskerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tasker
         fields = [
-            'user', 'full_name', 'phone_number', 'tasks',
+            'user', 'full_name', 'phone_number','aadhar_number', 'tasks',
             'city', 'state', 'address', 'service_charge'
         ]
 

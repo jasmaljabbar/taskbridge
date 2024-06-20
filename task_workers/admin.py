@@ -6,8 +6,8 @@ class WorkCategoryAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 class TaskerAdmin(admin.ModelAdmin):
-    list_display = ('full_name', 'phone_number', 'city', 'state', 'service_charge')
-    search_fields = ('full_name', 'phone_number', 'city', 'state')
+    list_display = ('full_name', 'phone_number','aadhar_number', 'city', 'state', 'service_charge')
+    search_fields = ('full_name', 'phone_number','aadhar_number', 'city', 'state')
     list_filter = ('city', 'state')
     filter_horizontal = ('tasks',)
 
