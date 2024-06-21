@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { register } from "../../redux/reducers/authSlice";
 
 import toast from "react-hot-toast";
+import Otp from "./Otp";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ function Register() {
     password: "",
     confirm_password: "",
   });
+  const [isOtp, setIsOtp] = useState(false);
 
   const { isError, message } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -22,13 +24,14 @@ function Register() {
   };
 
   const handleSubmit = async (e) => {
+    setIsOtp(true)
     e.preventDefault();
     if (formData.password !== formData.confirm_password) {
       toast.error("Passwords do not match.");
       return;
     }
     dispatch(register(formData));
-    navigate("/otp");
+    // navigate("/otp");
   };
 
   useEffect(() => {
@@ -38,7 +41,9 @@ function Register() {
   }, [isError, message]);
 
   return (
-    <div className="flex justify-center items-center h-full p-10">
+    <div>
+      {!isOtp ? (
+        <div className="flex justify-center items-center h-full p-10">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 className="text-4xl font-bold flex  ml-32">Sign Up</h1>
         <form className="flex flex-col mt-9" onSubmit={handleSubmit}>
@@ -95,6 +100,10 @@ function Register() {
           </span>
         </p>
       </div>
+    </div>
+      ) : (
+        <Otp email={formData?.email}/>
+      )}
     </div>
   );
 }

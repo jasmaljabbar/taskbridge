@@ -13,7 +13,7 @@ const initialState = {
     user: user ? user : null,
     isError: false,
     isLoading: false,
-    isAuthenticated: false,
+    isAuthenticated: !!user,
     isadmin: user ? user.isadmin : false,
     is_staff: user ? user.is_staff : false,
     isSuccess: false,

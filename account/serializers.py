@@ -25,7 +25,8 @@ class LoginSerializer(TokenObtainPairSerializer):
 
         user = self.user
 
-        if not user.is_verified:
+        # Bypass the is_verified check for superusers (admins)
+        if not user.is_verified and not user.is_superuser:
             raise AuthenticationFailed('Account is not verified.')
 
         refresh = self.get_token(self.user)
@@ -39,6 +40,15 @@ class LoginSerializer(TokenObtainPairSerializer):
         data['is_admin'] = user.is_superuser  
 
         return data
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        token['name'] = user.name
+        token['email'] = user.email
+        token['is_staff'] = user.is_staff
+        token['is_admin'] = user.is_superuser  
+        return token
 
     @classmethod
     def get_token(cls, user):

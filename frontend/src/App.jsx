@@ -41,8 +41,6 @@ const App = () => {
     is_staff: isStaff,
   } = useSelector((state) => state.auth);
 
-
-
   useEffect(() => {
     if (accessToken) {
       if (isadmin) {
@@ -67,16 +65,6 @@ const App = () => {
             element={
               <ProtectedRoute
                 element={<Register />}
-                isAuthenticated={!isAuthenticated}
-                redirectTo="/home"
-              />
-            }
-          />
-          <Route
-            path="/otp"
-            element={
-              <ProtectedRoute
-                element={<Otp/>}
                 isAuthenticated={!isAuthenticated}
                 redirectTo="/home"
               />

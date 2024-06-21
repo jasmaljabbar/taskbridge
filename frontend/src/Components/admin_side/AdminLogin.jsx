@@ -23,7 +23,7 @@ function AdminLogin() {
         password: adminInfo.password,
       };
       await dispatch(admin_login(userData));
-      navigate("/admin/admin_dashboard");
+      navigate("/admin/user_list");
     } catch (error) {
       console.error("Login error:", error);
     }
