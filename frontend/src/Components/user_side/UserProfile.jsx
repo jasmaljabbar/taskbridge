@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 import Unknown from "../../statics/user_side/Unknown.jpg";
 import { useSelector } from "react-redux";
 
 const UserProfile = () => {
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    phone_number: "",
+    address: "",
+    city: "",
+    gender: "",
+    profile_photo: null,
+  });
   const accessToken = useSelector((state) => state.auth.token);
 
   useEffect(() => {
@@ -31,32 +40,37 @@ const UserProfile = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [accessToken]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSave = async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const accessToken = user?.access;
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevData) => ({ ...prevData, profile_photo: file }));
+  };
 
+  const handleSave = async () => {
     if (!accessToken) {
       console.error("No access token available");
       return;
     }
 
+    const formDataToSend = new FormData();
+    for (const key in formData) {
+      formDataToSend.append(key, formData[key]);
+    }
+
     try {
-      await axios.patch(
-        `http://127.0.0.1:8000/profiles/update/${profile.username}/`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await axios.put("http://127.0.0.1:8000/profiles/update/", formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       setProfile(formData);
       setEditing(false);
     } catch (error) {
@@ -77,20 +91,19 @@ const UserProfile = () => {
               <img
                 src={profile.profile_photo}
                 alt="Profile"
-                className="h-24 w-24 rounded-full"
+                className="w-10 h-10 rounded-full"
               />
             ) : (
               <img
                 src={Unknown}
                 alt="Profile"
-                className="h-24 w-24 rounded-full"
+                className="w-10 h-10 rounded-full"
               />
             )}
             <div className="ml-4">
               <h2 className="text-2xl font-bold">
                 {profile.username || "N/A"}
               </h2>
-              <p className="text-gray-600">{profile.email || "N/A"}</p>
             </div>
           </div>
           <button
@@ -105,14 +118,14 @@ const UserProfile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Full Name
+                  Name
                 </label>
                 <input
                   type="text"
                   name="full_name"
                   value={formData.full_name || ""}
                   onChange={handleChange}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                  className="mt-1 p-2 cursor-pointer block w-full border border-gray-300 rounded-md"
                 />
               </div>
               <div>
@@ -124,7 +137,8 @@ const UserProfile = () => {
                   name="email"
                   value={formData.email || ""}
                   onChange={handleChange}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                  className="mt-1 p-2 block cursor-pointer w-full border border-gray-300 rounded-md"
+                  readOnly
                 />
               </div>
               <div>
@@ -135,6 +149,18 @@ const UserProfile = () => {
                   type="text"
                   name="phone_number"
                   value={formData.phone_number || ""}
+                  onChange={handleChange}
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  name="address"
+                  value={formData.address || ""}
                   onChange={handleChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 />
@@ -169,22 +195,14 @@ const UserProfile = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  User Type
+                  Profile Photo
                 </label>
-                <select
-                  name="is_tasker"
-                  value={formData.is_tasker ? "Tasker" : "Normal User"}
-                  onChange={(e) =>
-                    setFormData((prevData) => ({
-                      ...prevData,
-                      is_tasker: e.target.value === "Tasker",
-                    }))
-                  }
+                <input
+                  type="file"
+                  name="profile_photo"
+                  onChange={handleFileChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                >
-                  <option value="Normal User">Normal User</option>
-                  <option value="Tasker">Tasker</option>
-                </select>
+                />
               </div>
             </div>
             <div className="mt-6 flex justify-end space-x-4">
@@ -203,26 +221,57 @@ const UserProfile = () => {
             </div>
           </div>
         ) : (
-          <div>
-            <p>
-              <strong>Full Name:</strong> {profile.full_name || "N/A"}
-            </p>
-            <p>
-              <strong>Email:</strong> {profile.email || "N/A"}
-            </p>
-            <p>
-              <strong>Phone Number:</strong> {profile.phone_number || "N/A"}
-            </p>
-            <p>
-              <strong>City:</strong> {profile.city || "N/A"}
-            </p>
-            <p>
-              <strong>Gender:</strong> {profile.gender || "N/A"}
-            </p>
-            <p>
-              <strong>User Type:</strong>{" "}
-              {profile.is_tasker ? "Tasker" : "Normal User"}
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                value={profile.email || ""}
+                className="mt-1 p-2 outline-none cursor-pointer block w-full border border-gray-300 rounded-md"
+                readOnly
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <input
+                value={profile.phone_number || ""}
+                className="mt-1 p-2 outline-none cursor-pointer block w-full border border-gray-300 rounded-md"
+                readOnly
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
+              <input
+                value={profile.address || ""}
+                className="mt-1 p-2 block w-full cursor-pointer border outline-none border-gray-300 rounded-md"
+                readOnly
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                City
+              </label>
+              <input
+                value={profile.city || ""}
+                className="mt-1 p-2 block outline-none w-full border cursor-pointer border-gray-300 rounded-md"
+                readOnly
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Gender
+              </label>
+              <input
+                value={profile.gender || ""}
+                className="mt-1 p-2 outline-none cursor-pointer block w-full border border-gray-300 rounded-md"
+                readOnly
+              />
+            </div>
           </div>
         )}
       </div>

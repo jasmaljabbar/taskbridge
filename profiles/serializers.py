@@ -1,16 +1,15 @@
 from rest_framework import serializers
 from .models import Profile
 
+
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.name")
-    first_name = serializers.CharField(source="user.first_name")
-    last_name = serializers.CharField(source="user.last_name")
     email = serializers.CharField(source="user.email")
-    full_name = serializers.SerializerMethodField(read_only=True)
+
     
     class Meta:
         model = Profile
-        fields = ["username", "first_name", "last_name", "full_name", "email", "id", "phone_number", "profile_photo", "gender", "city", "is_tasker"]
+        fields = ["username", "email", "address", "phone_number", "gender", "id", "city", "profile_photo"]
 
     def get_full_name(self, obj):
         first_name = obj.user.first_name.title()
@@ -18,7 +17,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         return f"{first_name} {last_name}"
 
 class UpdateProfileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Profile
-        fields = ["phone_number", "profile_photo", "about_me", "license", "gender", "city", "is_tasker"]
+        fields = ["user", "email", "address", "phone_number", "gender", "city"]
+
+    
+

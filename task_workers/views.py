@@ -43,20 +43,4 @@ class TaskerSignupView(generics.CreateAPIView):
         
         return Response(response_data, status=status.HTTP_201_CREATED)
 
-# class LoginView(generics.GenericAPIView):
-#     serializer_class = UserSerializer
-#     permission_classes = [permissions.AllowAny]
 
-#     def post(self, request, *args, **kwargs):
-#         email = request.data.get('email')
-#         password = request.data.get('password')
-#         user = authenticate(email=email, password=password)
-        
-#         if user is not None and user.is_staff:
-#             refresh = RefreshToken.for_user(user)
-#             return Response({
-#                 'refresh': str(refresh),
-#                 'access': str(refresh.access_token),
-#             }, status=status.HTTP_200_OK)
-#         else:
-#             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
