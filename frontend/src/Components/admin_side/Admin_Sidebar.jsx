@@ -38,10 +38,10 @@ const Admin_Sidebar = () => {
             <FaUsers className="mr-3" /> Users
           </Link>
           <Link
-            to="#"
+            to={"/admin/task_list"}
             className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
           >
-            <FaUser className="mr-3" /> Profile
+            <FaUser className="mr-3" /> Task Category
           </Link>
           <Link
             to="#"

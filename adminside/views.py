@@ -6,9 +6,12 @@ from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from account.models import UserData
+from task_workers.serializers import WorkCategorySerializer
 from .serializers import UserDataSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from task_workers.models import WorkCategory
+
 
 
 class AdminLogin(APIView):
@@ -47,7 +50,6 @@ class Dashboard(APIView):
 
     def get(self, request):
         users = UserData.objects.filter(is_staff=False)
-
         serializer = UserDataSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -113,3 +115,17 @@ class Tasker_Listing(APIView):
 
         serializer = UserDataSerializer(users, many=True)
         return Response(serializer.data)
+    
+class Work_Listing(APIView):
+    def get(self, request):
+        task = WorkCategory.objects.all()
+        serializer = WorkCategorySerializer(task, many=True)
+        return Response(serializer.data)
+    
+class Work_category_adding(APIView):
+    def post(self, request):
+        serializer = WorkCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

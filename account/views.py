@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import UserSerializer,LoginSerializer,OtpSerializer
+from .serializers import UserSerializer,LoginSerializer,TaskerHomeSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -12,6 +12,8 @@ from django.utils import timezone
 from datetime import timedelta
 from .models import UserData
 from rest_framework_simplejwt.views import TokenObtainPairView
+from task_workers.models import Tasker
+
 
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
@@ -92,6 +94,15 @@ class HomeView(APIView):
         }
         content = {"user": user_info}
         return Response(content)
+
+
+class Tasker_ListingView(APIView):
+    def get(self,request):
+        taskers = Tasker.objects.all()
+        serializer = TaskerHomeSerializer(taskers, many=True)
+        return Response(serializer.data)
+
+        
 
 
 class LogoutView(APIView):

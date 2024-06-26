@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Img1 from "../../statics/user_side/images/login.jpg";
 import { FiSearch } from "react-icons/fi";
-import WorkCategory from "../user_side/Home/work_catogory";
+import WorkCategory from "./Home/Work_catogory";
 import BestWorker from "../user_side/Home/Best_worker";
 import Add1 from "../user_side/Home/Add1";
 

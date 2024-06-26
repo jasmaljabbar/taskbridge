@@ -37,7 +37,7 @@ const Navbar = () => {
           {/* Navigation Links */}
           {isAuthenticated ? (
             <div className="hidden lg:flex space-x-8">
-              <Link to="/" className="text-white hover:text-gray-300">
+              <Link to="/services" className="text-white hover:text-gray-300">
                 Services
               </Link>
               <Link to="/profile" className="text-white hover:text-gray-300">
@@ -52,7 +52,7 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="hidden lg:flex space-x-8">
-              <Link to="/" className="text-white hover:text-gray-300">
+              <Link to="/services" className="text-white hover:text-gray-300">
                 Services
               </Link>
               <Link to="/register" className="text-white hover:text-gray-300">

@@ -30,6 +30,25 @@ export const tasker_register = createAsyncThunk(
 );
 
 
+export const fetchTaskerProfile = createAsyncThunk(
+  'tasker/fetchTaskerProfile',
+  async (token, thunkAPI) => {
+    try {
+      return await tasker_authService.getTaskerProfile(token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+
+
 const tasker_authSlice = createSlice({
   name: 'tasker_auth',
   initialState,
@@ -38,22 +57,37 @@ const tasker_authSlice = createSlice({
     builder
       .addCase(tasker_register.pending, (state) => {
         state.loading = true;
-        state.error = null; // Reset error when starting a new request
+        state.error = null; 
       })
       .addCase(tasker_register.fulfilled, (state, action) => {
         state.loading = false;
-        state.isAuthenticated = true; // Assuming registration implies being authenticated
+        state.isAuthenticated = true; 
         state.user = action.payload;
         state.isSuccess = true;
         localStorage.setItem('tasker', JSON.stringify(action.payload));
       })
       .addCase(tasker_register.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload; // Store the error message
+        state.error = action.payload; 
         state.isSuccess = false;
       })
-     
+      .addCase(fetchTaskerProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null; 
+      })
+      .addCase(fetchTaskerProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true; 
+        state.user = action.payload;
+        state.isSuccess = true;
+        localStorage.setItem('tasker', JSON.stringify(action.payload));
+      })
+
+      .addCase(fetchTaskerProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload; 
+        state.isSuccess = false;
+      });
   },
 });
-
 export default tasker_authSlice.reducer;

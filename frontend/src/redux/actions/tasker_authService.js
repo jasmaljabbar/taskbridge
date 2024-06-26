@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000/task_workers/';
+const API_URL_tasks = 'http://127.0.0.1:8000/adminside/';
 
 const tasker_register = async (taskerData) => {
   const user = JSON.parse(localStorage.getItem('token'));
@@ -24,16 +25,32 @@ const tasker_register = async (taskerData) => {
 
 const getWorkCategories = async () => {
   try {
-    const response = await axios.get(API_URL + 'workcategories/');
+    const response = await axios.get(API_URL_tasks + 'workcategory/');
     return response.data;
   } catch (error) {
     throw error.response ? error.response.data : error;
   }
 };
 
+
+const getTaskerProfile = async (token) =>{
+  try{
+    const response = await axios.get(API_URL + 'profile/',{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+    );
+    return response.data;
+  } catch (error){
+    throw error.response ? error.response.data : error;
+  }
+}
+
 const tasker_authService = {
   tasker_register,
   getWorkCategories,
+  getTaskerProfile,
 };
 
 export default tasker_authService;

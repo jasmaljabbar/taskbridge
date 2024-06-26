@@ -13,10 +13,10 @@ class Tasker(models.Model):
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=15)
     aadhar_number = models.CharField(max_length=12)
+    address = models.TextField()    
     tasks = models.ManyToManyField(WorkCategory, related_name='taskers')
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    address = models.TextField()
     service_charge = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):

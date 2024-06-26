@@ -11,7 +11,7 @@ import Img8 from "../../../statics/user_side/work_image/painter.png";
 import Img9 from "../../../statics/user_side/work_image/electrition.png";
 import previos from "../../../statics/user_side/work_image/previos.png";
 
-const work_category = () => {
+const Work_category = () => {
   const workItems = [
     {
       src: previos,
@@ -100,4 +100,4 @@ const work_category = () => {
   );
 };
 
-export default work_category;
+export default Work_category;

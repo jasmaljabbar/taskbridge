@@ -4,7 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Tasker, WorkCategory
 from rest_framework import status
-from .serializers import TaskerSerializer, UserSerializer, WorkCategorySerializer
+from .serializers import TaskerSerializer, WorkCategorySerializer,Tasker_fetching_Serializer
 
 class WorkCategoryListView(generics.ListAPIView):
     queryset = WorkCategory.objects.all()
@@ -42,5 +42,12 @@ class TaskerSignupView(generics.CreateAPIView):
         response_data['access'] = str(refresh.access_token)
         
         return Response(response_data, status=status.HTTP_201_CREATED)
+    
+class TaskerProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = Tasker_fetching_Serializer
+    permission_classes = [permissions.IsAuthenticated]
 
-
+    def get_object(self):
+        tasker = Tasker.objects.get(user=self.request.user)
+        print(tasker)
+        return tasker

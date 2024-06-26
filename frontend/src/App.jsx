@@ -8,10 +8,10 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import Register from "./Components/user_side/Register";
 import Login from "./Components/user_side/Login";
-import AdminLogin from "./Components/admin_side/AdminLogin";
+// import AdminLogin from "./Components/admin_side/AdminLogin";
 import AddUser from "./Components/admin_side/AddUser";
 import Navbar from "./Components/common/Navbar";
-import { admin_login, login } from "./redux/reducers/authSlice";
+import { login } from "./redux/reducers/authSlice";
 import UserProfile from "./Components/user_side/UserProfile";
 import DebugTokenComponent from "./Components/Test";
 import HomePage from "./Components/user_side/Home";
@@ -19,7 +19,6 @@ import NotFound from "./Components/common/NotFount";
 import Signup from "./Components/tasker_side/Signup";
 import Home from "./Components/tasker_side/Home";
 import Dashboard from "./Components/tasker_side/Dashboard";
-
 import { Toaster } from "react-hot-toast";
 import Sidebar from "./Components/tasker_side/Sidebar";
 import AdminLayout from "./Components/admin_side/Home/AdminLayout";
@@ -27,6 +26,9 @@ import TaskerLayout from "./Components/tasker_side/Home/TaskerLayout";
 import Tasker_Listing from "./Components/admin_side/Tasker_Listing";
 import UserList from "./Components/admin_side/UserList";
 import Otp from "./Components/user_side/Otp";
+import TaskCategory from "./Components/admin_side/TaskCategory";
+import Tasker_profile from "./Components/tasker_side/Tasker_profile";
+import Services from "./Components/user_side/Services";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -34,6 +36,7 @@ const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
 
 const App = () => {
   const accessToken = localStorage.getItem("token");
+
   const dispatch = useDispatch();
   const {
     isAuthenticated,
@@ -44,7 +47,7 @@ const App = () => {
   useEffect(() => {
     if (accessToken) {
       if (isadmin) {
-        dispatch(admin_login({ accessToken }));
+        dispatch(login({ accessToken }));
       } else {
         dispatch(login({ accessToken }));
       }
@@ -54,12 +57,12 @@ const App = () => {
   return (
     <>
       <Toaster position="top-center" />
-
       <Router>
         <Navbar />
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/services" element={<Services />} />
           <Route
             path="/register"
             element={
@@ -125,10 +128,10 @@ const App = () => {
             }
           >
             <Route path="tasker_dashboard" element={<Dashboard />} />
+            <Route path="profile" element={<Tasker_profile />} />
           </Route>
-
           {/* admin_side */}
-          <Route
+          {/* <Route
             path="/admin_login"
             element={
               <ProtectedRoute
@@ -137,7 +140,7 @@ const App = () => {
                 redirectTo="/admin"
               />
             }
-          />
+          /> */}
           <Route
             path="/adduser"
             element={
@@ -160,6 +163,7 @@ const App = () => {
           >
             <Route path="user_list" element={<UserList />} />
             <Route path="tasker_showing" element={<Tasker_Listing />} />
+            <Route path="task_list" element={<TaskCategory />} />
           </Route>
         </Routes>
       </Router>

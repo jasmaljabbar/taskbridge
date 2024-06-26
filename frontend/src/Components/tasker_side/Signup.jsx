@@ -129,7 +129,7 @@ const Signup = () => {
               placeholder="Aadhar Number"
             />
           </div>
-          
+
           <div>
             <label className="mb-1 block">City</label>
             <input

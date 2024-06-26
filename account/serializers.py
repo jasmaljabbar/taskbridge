@@ -3,6 +3,7 @@ from rest_framework_simplejwt.tokens import Token
 from .models import UserData
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
+from task_workers.models import Tasker
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -59,3 +60,18 @@ class LoginSerializer(TokenObtainPairSerializer):
         token['is_admin'] = user.is_superuser  
         return token
 
+
+class TaskerHomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tasker
+        fields = [
+            "user",
+            "full_name",
+            "phone_number",
+            "aadhar_number",
+            "address",
+            "tasks",
+            "city",
+            "state",
+            "service_charge",
+        ]

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 import Unknown from "../../statics/user_side/Unknown.jpg";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUserProfile } from "../../redux/reducers/authSlice";
 
 const UserProfile = () => {
-  const [profile, setProfile] = useState(null);
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.auth.user); // Redux state
+  const accessToken = useSelector((state) => state.auth.token); // Access token from auth slice
+
+  const [profile_data, setprofile_data] = useState([]);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
@@ -16,31 +20,31 @@ const UserProfile = () => {
     gender: "",
     profile_photo: null,
   });
-  const accessToken = useSelector((state) => state.auth.token);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!accessToken) {
-        console.error("No access token available");
-        return;
-      }
+    const a = async () => {
+      if (accessToken) {
+        const user_profile = await dispatch(fetchUserProfile(accessToken));
 
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/profiles/me/", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        setProfile(response.data.profile);
-        setFormData(response.data.profile);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
+        setprofile_data(user_profile.payload?.profile);
       }
     };
+    a();
+  }, [dispatch, accessToken]);
 
-    fetchProfile();
-  }, [accessToken]);
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        full_name: profile_data.username || "",
+        email: profile_data.email || "",
+        phone_number: profile_data.phone_number || "",
+        address: profile_data.address || "",
+        city: profile_data.city || "",
+        gender: profile_data.gender || "",
+        profile_photo: profile_data.profile_photo || null,
+      });
+    }
+  }, [profile_data]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,16 +66,22 @@ const UserProfile = () => {
     for (const key in formData) {
       formDataToSend.append(key, formData[key]);
     }
-
     try {
-      await axios.put("http://127.0.0.1:8000/profiles/update/", formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      setProfile(formData);
+      await axios.put(
+        "http://127.0.0.1:8000/profiles/update/",
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      dispatch(fetchUserProfile(accessToken));
+      setprofile_data(formData);
+      console.log("====================================");
+      console.log(formData);
+      console.log("====================================");
       setEditing(false);
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -87,9 +97,9 @@ const UserProfile = () => {
       <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8">
         <div className="flex items-center justify-between border-b pb-6 mb-6">
           <div className="flex items-center">
-            {profile.profile_photo ? (
+            {profile_data.profile_photo ? (
               <img
-                src={profile.profile_photo}
+                src={profile_data.profile_photo}
                 alt="Profile"
                 className="w-10 h-10 rounded-full"
               />
@@ -102,7 +112,7 @@ const UserProfile = () => {
             )}
             <div className="ml-4">
               <h2 className="text-2xl font-bold">
-                {profile.username || "N/A"}
+                {profile_data.username || "N/A"}
               </h2>
             </div>
           </div>
@@ -123,7 +133,7 @@ const UserProfile = () => {
                 <input
                   type="text"
                   name="full_name"
-                  value={formData.full_name || ""}
+                  value={formData.full_name}
                   onChange={handleChange}
                   className="mt-1 p-2 cursor-pointer block w-full border border-gray-300 rounded-md"
                 />
@@ -135,7 +145,7 @@ const UserProfile = () => {
                 <input
                   type="email"
                   name="email"
-                  value={formData.email || ""}
+                  value={formData.email}
                   onChange={handleChange}
                   className="mt-1 p-2 block cursor-pointer w-full border border-gray-300 rounded-md"
                   readOnly
@@ -148,7 +158,7 @@ const UserProfile = () => {
                 <input
                   type="text"
                   name="phone_number"
-                  value={formData.phone_number || ""}
+                  value={formData.phone_number}
                   onChange={handleChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 />
@@ -160,7 +170,7 @@ const UserProfile = () => {
                 <input
                   type="text"
                   name="address"
-                  value={formData.address || ""}
+                  value={formData.address}
                   onChange={handleChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 />
@@ -172,7 +182,7 @@ const UserProfile = () => {
                 <input
                   type="text"
                   name="city"
-                  value={formData.city || ""}
+                  value={formData.city}
                   onChange={handleChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 />
@@ -183,7 +193,7 @@ const UserProfile = () => {
                 </label>
                 <select
                   name="gender"
-                  value={formData.gender || ""}
+                  value={formData.gender}
                   onChange={handleChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 >
@@ -200,6 +210,7 @@ const UserProfile = () => {
                 <input
                   type="file"
                   name="profile_photo"
+                  // value={formData.profile_photo}
                   onChange={handleFileChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 />
@@ -227,7 +238,7 @@ const UserProfile = () => {
                 Email
               </label>
               <input
-                value={profile.email || ""}
+                value={profile_data.email || ""}
                 className="mt-1 p-2 outline-none cursor-pointer block w-full border border-gray-300 rounded-md"
                 readOnly
               />
@@ -237,7 +248,7 @@ const UserProfile = () => {
                 Phone Number
               </label>
               <input
-                value={profile.phone_number || ""}
+                value={profile_data.phone_number || ""}
                 className="mt-1 p-2 outline-none cursor-pointer block w-full border border-gray-300 rounded-md"
                 readOnly
               />
@@ -247,7 +258,7 @@ const UserProfile = () => {
                 Address
               </label>
               <input
-                value={profile.address || ""}
+                value={profile_data.address || ""}
                 className="mt-1 p-2 block w-full cursor-pointer border outline-none border-gray-300 rounded-md"
                 readOnly
               />
@@ -257,7 +268,7 @@ const UserProfile = () => {
                 City
               </label>
               <input
-                value={profile.city || ""}
+                value={profile_data.city || ""}
                 className="mt-1 p-2 block outline-none w-full border cursor-pointer border-gray-300 rounded-md"
                 readOnly
               />
@@ -267,7 +278,7 @@ const UserProfile = () => {
                 Gender
               </label>
               <input
-                value={profile.gender || ""}
+                value={profile_data.gender || ""}
                 className="mt-1 p-2 outline-none cursor-pointer block w-full border border-gray-300 rounded-md"
                 readOnly
               />

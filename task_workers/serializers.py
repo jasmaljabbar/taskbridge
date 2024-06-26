@@ -31,3 +31,14 @@ class TaskerSerializer(serializers.ModelSerializer):
         tasker = Tasker.objects.create(user=user, **validated_data)
         tasker.tasks.set(tasks_data)  # Add existing tasks to the tasker
         return tasker
+    
+class Tasker_fetching_Serializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    tasks = WorkCategorySerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Tasker
+        fields = [
+            'user', 'full_name', 'phone_number','aadhar_number', 'tasks',
+            'city', 'state', 'address', 'service_charge'
+        ]

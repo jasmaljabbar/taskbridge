@@ -39,7 +39,7 @@ const Sidebar = () => {
             <MdOutlineSubdirectoryArrowRight className="mr-3" /> Forms
           </Link>
           <Link
-            to="#"
+            to="/tasker/profile"
             className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
           >
             <FaUser className="mr-3" /> Profile

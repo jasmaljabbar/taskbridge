@@ -67,6 +67,26 @@ export const admin_login = createAsyncThunk("action/admin_login", async (user, t
     }
 });
 
+
+export const fetchUserProfile = createAsyncThunk(
+    'tasker/fetchTaskerProfile',
+    async (token, thunkAPI) => {
+      try {
+        return await authService.getUserProfile(token);
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        return thunkAPI.rejectWithValue(message);
+      }
+    }
+  );
+  
+
+
 export const logout = createAsyncThunk(
     'auth/logout',
     async (_, thunkAPI) => {
@@ -85,6 +105,8 @@ export const logout = createAsyncThunk(
         }
     }
 );
+
+
 
 const authSlice = createSlice({
     name: 'auth',
@@ -185,6 +207,23 @@ const authSlice = createSlice({
             .addCase(logout.rejected, (state, action) => {
                 state.isError = true;
                 state.message = action.payload;
+                state.isSuccess = false;
+            })
+            .addCase(fetchUserProfile.pending, (state) => {
+                state.isLoading = true;
+                state.isError = null; 
+              })
+            .addCase(fetchUserProfile.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isAuthenticated = true; 
+                state.user = action.payload;
+                state.isSuccess = true;
+                localStorage.setItem('tasker', JSON.stringify(action.payload));
+            })
+    
+            .addCase(fetchUserProfile.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = action.payload; 
                 state.isSuccess = false;
             });
     },
