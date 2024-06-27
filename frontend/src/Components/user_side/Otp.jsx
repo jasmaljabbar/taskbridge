@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Otp = (props) => {
   const [otp, setOtp] = useState("");
@@ -20,10 +21,12 @@ const Otp = (props) => {
         { email: props?.email }
       );
       if (response.status === 200) {
+        toast.success("New OTP sent to your email. ")
         setMessage("New OTP sent to your email.");
         setTimeLeft(60); // reset the countdown
       }
     } catch (error) {
+      toast.error(error.message)
       setMessage("Failed to resend OTP. Please try again.");
     }
   };
@@ -49,10 +52,12 @@ const Otp = (props) => {
           otp: otp,
           email: props?.email,
         }
+    
       );
       console.log(response);
 
       if (response.status === 200) {
+        toast.success("Email verified successfully!")
         setMessage("Email verified successfully!");
         // handle token storage or redirection here
         return navigate("/login");

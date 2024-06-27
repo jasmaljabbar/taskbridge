@@ -1,100 +1,92 @@
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import { API_URL } from "../../../redux/actions/authService";
 import next from "../../../statics/user_side/work_image/after.png";
-import Img2 from "../../../statics/user_side/work_image/mechanic.png";
-import Img3 from "../../../statics/user_side/work_image/teapicker.png";
-import Img4 from "../../../statics/user_side/work_image/moving.png";
-import Img5 from "../../../statics/user_side/work_image/cleaner.png";
-import Img6 from "../../../statics/user_side/work_image/outworking.png";
-import Img7 from "../../../statics/user_side/work_image/home_repair.png";
-import Img8 from "../../../statics/user_side/work_image/painter.png";
-import Img9 from "../../../statics/user_side/work_image/electrition.png";
 import previos from "../../../statics/user_side/work_image/previos.png";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import axios from "axios";
 
 const Work_category = () => {
-  const workItems = [
-    {
-      src: previos,
-      alt: "Previous",
-      label: "",
-      className: "opacity-40",
-      style: { width: "100%", borderRadius: "50%" },
-    },
-    {
-      src: Img9,
-      alt: "Electrician",
-      label: "Electrician",
-      className: "",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: Img2,
-      alt: "Mechanic",
-      label: "Mechanic",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: Img3,
-      alt: "Tea Plucker",
-      label: "Tea Plucker",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: Img4,
-      alt: "Moving",
-      label: "Moving",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: Img5,
-      alt: "Cleaner",
-      label: "Cleaner",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: Img6,
-      alt: "Outdoor",
-      label: "Outdoor",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: Img7,
-      alt: "Home Repair",
-      label: "Home Repair",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: Img8,
-      alt: "Painter",
-      label: "Painter",
-      style: { width: "60%", borderRadius: "50%" },
-    },
-    {
-      src: next,
-      alt: "Next",
-      label: "",
-      className: "opacity-40",
-      style: { width: "100%", borderRadius: "50%" },
-    },
-  ];
+  const [workItems, setWorkItems] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}taskcategory/`);
+        setWorkItems(response.data);
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
+
+  function SampleNextArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <img
+        src={next}
+        alt="Next"
+        className={className}
+        style={{ ...style, display: "block", width: "30px", height: "30px" }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  function SamplePrevArrow(props) {
+    const { className, style, onClick } = props;
+    return (
+      <img
+        src={previos}
+        alt="Previous"
+        className={className}
+        style={{ ...style, display: "block", width: "30px", height: "30px" }}
+        onClick={onClick}
+      />
+    );
+  }
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="flex items-center justify-between w-full sm:w-12/12">
-        {workItems.map((item, index) => (
-          <div
-            key={index}
-            className="flex flex-col items-center text-center p-2"
-          >
-            <img
-              src={item.src}
-              alt={item.alt}
-              className={`shadow rounded-full max-w-full h-auto align-middle border-none transition-transform transform hover:scale-105 ${item.className}`}
-              style={item.style}
-            />
-            {item.label && <p>{item.label}</p>}
-          </div>
-        ))}
+    <div className="flex items-center justify-center w-full">
+      <div className="w-full sm:w-12/12">
+        <Slider {...settings}>
+          {workItems.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center text-center p-2"
+            >
+              <div>
+                <div className="flex justify-center">
+                  <img
+                    src={`http://127.0.0.1:8000${item.work_image}`}
+                    alt={item.alt}
+                    className={`shadow rounded-full max-w-full h-auto align-middle  border-none transition-transform transform hover:scale-105 ${item.className}`}
+                    style={{
+                      width: "30%",
+                      height: "auto",
+                      borderRadius: "50%",
+                    }}
+                  />
+                </div>
+
+                <div className="pr-22 ">{item.name && <p>{item.name}</p>}</div>
+              </div>
+            </div>
+          ))}
+        </Slider>
       </div>
     </div>
   );

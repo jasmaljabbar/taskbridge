@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
 
 function UserList() {
-  const [usersInfo, setUsersInfo] = useState([]); 
+  const [usersInfo, setUsersInfo] = useState([]);
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
@@ -42,15 +42,15 @@ function UserList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL_ADMIN}dashboard/`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+        const response = await axios.get(`${API_URL_ADMIN}dashboard/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
         setUsersInfo(response.data);
+        console.log("====================================");
+        console.log(usersInfo);
+        console.log("====================================");
       } catch (error) {
         alert(error.message);
       }

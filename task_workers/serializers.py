@@ -12,8 +12,9 @@ class UserSerializer(serializers.ModelSerializer):
 class WorkCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkCategory
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'name', 'description', 'work_image']
 
+        
 class TaskerSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     tasks = serializers.PrimaryKeyRelatedField(queryset=WorkCategory.objects.all(), many=True)

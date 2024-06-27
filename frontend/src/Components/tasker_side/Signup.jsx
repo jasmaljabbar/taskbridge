@@ -5,38 +5,16 @@ import { tasker_register } from "../../redux/reducers/tasker_authSlice";
 import tasker_authService from "../../redux/actions/tasker_authService";
 import Select from "react-select";
 import { logout } from "../../redux/reducers/authSlice";
+import toast from "react-hot-toast";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    full_name: "",
-    phone_number: "",
-    aadhar_number: "", // Added Aadhar number
-    tasks: [],
-    city: "",
-    state: "",
-    address: "",
-    service_charge: "",
-  });
-
   const [workCategories, setWorkCategories] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { error, isAuthenticated } = useSelector((state) => state.tasker_auth);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSelectChange = (selectedOptions) => {
-    setFormData({
-      ...formData,
-      tasks: selectedOptions.map((option) => option.value),
-    });
-  };
 
   useEffect(() => {
     const fetchWorkCategories = async () => {
@@ -65,28 +43,64 @@ const Signup = () => {
     }
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validationSchema = Yup.object().shape({
+    full_name: Yup.string()
+      .required("Full Name is required")
+      .test(
+        "no-spaces",
+        "Full Name cannot be just spaces",
+        (value) => value && value.trim().length > 0
+      ),
+    phone_number: Yup.string()
+      .matches(/^\d{10}$/, "Phone number must be 10 digits")
+      .required("Phone number is required"),
+    aadhar_number: Yup.string()
+      .matches(/^\d{12}$/, "Aadhar number must be 12 digits")
+      .required("Aadhar number is required"),
+    city: Yup.string()
+      .required("City is required")
+      .test(
+        "no-spaces",
+        "City cannot be just spaces",
+        (value) => value && value.trim().length > 0
+      ),
+    state: Yup.string()
+      .required("State is required")
+      .test(
+        "no-spaces",
+        "State cannot be just spaces",
+        (value) => value && value.trim().length > 0
+      ),
+    address: Yup.string()
+      .required("Address is required")
+      .test(
+        "no-spaces",
+        "Address cannot be just spaces",
+        (value) => value && value.trim().length > 0
+      ),
+    service_charge: Yup.number().required("Service Charge is required"),
+    tasks: Yup.array().min(1, "At least one task must be selected"),
+  });
+
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      await dispatch(tasker_register(formData));
-      await dispatch(logout()).unwrap();
-      navigate("/login");
+      const resultAction = await dispatch(tasker_register(values));
+      if (tasker_register.fulfilled.match(resultAction)) {
+        await dispatch(logout()).unwrap();
+        navigate("/login");
+        resetForm();
+      } else {
+        throw new Error(resultAction.payload || "Failed to register");
+      }
     } catch (error) {
-      console.error("Logout error:", error);
-      alert(`Failed to log out: ${error}`);
-    }
-    if (isAuthenticated) {
-      navigate("/login");
-      setFormData({
-        full_name: "",
-        phone_number: "",
-        aadhar_number: "", // Added Aadhar number
-        tasks: [],
-        city: "",
-        state: "",
-        address: "",
-        service_charge: "",
-      });
+      console.error("Error during registration", error);
+      let errorMessage = "Failed to register";
+      if (error.response && error.response.data) {
+        errorMessage = Object.values(error.response.data).flat().join(" ");
+      }
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -94,105 +108,146 @@ const Signup = () => {
     <div className="flex justify-center items-center h-full p-10">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
         <h1 className="text-4xl font-bold mb-6 text-center">Sign Up</h1>
-        <form className="grid grid-cols-2 gap-4" onSubmit={handleSubmit}>
-          <div className="col-span-2">
-            <label className="mb-1 block">Full Name</label>
-            <input
-              onChange={handleChange}
-              value={formData.full_name}
-              name="full_name"
-              className="border rounded-md border-black p-3 w-full"
-              type="text"
-              placeholder="Full Name"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">Phone Number</label>
-            <input
-              onChange={handleChange}
-              value={formData.phone_number}
-              name="phone_number"
-              className="border rounded-md border-black p-3 w-full"
-              type="text"
-              placeholder="Phone Number"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">Aadhar Number</label>{" "}
-            {/* New Aadhar field */}
-            <input
-              onChange={handleChange}
-              value={formData.aadhar_number}
-              name="aadhar_number"
-              className="border rounded-md border-black p-3 w-full"
-              type="text"
-              placeholder="Aadhar Number"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block">City</label>
-            <input
-              onChange={handleChange}
-              value={formData.city}
-              name="city"
-              className="border rounded-md border-black p-3 w-full"
-              type="text"
-              placeholder="City"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">Tasks</label>
-            <Select
-              onChange={handleSelectChange}
-              options={workCategories}
-              isMulti
-              className="border rounded-md border-black p-3 w-full"
-              placeholder="Select tasks"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block">State</label>
-            <input
-              onChange={handleChange}
-              value={formData.state}
-              name="state"
-              className="border rounded-md border-black p-3 w-full"
-              type="text"
-              placeholder="State"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="mb-1 block">Address</label>
-            <textarea
-              onChange={handleChange}
-              value={formData.address}
-              name="address"
-              className="border rounded-md border-black p-3 w-full"
-              placeholder="Address"
-            />
-          </div>
-          <div className="col-span-2">
-            <label className="mb-1 block">Service Charge</label>
-            <input
-              onChange={handleChange}
-              value={formData.service_charge}
-              name="service_charge"
-              className="border rounded-md border-black p-3 w-full"
-              type="number"
-              placeholder="Service Charge"
-            />
-          </div>
-          <div className="col-span-2">
-            <button
-              type="submit"
-              className="w-full bg-blue-900 text-white rounded-md py-2 px-4 hover:bg-blue-500 transition duration-300 mt-6"
-            >
-              Register
-            </button>
-          </div>
-        </form>
-        {error && <p className="mt-4 text-red-600">{error}</p>}
+        <Formik
+          initialValues={{
+            full_name: "",
+            phone_number: "",
+            aadhar_number: "",
+            tasks: [],
+            city: "",
+            state: "",
+            address: "",
+            service_charge: "",
+          }}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ setFieldValue }) => (
+            <Form className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="mb-1 block">Full Name</label>
+                <Field
+                  name="full_name"
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="Full Name"
+                />
+                <ErrorMessage
+                  name="full_name"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block">Phone Number</label>
+                <Field
+                  name="phone_number"
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="Phone Number"
+                />
+                <ErrorMessage
+                  name="phone_number"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block">Aadhar Number</label>
+                <Field
+                  name="aadhar_number"
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="Aadhar Number"
+                />
+                <ErrorMessage
+                  name="aadhar_number"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block">City</label>
+                <Field
+                  name="city"
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="City"
+                />
+                <ErrorMessage
+                  name="city"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block">Tasks</label>
+                <Select
+                  onChange={(selectedOptions) => {
+                    setFieldValue(
+                      "tasks",
+                      selectedOptions.map((option) => option.value)
+                    );
+                  }}
+                  options={workCategories}
+                  isMulti
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="Select tasks"
+                />
+                <ErrorMessage
+                  name="tasks"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block">State</label>
+                <Field
+                  name="state"
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="State"
+                />
+                <ErrorMessage
+                  name="state"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="mb-1 block">Address</label>
+                <Field
+                  as="textarea"
+                  name="address"
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="Address"
+                />
+                <ErrorMessage
+                  name="address"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <label className="mb-1 block">Service Charge</label>
+                <Field
+                  name="service_charge"
+                  type="number"
+                  className="border rounded-md border-black p-3 w-full"
+                  placeholder="Service Charge"
+                />
+                <ErrorMessage
+                  name="service_charge"
+                  component="div"
+                  className="text-red-500"
+                />
+              </div>
+              <div className="col-span-2">
+                <button
+                  type="submit"
+                  className="w-full bg-blue-900 text-white rounded-md py-2 px-4 hover:bg-blue-500 transition duration-300 mt-6"
+                >
+                  Register
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
         <p className="mt-4 block text-sm font-medium leading-6 text-gray-900 text-center">
           Already have an account?{" "}
           <span

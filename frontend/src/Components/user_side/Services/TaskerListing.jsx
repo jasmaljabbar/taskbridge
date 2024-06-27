@@ -19,6 +19,12 @@ const TaskerListing = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    console.log("====================================");
+    console.log(taskersInfo);
+    console.log("====================================");
+  }, [taskersInfo]);
+
   return (
     <div className="min-h-screen bg-gray-100 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,8 +38,8 @@ const TaskerListing = () => {
               className="bg-white rounded-lg shadow-md overflow-hidden"
             >
               <img
-                src={tasker.profile_pic || gardener}
-                alt={tasker.full_name}
+                src={`http://127.0.0.1:8000${tasker.work_photo}` || gardener}
+                alt="tasker.full_name"
                 className="w-full h-48 object-cover"
               />
               <div className="p-6">

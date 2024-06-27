@@ -13,6 +13,8 @@ from datetime import timedelta
 from .models import UserData
 from rest_framework_simplejwt.views import TokenObtainPairView
 from task_workers.models import Tasker
+from task_workers.models import WorkCategory
+from task_workers.serializers import WorkCategorySerializer
 
 
 class LoginView(TokenObtainPairView):
@@ -30,13 +32,15 @@ class VerifyOTP(APIView):
                 current_time = timezone.now()
                 otp_time = user.otp_time
 
-                # Check if the OTP is within 5 minutes
+                # Check if the OTP is within 1 minutes
                 if current_time - otp_time > timedelta(minutes=1):
                     return Response({'detail': 'OTP expired'}, status=status.HTTP_400_BAD_REQUEST)
 
             user.is_verified = True
-
+            user.otp = None
+            user.otp_time = None
             user.save()
+
 
             return Response({'message': 'Email verified successfully.'}, 
                               status=status.HTTP_200_OK)
@@ -100,6 +104,12 @@ class Tasker_ListingView(APIView):
     def get(self,request):
         taskers = Tasker.objects.all()
         serializer = TaskerHomeSerializer(taskers, many=True)
+        return Response(serializer.data)
+    
+class TaskCategory_ListingView(APIView):
+    def get(self,request):
+        taskCategoty = WorkCategory.objects.all()
+        serializer = WorkCategorySerializer(taskCategoty, many=True)
         return Response(serializer.data)
 
         

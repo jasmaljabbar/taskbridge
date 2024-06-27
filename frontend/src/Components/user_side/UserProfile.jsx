@@ -25,7 +25,6 @@ const UserProfile = () => {
     const a = async () => {
       if (accessToken) {
         const user_profile = await dispatch(fetchUserProfile(accessToken));
-
         setprofile_data(user_profile.payload?.profile);
       }
     };
@@ -33,7 +32,7 @@ const UserProfile = () => {
   }, [dispatch, accessToken]);
 
   useEffect(() => {
-    if (profile) {
+    if (profile_data) {
       setFormData({
         full_name: profile_data.username || "",
         email: profile_data.email || "",
@@ -41,7 +40,7 @@ const UserProfile = () => {
         address: profile_data.address || "",
         city: profile_data.city || "",
         gender: profile_data.gender || "",
-        profile_photo: profile_data.profile_photo || null,
+        profile_photo: null, // set to null initially to check if a new file is uploaded
       });
     }
   }, [profile_data]);
@@ -64,8 +63,15 @@ const UserProfile = () => {
 
     const formDataToSend = new FormData();
     for (const key in formData) {
-      formDataToSend.append(key, formData[key]);
+      if (key === "profile_photo") {
+        if (formData[key] !== null) {
+          formDataToSend.append(key, formData[key]);
+        }
+      } else {
+        formDataToSend.append(key, formData[key]);
+      }
     }
+
     try {
       await axios.put(
         "http://127.0.0.1:8000/profiles/update/",
@@ -77,11 +83,21 @@ const UserProfile = () => {
           },
         }
       );
+      const updatedProfile = {
+        ...profile_data,
+        username: formData.full_name,
+        email: formData.email,
+        phone_number: formData.phone_number,
+        address: formData.address,
+        city: formData.city,
+        gender: formData.gender,
+        profile_photo:
+          formData.profile_photo instanceof File
+            ? URL.createObjectURL(formData.profile_photo)
+            : profile_data.profile_photo,
+      };
+      setprofile_data(updatedProfile);
       dispatch(fetchUserProfile(accessToken));
-      setprofile_data(formData);
-      console.log("====================================");
-      console.log(formData);
-      console.log("====================================");
       setEditing(false);
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -126,31 +142,6 @@ const UserProfile = () => {
         {editing ? (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="full_name"
-                  value={formData.full_name}
-                  onChange={handleChange}
-                  className="mt-1 p-2 cursor-pointer block w-full border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="mt-1 p-2 block cursor-pointer w-full border border-gray-300 rounded-md"
-                  readOnly
-                />
-              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Phone Number
@@ -210,7 +201,6 @@ const UserProfile = () => {
                 <input
                   type="file"
                   name="profile_photo"
-                  // value={formData.profile_photo}
                   onChange={handleFileChange}
                   className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
                 />

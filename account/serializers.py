@@ -70,6 +70,7 @@ class TaskerHomeSerializer(serializers.ModelSerializer):
             "phone_number",
             "aadhar_number",
             "address",
+            "work_photo",
             "tasks",
             "city",
             "state",

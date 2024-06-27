@@ -32,6 +32,8 @@ class UserData(AbstractUser):
     otp = models.CharField(max_length=6, blank=True, null=True)
     otp_time = models.DateTimeField(blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
+    requested_to_tasker = models.BooleanField(default=False)
+    blocked_for_tasker = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)

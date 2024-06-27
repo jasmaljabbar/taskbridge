@@ -10,7 +10,7 @@ import { GrUserWorker } from "react-icons/gr";
 
 const Admin_Sidebar = () => {
   return (
-    <div className="w-64 bg-gray-800 text-white h-screen p-4">
+    <div className="w-64  bg-gray-800 text-white h-screen p-4">
       <h2 className="text-2xl font-bold">
         Admin <span className="text-yellow-400">One</span>
       </h2>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/reducers/authSlice";
+import toast from "react-hot-toast";
 
 const user = localStorage.getItem("user");
 
@@ -35,13 +36,14 @@ function Login() {
 
       const a = await dispatch(login(userData));
       const user = jwtDecode(a.payload.access);
+      toast.success("Login succesfully !");
       user.is_admin
         ? navigate("/admin/user_list ")
         : user.is_staff
         ? navigate("/tasker/tasker_dashboard")
         : navigate("/");
     } catch (error) {
-      console.error("Login error:", error);
+      toast.error("Email or password is incorrect");
     }
   };
 

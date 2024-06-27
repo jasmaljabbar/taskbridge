@@ -10,7 +10,7 @@ import { API_URL_ADMIN } from "../../redux/actions/authService";
 
 const TaskCategory = () => {
   const [taskInfo, setTaskInfo] = useState([]); // Initialize as an array
-  const [newCategory, setNewCategory] = useState({ name: "", description: "" });
+  const [newCategory, setNewCategory] = useState({ name: "", description: "", work_image: null });
   const [isFormVisible, setIsFormVisible] = useState(false);
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
@@ -23,25 +23,36 @@ const TaskCategory = () => {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewCategory({ ...newCategory, [name]: value });
+    const { name, value, files } = e.target;
+    if (name === "work_image") {
+      setNewCategory({ ...newCategory, [name]: files[0] });
+    } else {
+      setNewCategory({ ...newCategory, [name]: value });
+    }
   };
 
   const handleAddCategory = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", newCategory.name);
+    formData.append("description", newCategory.description);
+    if (newCategory.work_image) {
+      formData.append("work_image", newCategory.work_image);
+    }
+
     try {
       const response = await axios.post(
         `${API_URL_ADMIN}add_workcategory/`,
-        newCategory,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
       setTaskInfo([...taskInfo, response.data]);
-      setNewCategory({ name: "", description: "" });
+      setNewCategory({ name: "", description: "", work_image: null });
       setIsFormVisible(false);
     } catch (error) {
       alert(error.message);
@@ -66,6 +77,13 @@ const TaskCategory = () => {
       fetchData();
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    console.log("====================================");
+    console.log(taskInfo);
+    console.log("====================================");
+  }, [taskInfo]);
+
   return (
     <div>
       <AdminNavbar />
@@ -82,6 +100,7 @@ const TaskCategory = () => {
           <form
             onSubmit={handleAddCategory}
             className="w-3/4 mb-4 p-4 border rounded bg-gray-50"
+            encType="multipart/form-data"
           >
             <div className="mb-2">
               <input
@@ -101,6 +120,14 @@ const TaskCategory = () => {
                 placeholder="Category Description"
                 className="w-full p-2 border rounded"
               ></textarea>
+            </div>
+            <div className="mb-2">
+              <input
+                type="file"
+                name="work_image"
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+              />
             </div>
             <button
               type="submit"
@@ -135,17 +162,18 @@ const TaskCategory = () => {
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
                   <td className="w-4 p-4">
-                    {item.profile_pic ? (
+                    {item.work_image ? (
                       <img
                         className="w-10 h-10 rounded-full"
-                        src={`http://127.0.0.1:8000${item.profile_pic}`}
-                        alt="profile picture"
+                        src={`http://127.0.0.1:8000${item.work_image}`}
+                        alt="work image"
+                        onError={(e) => (e.target.src = Unknown)} // Fallback to Unknown image if there's an error
                       />
                     ) : (
                       <img
                         className="w-10 h-10 rounded-full"
                         src={Unknown}
-                        alt="profile picture"
+                        alt="unknown work image"
                       />
                     )}
                   </td>
@@ -186,4 +214,5 @@ const TaskCategory = () => {
     </div>
   );
 };
+
 export default TaskCategory;

@@ -4,6 +4,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from account.models import UserData
 from task_workers.serializers import WorkCategorySerializer
@@ -60,7 +61,8 @@ class DeleteUser(APIView):
         user_id = request.data.get("id")
         try:
             user = UserData.objects.get(id=user_id)
-            user.delete()
+            user.is_staff = True
+            user.save()
             return Response({"Success": "User Deleted"}, status=status.HTTP_200_OK)
         except UserData.DoesNotExist:
             return Response(
@@ -122,8 +124,10 @@ class Work_Listing(APIView):
         serializer = WorkCategorySerializer(task, many=True)
         return Response(serializer.data)
     
-class Work_category_adding(APIView):
-    def post(self, request):
+class WorkCategoryAdding(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
         serializer = WorkCategorySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
