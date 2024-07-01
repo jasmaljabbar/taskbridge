@@ -55,13 +55,41 @@ class Dashboard(APIView):
         return Response(serializer.data)
 
 
-class DeleteUser(APIView):
+class Accepting_request(APIView):
 
     def post(self, request):
         user_id = request.data.get("id")
         try:
             user = UserData.objects.get(id=user_id)
             user.is_staff = True
+            user.save()
+            return Response({"Success": "User Deleted"}, status=status.HTTP_200_OK)
+        except UserData.DoesNotExist:
+            return Response(
+                {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+class Block_user(APIView):
+
+    def post(self, request):
+        user_id = request.data.get("id")
+        try:
+            user = UserData.objects.get(id=user_id)
+            user.is_active = not user.is_active
+            user.save()
+            return Response({"success": "User action completed", "is_active": user.is_active}, status=status.HTTP_200_OK)
+        except UserData.DoesNotExist:
+            return Response(
+                {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+            )
+
+        
+class Blocking_tasker(APIView):
+
+    def post(self, request):
+        user_id = request.data.get("id")
+        try:
+            user = UserData.objects.get(id=user_id)
+            user.is_staff = False
             user.save()
             return Response({"Success": "User Deleted"}, status=status.HTTP_200_OK)
         except UserData.DoesNotExist:

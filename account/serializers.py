@@ -39,6 +39,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         data['email'] = user.email
         data['is_staff'] = user.is_staff
         data['is_admin'] = user.is_superuser  
+        data['requested_to_tasker'] = user.requested_to_tasker
 
         return data
 
@@ -71,8 +72,9 @@ class TaskerHomeSerializer(serializers.ModelSerializer):
             "aadhar_number",
             "address",
             "work_photo",
-            "tasks",
+            "task",
+            "task_fee",
             "city",
             "state",
-            "service_charge",
+            
         ]

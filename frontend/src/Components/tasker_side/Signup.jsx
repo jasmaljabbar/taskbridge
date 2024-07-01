@@ -78,13 +78,18 @@ const Signup = () => {
         "Address cannot be just spaces",
         (value) => value && value.trim().length > 0
       ),
-    service_charge: Yup.number().required("Service Charge is required"),
-    tasks: Yup.array().min(1, "At least one task must be selected"),
+    task: Yup.number().required("Task is required"),
+    task_service_charge: Yup.number().required("Service Charge is required"),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      const resultAction = await dispatch(tasker_register(values));
+      const formattedValues = {
+        ...values,
+        task_service_charge: parseFloat(values.task_service_charge), // Convert to number if needed
+      };
+
+      const resultAction = await dispatch(tasker_register(formattedValues));
       if (tasker_register.fulfilled.match(resultAction)) {
         await dispatch(logout()).unwrap();
         navigate("/login");
@@ -113,16 +118,16 @@ const Signup = () => {
             full_name: "",
             phone_number: "",
             aadhar_number: "",
-            tasks: [],
+            task: "",
+            task_service_charge: "",
             city: "",
             state: "",
             address: "",
-            service_charge: "",
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
-          {({ setFieldValue }) => (
+          {({ setFieldValue, values }) => (
             <Form className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
                 <label className="mb-1 block">Full Name</label>
@@ -177,21 +182,17 @@ const Signup = () => {
                 />
               </div>
               <div>
-                <label className="mb-1 block">Tasks</label>
+                <label className="mb-1 block">Task</label>
                 <Select
-                  onChange={(selectedOptions) => {
-                    setFieldValue(
-                      "tasks",
-                      selectedOptions.map((option) => option.value)
-                    );
+                  onChange={(selectedOption) => {
+                    setFieldValue("task", selectedOption.value);
                   }}
                   options={workCategories}
-                  isMulti
                   className="border rounded-md border-black p-3 w-full"
-                  placeholder="Select tasks"
+                  placeholder="Select task"
                 />
                 <ErrorMessage
-                  name="tasks"
+                  name="task"
                   component="div"
                   className="text-red-500"
                 />
@@ -226,13 +227,13 @@ const Signup = () => {
               <div className="col-span-2">
                 <label className="mb-1 block">Service Charge</label>
                 <Field
-                  name="service_charge"
+                  name="task_service_charge"
                   type="number"
                   className="border rounded-md border-black p-3 w-full"
                   placeholder="Service Charge"
                 />
                 <ErrorMessage
-                  name="service_charge"
+                  name="task_service_charge"
                   component="div"
                   className="text-red-500"
                 />

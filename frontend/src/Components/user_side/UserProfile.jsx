@@ -6,9 +6,8 @@ import { fetchUserProfile } from "../../redux/reducers/authSlice";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
-  const profile = useSelector((state) => state.auth.user); // Redux state
-  const accessToken = useSelector((state) => state.auth.token); // Access token from auth slice
-
+  const profile = useSelector((state) => state.auth.user); 
+  const accessToken = useSelector((state) => state.auth.token); 
   const [profile_data, setprofile_data] = useState([]);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,7 +39,7 @@ const UserProfile = () => {
         address: profile_data.address || "",
         city: profile_data.city || "",
         gender: profile_data.gender || "",
-        profile_photo: null, // set to null initially to check if a new file is uploaded
+        profile_photo: null,
       });
     }
   }, [profile_data]);

@@ -12,6 +12,7 @@ class WorkCategory(models.Model):
     def __str__(self):
         return self.name
 
+
 class Tasker(models.Model):
     user = models.OneToOneField(UserData, on_delete=models.CASCADE, related_name='tasker_profile')
     full_name = models.CharField(max_length=255)
@@ -25,10 +26,10 @@ class Tasker(models.Model):
     )
     address = models.TextField()    
     work_photo = models.ImageField(verbose_name=_("Work Photo"), upload_to='work_photos/', default="")
-    tasks = models.ManyToManyField(WorkCategory, related_name='taskers')
+    task = models.ForeignKey(WorkCategory, on_delete=models.CASCADE)
+    task_fee = models.DecimalField(max_digits=10, decimal_places=2)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    service_charge = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return self.full_name

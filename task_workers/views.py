@@ -3,14 +3,18 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import Tasker, WorkCategory
+from rest_framework.views import APIView
+import json
 from account.utils import send_admin_email
 from rest_framework import status
 from account.models import UserData
-from .serializers import TaskerSerializer, WorkCategorySerializer,Tasker_fetching_Serializer
+from .serializers import TaskerSerializer, WorkCategorySerializer,TaskerFetchingSerializer,TaskerUpdateSerializer
 
 class WorkCategoryListView(generics.ListAPIView):
     queryset = WorkCategory.objects.all()
     serializer_class = WorkCategorySerializer
+
+
 
 class TaskerSignupView(generics.CreateAPIView):
     queryset = Tasker.objects.all()
@@ -28,15 +32,23 @@ class TaskerSignupView(generics.CreateAPIView):
             return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
 
         user = request.user
-        
+
         # Optional: Ensure user is set to staff only if required by your logic
         user.requested_to_tasker = True
         admins = UserData.objects.filter(is_superuser=True)
         for admin in admins:
-            send_admin_email(admin.email,user.name )
+            send_admin_email(admin.email, user.name)
         user.save()
-        
-        serializer = self.get_serializer(data=request.data)
+
+        # Print request data for debugging
+        print(f'Request data: {request.data}')
+
+        # Correct the request data
+        corrected_data = request.data.copy()
+        if 'task_service_charge' in corrected_data:
+            corrected_data['task_fee'] = corrected_data.pop('task_service_charge')
+
+        serializer = self.get_serializer(data=corrected_data)
         try:
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
@@ -49,13 +61,36 @@ class TaskerSignupView(generics.CreateAPIView):
         response_data = serializer.data
         response_data['refresh'] = str(refresh)
         response_data['access'] = str(refresh.access_token)
-        
+
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+    
+
+
 class TaskerProfileView(generics.RetrieveUpdateAPIView):
-    serializer_class = Tasker_fetching_Serializer
+    serializer_class = TaskerFetchingSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         tasker = Tasker.objects.get(user=self.request.user)
         print(tasker)
         return tasker
+    
+
+class TaskerProfileUpdateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request):
+        try:
+            tasker_profile = Tasker.objects.get(user=request.user)
+        except Tasker.DoesNotExist:
+            return Response({'error': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = TaskerUpdateSerializer(instance=tasker_profile, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

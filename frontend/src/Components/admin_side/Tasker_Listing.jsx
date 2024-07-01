@@ -7,17 +7,20 @@ import EditUser from "./EditUser";
 import AdminNavbar from "./AdminNavbar";
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
+import ConfirmModal from "../common/ConfirmModal";
 
 function Tasker_Listing() {
-  const [usersInfo, setUsersInfo] = useState([]); // Initialize as an array
+  const [usersInfo, setUsersInfo] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [currentTaskerId, setCurrentTaskerId] = useState(null);
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
-  const handleDelete = async (id) => {
+  const handleRequest = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/adminside/delete_user/",
-        { id },
+        "http://127.0.0.1:8000/adminside/blocking_tasker/",
+        { id: currentTaskerId },
         {
           headers: {
             "Content-Type": "application/json",
@@ -26,17 +29,16 @@ function Tasker_Listing() {
         }
       );
       console.log(response.data);
-      setUsersInfo(usersInfo.filter((user) => user.id !== id));
+      setUsersInfo(usersInfo.filter((user) => user.id !== currentTaskerId));
+      setShowModal(false);
     } catch (error) {
       alert(error.message);
     }
   };
 
   const handleModal = (id) => {
-    const updated = usersInfo.map((item) =>
-      item.id === id ? { ...item, isEditing: !item.isEditing } : item
-    );
-    setUsersInfo(updated);
+    setCurrentTaskerId(id);
+    setShowModal(true);
   };
 
   useEffect(() => {
@@ -57,9 +59,17 @@ function Tasker_Listing() {
       fetchData();
     }
   }, [accessToken]);
+
   return (
     <div>
       <AdminNavbar />
+      <ConfirmModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleRequest}
+        message="Are you sure you want to block this tasker?"
+        confirmText="Yes, I am sure"
+      />
       <div className="flex flex-col items-center h-screen w-full mt-3">
         <h1 className="text-purple-950 text-4xl font-bold">Tasker</h1>
         <button
@@ -67,7 +77,7 @@ function Tasker_Listing() {
           onClick={() => navigate("/adduser")}
           className="ml-52 mr-auto bg-purple-950 text-white border rounded-xl border-purple-950 px-4 py-3 mt-6 mb-4"
         >
-          Add User +
+          Add Tasker +
         </button>
         <table className="w-3/4 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -125,7 +135,7 @@ function Tasker_Listing() {
                   </td>
 
                   <td className="px-6 py-4">
-                    <div>{item.is_staff ? <p>Admin</p> : <p>User</p>}</div>
+                    <div>{item.is_staff ? <p>Tasker</p> : <p>User</p>}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center">
@@ -143,11 +153,14 @@ function Tasker_Listing() {
                     </div>
                   </td>
                   <td className="px-6 py-4 flex flex-row">
-                    <FaPen onClick={() => handleModal(item.id)} />
-                    <FaTrashCan
-                      className="ml-3"
-                      onClick={() => handleDelete(item.id)}
-                    />
+                    {item.is_staff ? (
+                      <button
+                        className="bg-purple-400 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-red-600"
+                        onClick={() => handleModal(item.id)}
+                      >
+                        BlockTasker
+                      </button>
+                    ) : null}
                   </td>
                   {item.isEditing ? (
                     <td>

@@ -2,22 +2,26 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
-import { FaPen, FaTrashCan } from "react-icons/fa6";
 import EditUser from "./EditUser";
 import AdminNavbar from "./AdminNavbar";
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
+import ConfirmModal from "../common/ConfirmModal";
 
 function UserList() {
   const [usersInfo, setUsersInfo] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [currentTaskerId, setCurrentTaskerId] = useState(null);
+  const [modalMessage, setModalMessage] = useState("");
+  const [confirmAction, setConfirmAction] = useState(() => {});
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
-  const handleDelete = async (id) => {
+  const handleRequest = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/adminside/delete_user/",
-        { id },
+        "http://127.0.0.1:8000/adminside/accepting_request/",
+        { id: currentTaskerId },
         {
           headers: {
             "Content-Type": "application/json",
@@ -26,17 +30,50 @@ function UserList() {
         }
       );
       console.log(response.data);
-      setUsersInfo(usersInfo.filter((user) => user.id !== id));
+      setUsersInfo(usersInfo.filter((user) => user.id !== currentTaskerId));
+      setShowModal(false);
     } catch (error) {
       alert(error.message);
     }
   };
 
-  const handleModal = (id) => {
-    const updated = usersInfo.map((item) =>
-      item.id === id ? { ...item, isEditing: !item.isEditing } : item
-    );
-    setUsersInfo(updated);
+  const handleUserAction = async () => {
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/adminside/user_action/",
+        { id: currentTaskerId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setCurrentTaskerId(null);
+      // Update the user's is_active status in the state
+      setUsersInfo((prevUsersInfo) =>
+        prevUsersInfo.map((user) =>
+          user.id === currentTaskerId
+            ? { ...user, is_active: !user.is_active }
+            : user
+        )
+      );
+
+      setShowModal(false);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const handleModal = (id, message, action) => {
+     (id);
+    setModalMessage(message);
+    setConfirmAction(() => action);
+    if (currentTaskerId) {
+      setShowModal(true);
+    }
+
   };
 
   useEffect(() => {
@@ -48,9 +85,7 @@ function UserList() {
           },
         });
         setUsersInfo(response.data);
-        console.log("====================================");
-        console.log(usersInfo);
-        console.log("====================================");
+        console.log("Fetched users:", response.data);
       } catch (error) {
         alert(error.message);
       }
@@ -64,6 +99,13 @@ function UserList() {
   return (
     <div>
       <AdminNavbar />
+      <ConfirmModal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={confirmAction}
+        message={modalMessage}
+        confirmText="Yes, I am sure"
+      />
       <div className="flex flex-col items-center h-screen w-full mt-3">
         <h1 className="text-purple-950 text-4xl font-bold">Users</h1>
         <button
@@ -129,29 +171,59 @@ function UserList() {
                   </td>
 
                   <td className="px-6 py-4">
-                    <div>{item.is_staff ? <p>Admin</p> : <p>User</p>}</div>
+                    <div>{item.is_staff ? <p>Tasker</p> : <p>User</p>}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                       <div>
                         {item.is_active ? (
-                          <p className="h-2.5 w-2.5 rounded-full me-2">
+                          <button
+                            className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-red-600"
+                            onClick={() =>
+                              {setCurrentTaskerId(item.id)
+                              handleModal(
+                                item.id,
+                                "Are you sure you want to deactivate this user?",
+                                handleUserAction
+                              )}
+                            }
+                          >
                             Active
-                          </p>
+                          </button>
                         ) : (
-                          <p className="h-2.5 w-2.5 rounded-full bg-red-500 me-2">
+                          <button
+                            className="bg-orange-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600"
+                            onClick={() =>
+                              {setCurrentTaskerId(item.id)
+                              handleModal(
+                                item.id,
+                                "Are you sure you want to activate this user?",
+                                handleUserAction
+                              )}
+                            }
+                          >
                             Inactive
-                          </p>
+                          </button>
                         )}
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 flex flex-row">
-                    <FaPen onClick={() => handleModal(item.id)} />
-                    <FaTrashCan
-                      className="ml-3"
-                      onClick={() => handleDelete(item.id)}
-                    />
+                    {item.requested_to_tasker ? (
+                      <button
+                        className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600"
+                        onClick={() =>
+                          {setCurrentTaskerId(item.id)
+                          handleModal(
+                            item.id,
+                            "Are you sure you want to confirm this request?",
+                            handleRequest
+                          )}
+                        }
+                      >
+                        TaskerRequest
+                      </button>
+                    ) : null}
                   </td>
                   {item.isEditing ? (
                     <td>

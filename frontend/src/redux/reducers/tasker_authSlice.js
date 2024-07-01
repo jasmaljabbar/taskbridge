@@ -34,7 +34,20 @@ export const fetchTaskerProfile = createAsyncThunk(
   'tasker/fetchTaskerProfile',
   async (token, thunkAPI) => {
     try {
-      return await tasker_authService.getTaskerProfile(token);
+      const response = await tasker_authService.getTaskerProfile(token);
+      
+      console.log("Tasker Profile Response:", response);
+
+      // If task is just an ID, you might want to fetch the full task details here
+      // This depends on how your API is structured and what data you need
+      if (response.task && typeof response.task === 'number') {
+        console.log("Task is an ID, consider fetching full task details");
+        // Uncomment and implement the following if you need to fetch task details:
+        // const taskDetails = await tasker_authService.getTaskDetails(response.task);
+        // response.task = taskDetails;
+      }
+
+      return response;
     } catch (error) {
       const message =
         (error.response &&
@@ -42,6 +55,7 @@ export const fetchTaskerProfile = createAsyncThunk(
           error.response.data.message) ||
         error.message ||
         error.toString();
+      console.error("Error fetching tasker profile:", message);
       return thunkAPI.rejectWithValue(message);
     }
   }
