@@ -29,6 +29,7 @@ import Otp from "./Components/user_side/Otp";
 import TaskCategory from "./Components/admin_side/TaskCategory";
 import Tasker_profile from "./Components/tasker_side/Tasker_profile";
 import Services from "./Components/user_side/Services";
+import TaskShow from "./Components/tasker_side/TaskShow/TaskShow";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -129,6 +130,7 @@ const App = () => {
           >
             <Route path="tasker_dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Tasker_profile />} />
+            <Route path="taskshow" element={<TaskShow/>} />
           </Route>
           {/* admin_side */}
           {/* <Route

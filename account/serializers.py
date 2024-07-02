@@ -4,6 +4,7 @@ from .models import UserData
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from task_workers.models import Tasker
+from task_workers.serializers import WorkCategorySerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,6 +64,7 @@ class LoginSerializer(TokenObtainPairSerializer):
 
 
 class TaskerHomeSerializer(serializers.ModelSerializer):
+    task = WorkCategorySerializer() 
     class Meta:
         model = Tasker
         fields = [

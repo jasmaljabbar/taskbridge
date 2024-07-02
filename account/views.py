@@ -102,7 +102,7 @@ class HomeView(APIView):
 
 class Tasker_ListingView(APIView):
     def get(self,request):
-        taskers = Tasker.objects.filter(user__is_staff=True)
+        taskers = Tasker.objects.filter(user__is_staff=True)[:9]
         serializer = TaskerHomeSerializer(taskers, many=True)
         return Response(serializer.data)
     
