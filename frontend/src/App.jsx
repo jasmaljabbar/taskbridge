@@ -8,7 +8,6 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import Register from "./Components/user_side/Register";
 import Login from "./Components/user_side/Login";
-// import AdminLogin from "./Components/admin_side/AdminLogin";
 import AddUser from "./Components/admin_side/AddUser";
 import Navbar from "./Components/common/Navbar";
 import { login } from "./redux/reducers/authSlice";
@@ -30,6 +29,7 @@ import TaskCategory from "./Components/admin_side/TaskCategory";
 import Tasker_profile from "./Components/tasker_side/Tasker_profile";
 import Services from "./Components/user_side/Services";
 import TaskShow from "./Components/tasker_side/TaskShow/TaskShow";
+import TaskerProfile from "./Components/admin_side/TaskerProfile ";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -130,19 +130,9 @@ const App = () => {
           >
             <Route path="tasker_dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Tasker_profile />} />
-            <Route path="taskshow" element={<TaskShow/>} />
+            <Route path="taskshow" element={<TaskShow />} />
           </Route>
           {/* admin_side */}
-          {/* <Route
-            path="/admin_login"
-            element={
-              <ProtectedRoute
-                element={<AdminLogin />}
-                isAuthenticated={!isAuthenticated}
-                redirectTo="/admin"
-              />
-            }
-          /> */}
           <Route
             path="/adduser"
             element={
@@ -164,6 +154,7 @@ const App = () => {
             }
           >
             <Route path="user_list" element={<UserList />} />
+            <Route path="tasker/:id" element={<TaskerProfile />} />
             <Route path="tasker_showing" element={<Tasker_Listing />} />
             <Route path="task_list" element={<TaskCategory />} />
           </Route>

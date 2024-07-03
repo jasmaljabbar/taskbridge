@@ -12,6 +12,8 @@ from .serializers import UserDataSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from task_workers.models import WorkCategory
+from task_workers.serializers import TaskerFetchingSerializer
+from task_workers.models import Tasker
 
 
 
@@ -68,6 +70,29 @@ class Accepting_request(APIView):
             return Response(
                 {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
             )
+
+class TaskerDetails(APIView):
+    serializer_class = TaskerFetchingSerializer
+    
+    def get(self, request):
+        user_id = request.query_params.get("id")
+        
+        
+        try:
+            user_data = get_object_or_404(UserData, id=user_id)
+            tasker = get_object_or_404(Tasker, user=user_data)
+            
+        except UserData.DoesNotExist:
+           
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Tasker.DoesNotExist:
+            
+            return Response({"error": "Tasker not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = self.serializer_class(tasker)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class Block_user(APIView):
 
     def post(self, request):
