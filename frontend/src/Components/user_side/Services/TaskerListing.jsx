@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import gardener from "../../../statics/user_side/worker_image/gardener-cleaning.png";
+import Image_not_available from "../../../statics/user_side/work_image/Image_not_available.png";
 import { API_URL } from "../../../redux/actions/authService";
 
 const TaskerListing = () => {
@@ -46,8 +46,12 @@ const TaskerListing = () => {
               className="bg-white rounded-lg transform transition duration-300 ease-in-out hover:scale-105 hover:shadow-lg shadow-md overflow-hidden"
             >
               <img
-                src={`http://127.0.0.1:8000${tasker.work_photo}` || gardener}
-                alt={tasker.full_name}
+                src={
+                  tasker.work_photo
+                    ? `http://127.0.0.1:8000${tasker.work_photo}`
+                    : Image_not_available
+                }
+                alt="Work photo"
                 className="w-full h-64 object-cover"
               />
               <div className="p-6">

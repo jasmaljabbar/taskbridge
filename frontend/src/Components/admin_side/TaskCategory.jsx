@@ -2,15 +2,21 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
-import { FaPen, FaTrashCan } from "react-icons/fa6";
-import EditUser from "./EditUser";
-import AdminNavbar from "./AdminNavbar";
+import { FaPen } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
+import EditTask from "./EditTask";
+import { CgUnblock } from "react-icons/cg";
+import { MdBlock } from "react-icons/md";
+import toast from "react-hot-toast";
 
 const TaskCategory = () => {
   const [taskInfo, setTaskInfo] = useState([]); // Initialize as an array
-  const [newCategory, setNewCategory] = useState({ name: "", description: "", work_image: null });
+  const [newCategory, setNewCategory] = useState({
+    name: "",
+    description: "",
+    work_image: null,
+  });
   const [isFormVisible, setIsFormVisible] = useState(false);
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
@@ -28,6 +34,38 @@ const TaskCategory = () => {
       setNewCategory({ ...newCategory, [name]: files[0] });
     } else {
       setNewCategory({ ...newCategory, [name]: value });
+    }
+  };
+
+  const handleEdit = (id) => {
+    const updated = taskInfo.map((item) =>
+      item.id === id ? { ...item, isEditing: !item.isEditing } : item
+    );
+    setTaskInfo(updated);
+  };
+
+  const handleBlock = async (id) => {
+    try {
+      const response = await axios.post(
+        `${API_URL_ADMIN}work/block/${id}/`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      // Toggle the blocked status in the state
+      const updated = taskInfo.map((item) =>
+        item.id === id ? { ...item, blocked: !item.blocked } : item
+      );
+      setTaskInfo(updated);
+
+      // You might want to show a more specific message based on the new blocked status
+      toast.success(response.data.status);
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -55,7 +93,7 @@ const TaskCategory = () => {
       setNewCategory({ name: "", description: "", work_image: null });
       setIsFormVisible(false);
     } catch (error) {
-      alert(error.message);
+      toast.alert(error.message);
     }
   };
 
@@ -69,7 +107,7 @@ const TaskCategory = () => {
         });
         setTaskInfo(response.data);
       } catch (error) {
-        alert(error.message);
+        toast.alert(error.message);
       }
     };
 
@@ -86,8 +124,7 @@ const TaskCategory = () => {
 
   return (
     <div>
-      <AdminNavbar />
-      <div className="flex flex-col items-center h-screen w-full mt-3">
+      <div className="flex flex-col items-center p-6  h-screen w-[90%] mt-14">
         <h1 className="text-purple-950 text-4xl font-bold">Taskes</h1>
         <button
           type="button"
@@ -149,9 +186,9 @@ const TaskCategory = () => {
               <th scope="col" className="px-6 py-3">
                 Description
               </th>
-              {/* <th scope="col" className="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Action
-              </th> */}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -190,22 +227,32 @@ const TaskCategory = () => {
                   <td className="px-6 py-4">
                     <div>{item.description}</div>
                   </td>
-                  {/* <td className="px-6 py-4 flex flex-row">
+                  <td className="px-6 py-4 flex flex-row">
                     <FaPen onClick={() => handleModal(item.id)} />
-                    <FaTrashCan
-                      className="ml-3"
-                      onClick={() => handleDelete(item.id)}
-                    />
+
+                    {item.blocked ? (
+                      <MdBlock
+                        className="ml-3 text-red-500"
+                        onClick={() => handleBlock(item.id)}
+                        title="Unblock this category"
+                      />
+                    ) : (
+                      <CgUnblock
+                        className="ml-3 text-green-500"
+                        onClick={() => handleBlock(item.id)}
+                        title="Block this category"
+                      />
+                    )}
                   </td>
                   {item.isEditing ? (
                     <td>
-                      <EditUser
+                      <EditTask
                         id={item.id}
                         setTaskInfo={setTaskInfo}
                         item={item}
                       />{" "}
                     </td>
-                  ) : null} */}
+                  ) : null}
                 </tr>
               ))}
           </tbody>

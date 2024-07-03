@@ -161,3 +161,39 @@ class WorkCategoryAdding(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class EditWorkCategory(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+    
+
+    def put(self, request, pk, *args, **kwargs):
+        try:
+            
+            work_category = WorkCategory.objects.get(pk=pk)
+        except WorkCategory.DoesNotExist:
+            return Response({'error': 'Work category not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = WorkCategorySerializer(work_category, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class BlockWorkCategory(APIView):
+
+    def post(self, request, pk, *args, **kwargs):
+        try:
+            work_category = WorkCategory.objects.get(pk=pk)
+        except WorkCategory.DoesNotExist:
+            return Response({'error': 'Work category not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        work_category.blocked = not work_category.blocked
+        work_category.save()
+
+        if work_category.blocked:
+            message = 'Work category blocked successfully'
+        else:
+            message = 'Work category unblocked successfully'
+
+        return Response({'status': message, 'blocked': work_category.blocked}, status=status.HTTP_200_OK)

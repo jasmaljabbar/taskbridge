@@ -8,7 +8,7 @@ const AdminLayout = () => {
       <div>
         <Admin_Sidebar />
       </div>
-      <div>
+      <div className="flex-1 flex   items-center justify-center">
         <Outlet />
       </div>
     </div>

@@ -1,5 +1,5 @@
 from django.urls import path
-from adminside.views import AdminLogin, Dashboard,Block_user, Blocking_tasker,Accepting_request, EditUser, Tasker_Listing,Work_Listing,WorkCategoryAdding
+from adminside.views import AdminLogin, Dashboard,Block_user, Blocking_tasker,Accepting_request, EditUser, Tasker_Listing,Work_Listing,WorkCategoryAdding,EditWorkCategory,BlockWorkCategory
 
 urlpatterns = [
     path("admin_login/", AdminLogin.as_view(), name="admin_login"),
@@ -11,4 +11,6 @@ urlpatterns = [
     path("tasker_listing/", Tasker_Listing.as_view(), name="tasker_listing"),
     path("workcategory/", Work_Listing.as_view(), name="workercategory"),
     path('add_workcategory/', WorkCategoryAdding.as_view(), name='add-workcategory'),
+    path('work/edit/<int:pk>/', EditWorkCategory.as_view(), name='work-edit'),
+    path('work/block/<int:pk>/', BlockWorkCategory.as_view(), name='work-block'),
 ]

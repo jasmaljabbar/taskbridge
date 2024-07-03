@@ -8,7 +8,7 @@ const TaskerLayout = () => {
       <div className="w-1/9">
         <Sidebar />
       </div>
-      <div className="flex-1 flex pt-96 items-center justify-center">
+      <div className="flex-1 flex pt-96  items-center justify-center">
         <Outlet />
       </div>
     </div>

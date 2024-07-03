@@ -1,6 +1,18 @@
 import React, { useState } from "react";
-import { FaTable, FaUser, FaLock, FaGithub, FaBars, FaTimes } from "react-icons/fa";
-import { MdOutlineSubdirectoryArrowRight, MdOutlineHelpOutline, MdOutlineMenuBook, MdDashboard } from "react-icons/md";
+import {
+  FaTable,
+  FaUser,
+  FaLock,
+  FaGithub,
+  FaBars,
+  FaTimes,
+} from "react-icons/fa";
+import {
+  MdOutlineSubdirectoryArrowRight,
+  MdOutlineHelpOutline,
+  MdOutlineMenuBook,
+  MdDashboard,
+} from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -13,13 +25,16 @@ const Sidebar = () => {
   return (
     <div>
       <div className="md:hidden fixed top-0 left-0 z-20 p-4">
-        <button onClick={toggleSidebar} className="text-white focus:outline-none">
+        <button
+          onClick={toggleSidebar}
+          className="text-white focus:outline-none"
+        >
           {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
       </div>
 
       <div
-        className={`fixed top-0 left-0 h-full w-64 bg-gray-800 text-white p-4 transform ${
+        className={`fixed top-16 left-0 h-full w-64 bg-gray-800 text-white p-4 transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 transition-transform duration-300 ease-in-out z-10`}
       >

@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 class WorkCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkCategory
-        fields = ['id', 'name', 'description', 'work_image']
+        fields = ['id', 'name', 'description', 'work_image','blocked']
 
         
 

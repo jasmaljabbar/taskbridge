@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
-import EditUser from "./EditUser";
-import AdminNavbar from "./AdminNavbar";
+
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
 import ConfirmModal from "../common/ConfirmModal";
@@ -67,13 +66,12 @@ function UserList() {
   };
 
   const handleModal = (id, message, action) => {
-     (id);
+    id;
     setModalMessage(message);
     setConfirmAction(() => action);
     if (currentTaskerId) {
       setShowModal(true);
     }
-
   };
 
   useEffect(() => {
@@ -98,7 +96,6 @@ function UserList() {
 
   return (
     <div>
-      <AdminNavbar />
       <ConfirmModal
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -179,28 +176,28 @@ function UserList() {
                         {item.is_active ? (
                           <button
                             className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-red-600"
-                            onClick={() =>
-                              {setCurrentTaskerId(item.id)
+                            onClick={() => {
+                              setCurrentTaskerId(item.id);
                               handleModal(
                                 item.id,
                                 "Are you sure you want to deactivate this user?",
                                 handleUserAction
-                              )}
-                            }
+                              );
+                            }}
                           >
                             Active
                           </button>
                         ) : (
                           <button
                             className="bg-orange-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600"
-                            onClick={() =>
-                              {setCurrentTaskerId(item.id)
+                            onClick={() => {
+                              setCurrentTaskerId(item.id);
                               handleModal(
                                 item.id,
                                 "Are you sure you want to activate this user?",
                                 handleUserAction
-                              )}
-                            }
+                              );
+                            }}
                           >
                             Inactive
                           </button>
@@ -212,28 +209,19 @@ function UserList() {
                     {item.requested_to_tasker ? (
                       <button
                         className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600"
-                        onClick={() =>
-                          {setCurrentTaskerId(item.id)
+                        onClick={() => {
+                          setCurrentTaskerId(item.id);
                           handleModal(
                             item.id,
                             "Are you sure you want to confirm this request?",
                             handleRequest
-                          )}
-                        }
+                          );
+                        }}
                       >
                         TaskerRequest
                       </button>
                     ) : null}
                   </td>
-                  {item.isEditing ? (
-                    <td>
-                      <EditUser
-                        id={item.id}
-                        setUsersInfo={setUsersInfo}
-                        item={item}
-                      />{" "}
-                    </td>
-                  ) : null}
                 </tr>
               ))}
           </tbody>

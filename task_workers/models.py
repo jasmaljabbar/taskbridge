@@ -8,6 +8,7 @@ class WorkCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
     work_image = models.ImageField(verbose_name=_("Work Image"), upload_to='work_image/', default="")
+    blocked = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

@@ -14,6 +14,12 @@ class WorkCategoryListView(generics.ListAPIView):
     queryset = WorkCategory.objects.all()
     serializer_class = WorkCategorySerializer
 
+class Work_Listing(APIView):
+    def get(self, request):
+        task = WorkCategory.objects.filter(blocked=False)
+        serializer = WorkCategorySerializer(task, many=True)
+        return Response(serializer.data)
+
 
 
 class TaskerSignupView(generics.CreateAPIView):

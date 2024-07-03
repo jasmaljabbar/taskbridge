@@ -4,7 +4,7 @@ import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
 import { FaPen, FaTrashCan } from "react-icons/fa6";
 import EditUser from "./EditUser";
-import AdminNavbar from "./AdminNavbar";
+
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
 import ConfirmModal from "../common/ConfirmModal";
@@ -62,7 +62,6 @@ function Tasker_Listing() {
 
   return (
     <div>
-      <AdminNavbar />
       <ConfirmModal
         show={showModal}
         onClose={() => setShowModal(false)}

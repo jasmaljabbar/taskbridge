@@ -1,79 +1,65 @@
 import React, { useState } from "react";
-
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { API_URL_ADMIN } from "../../redux/actions/authService";
 
-function EditUser({ id, setUsersInfo, item }) {
+function EditUser({ id, setTaskInfo, item }) {
   const [updated, setUpdated] = useState({
     name: item.name || "",
-    email: item.email || "",
-    password: item.password || "",
-    // ... other fields with default values
+    description: item.description || "",
+    work_image: null,
   });
-  // const navigate = useNavigate();
   const token = useSelector((state) => state.auth.token);
-  const [emailError, setEmailError] = useState("");
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUpdated((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    const { name, value, files } = e.target;
+    if (name === "work_image") {
+      setUpdated({ ...updated, [name]: files[0] });
+    } else {
+      setUpdated({ ...updated, [name]: value });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("name", updated.name);
+    formData.append("description", updated.description);
+    if (updated.work_image) {
+      formData.append("work_image", updated.work_image);
+    }
+
     try {
-      console.log(token);
       const response = await axios.put(
-        `http://127.0.0.1:8000/adminside/edit_user/${id}`,
-        updated,
+        `${API_URL_ADMIN}edit_workcategory/${id}/`,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      setUsersInfo((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === id ? { ...user, ...updated, isEditing: false } : user
+      setTaskInfo((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === id
+            ? { ...task, ...response.data, isEditing: false }
+            : task
         )
       );
-      // navigate('/dashboard');
-      console.log(response.data);
-      console.log(token);
     } catch (error) {
-      if (error.response) {
-        console.error("Error response:", error.response);
-
-        let errorMessage = "";
-
-        if (error.response.data.email) {
-          setEmailError("Email: " + error.response.data.email.join(" "));
-          setUpdated((prevState) => ({
-            ...prevState,
-            email: item.email || "",
-          }));
-        }
-        if (error.response.data.name) {
-          errorMessage += "Name: " + error.response.data.name.join(" ") + " ";
-        }
-
-        if (updated.password !== updated.confirm_password) {
-          alert("password doesn't match");
-        }
-      }
       alert(error.message);
     }
   };
+
   const handleClose = () => {
-    setUsersInfo((prevUsers) =>
-      prevUsers.map((user) =>
-        user.id === id ? { ...user, ...updated, isEditing: false } : user
+    setTaskInfo((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, isEditing: false } : task
       )
     );
   };
+
   return (
     <div className="flex justify-center items-center">
       <div
@@ -85,7 +71,7 @@ function EditUser({ id, setUsersInfo, item }) {
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Edit User
+                Edit Work Category
               </h3>
               <button
                 onClick={handleClose}
@@ -98,14 +84,14 @@ function EditUser({ id, setUsersInfo, item }) {
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
-                  viewBox="0  0  14  14"
+                  viewBox="0 0 14 14"
                 >
                   <path
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="m1  1  6  6m0  0  6  6M7  7l6-6M7  7l-6  6"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                   />
                 </svg>
                 <span className="sr-only">Close modal</span>
@@ -127,65 +113,40 @@ function EditUser({ id, setUsersInfo, item }) {
                     name="name"
                     id="name"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    placeholder="name@company.com"
+                    placeholder="Category name"
                     required
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="description"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Your email
+                    Description
                   </label>
-                  <input
+                  <textarea
                     onChange={handleChange}
-                    value={updated.email}
-                    type="email"
-                    name="email"
-                    id="email"
+                    value={updated.description}
+                    name="description"
+                    id="description"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    placeholder="name@company.com"
-                    required
-                  />
-                  {emailError && (
-                    <div className="text-red-500">{emailError}</div>
-                  )}
-                </div>
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Your password
-                  </label>
-                  <input
-                    value={updated.password}
-                    onChange={handleChange}
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    placeholder="Category description"
                     required
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="confirm_password"
+                    htmlFor="work_image"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >
-                    Confirm password
+                    Work Image
                   </label>
                   <input
-                    value={updated.confirm_password}
                     onChange={handleChange}
-                    type="password"
-                    name="confirm_password"
-                    id="password"
-                    placeholder="••••••••"
+                    type="file"
+                    name="work_image"
+                    id="work_image"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    required
                   />
                 </div>
                 <button

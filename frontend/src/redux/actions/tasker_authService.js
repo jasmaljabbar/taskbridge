@@ -32,6 +32,15 @@ const getWorkCategories = async () => {
   }
 };
 
+const getWork_Categories_for_user = async () => {
+  try {
+    const response = await axios.get(API_URL + 'workcategory/');
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : error;
+  }
+};
+
 
 const getTaskerProfile = async (token) =>{
   try{
@@ -51,6 +60,7 @@ const tasker_authService = {
   tasker_register,
   getWorkCategories,
   getTaskerProfile,
+  getWork_Categories_for_user,
 };
 
 export default tasker_authService;

@@ -1,84 +1,79 @@
-import React from "react";
-import { FaTable, FaUser, FaLock, FaGithub } from "react-icons/fa";
-import { MdOutlineSubdirectoryArrowRight } from "react-icons/md";
-import { MdOutlineHelpOutline } from "react-icons/md";
-import { MdOutlineMenuBook } from "react-icons/md";
-import { MdDashboard } from "react-icons/md";
-import { FaUsers } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { FaTable, FaUser, FaLock, FaGithub, FaUsers } from "react-icons/fa";
+import {
+  MdOutlineSubdirectoryArrowRight,
+  MdOutlineHelpOutline,
+  MdOutlineMenuBook,
+  MdDashboard,
+} from "react-icons/md";
 import { GrUserWorker } from "react-icons/gr";
+import { Link } from "react-router-dom";
 
 const Admin_Sidebar = () => {
-  return (
-    <div className="w-64  bg-gray-800 text-white h-screen p-4">
-      <h2 className="text-2xl font-bold">
-        Admin <span className="text-yellow-400">One</span>
-      </h2>
-      <nav className="mt-10">
-        <div className="mb-4">
-          <Link
-            to={""}
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <MdDashboard className="mr-3" /> Dashboard
-          </Link>
-        </div>
-        <div className="mb-4">
-          <Link
-            to={"/admin/tasker_showing"}
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <GrUserWorker className="mr-3" /> Taskers
-          </Link>
+  const [isOpen, setIsOpen] = useState(false);
 
-          <Link
-            to={"/admin/user_list"}
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <FaUsers className="mr-3" /> Users
-          </Link>
-          <Link
-            to={"/admin/task_list"}
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <FaUser className="mr-3" /> Task Category
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <FaLock className="mr-3" /> Login
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <MdOutlineSubdirectoryArrowRight className="mr-3" /> Submenus
-          </Link>
-        </div>
-        <div>
-          <p className="text-gray-400 uppercase text-sm mb-2">About</p>
-          <Link
-            to="#"
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <MdOutlineMenuBook className="mr-3" /> Premium Demo
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <MdOutlineHelpOutline className="mr-3" /> About
-          </Link>
-          <Link
-            to="#"
-            className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-          >
-            <FaGithub className="mr-3" /> GitHub
-          </Link>
-        </div>
-      </nav>
-    </div>
+  const toggleSidebar = () => setIsOpen(!isOpen);
+
+  const NavLink = ({ to, icon: Icon, children }) => (
+    <Link
+      to={to}
+      className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700 transition duration-200"
+    >
+      <Icon className="mr-3" /> {children}
+    </Link>
+  );
+
+  return (
+    <>
+      <button
+        className="fixed top-4 left-4 z-20 md:hidden bg-gray-800 text-white p-2 rounded"
+        onClick={toggleSidebar}
+      >
+        ☰
+      </button>
+      <div
+        className={`fixed top-14 left-0 h-full w-64 bg-gray-800 text-white p-4 transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0 transition-transform duration-300 ease-in-out z-10`}
+      >
+        <nav className="mt-16 md:mt-20">
+          <div className="mb-4 space-y-2">
+            <NavLink to="" icon={MdDashboard}>
+              Dashboard
+            </NavLink>
+            <NavLink to="/admin/tasker_showing" icon={GrUserWorker}>
+              Taskers
+            </NavLink>
+            <NavLink to="/admin/user_list" icon={FaUsers}>
+              Users
+            </NavLink>
+            <NavLink to="/admin/task_list" icon={FaUser}>
+              Task Category
+            </NavLink>
+            <NavLink to="#" icon={FaLock}>
+              Login
+            </NavLink>
+            <NavLink to="#" icon={MdOutlineSubdirectoryArrowRight}>
+              Submenus
+            </NavLink>
+          </div>
+          <div>
+            <p className="text-gray-400 uppercase text-sm mb-2">About</p>
+            <div className="space-y-2">
+              <NavLink to="#" icon={MdOutlineMenuBook}>
+                Premium Demo
+              </NavLink>
+              <NavLink to="#" icon={MdOutlineHelpOutline}>
+                About
+              </NavLink>
+              <NavLink to="#" icon={FaGithub}>
+                GitHub
+              </NavLink>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </>
   );
 };
 
