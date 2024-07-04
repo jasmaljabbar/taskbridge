@@ -111,9 +111,25 @@ class TaskCategory_ListingView(APIView):
         taskCategoty = WorkCategory.objects.all()
         serializer = WorkCategorySerializer(taskCategoty, many=True)
         return Response(serializer.data)
-
+  
+class Category_Tasker_filter(APIView):
+    def get(self, request, taskId, *args, **kwargs):
+        try:
+            workCategory = WorkCategory.objects.get(id = taskId)
+            taskers = Tasker.objects.filter(task=workCategory)
+            serializer = TaskerHomeSerializer(taskers, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Tasker.DoesNotExist:
+            return Response({"error": "Tasker not found"}, status=status.HTTP_404_NOT_FOUND)
         
+class SearchTasker(APIView):
+    def get(self, request, *args, **kwargs):
 
+        query = request.query_params.get('query', '')
+        taskers = Tasker.objects.filter(full_name__icontains=query) | Tasker.objects.filter(task__name__icontains=query)
+        
+        serializer = TaskerHomeSerializer(taskers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)

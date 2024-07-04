@@ -30,6 +30,8 @@ import Tasker_profile from "./Components/tasker_side/Tasker_profile";
 import Services from "./Components/user_side/Services";
 import TaskShow from "./Components/tasker_side/TaskShow/TaskShow";
 import TaskerProfile from "./Components/admin_side/TaskerProfile ";
+import Filtered_tasker from "./Components/user_side/Services/Filtered_tasker";
+import SearchTasker from "./Components/user_side/Services/SearchTasker ";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -64,6 +66,8 @@ const App = () => {
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/Filtered_tasker/:id" element={<Filtered_tasker />} />
+          <Route path="/search_results" element={<SearchTasker />} />
           <Route
             path="/register"
             element={

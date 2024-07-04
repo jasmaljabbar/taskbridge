@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import RegisterView, HomeView, LogoutView, LoginView, VerifyOTP,ResendOtpView,Tasker_ListingView,TaskCategory_ListingView
+from .views import RegisterView, HomeView, LogoutView, LoginView, VerifyOTP,ResendOtpView,Tasker_ListingView,TaskCategory_ListingView,Category_Tasker_filter,SearchTasker
 
 urlpatterns = [
     path("api/login/", LoginView.as_view(), name="token_obtain_pair"),
@@ -12,4 +12,7 @@ urlpatterns = [
     path("api/taskcategory/", TaskCategory_ListingView.as_view(), name="home"),
     path("api/logout/", LogoutView.as_view(), name="logout"),
     path("api/taskers/", Tasker_ListingView.as_view(), name="taskers"),
+    path("api/tasker_filter/<int:taskId>/", Category_Tasker_filter.as_view(), name="tasker_filter"),
+    path("api/search_tasker/", SearchTasker.as_view(), name="search_tasker"),
+
 ]

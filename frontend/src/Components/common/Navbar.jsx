@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios";
+import { API_URL } from "../../redux/actions/authService";
 import { logout } from "../../redux/reducers/authSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -15,6 +18,7 @@ const Navbar = () => {
   if (token) {
     user = jwtDecode(token);
   }
+
   const handleLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
@@ -25,6 +29,10 @@ const Navbar = () => {
     }
   };
 
+  const handleSearch = () => {
+    navigate(`/search_results?query=${encodeURIComponent(searchQuery)}`);
+  };
+
   return (
     <nav className="bg-gray-800 fixed top-0 w-full z-10 py-4">
       <div className="container mx-auto md:px-0 px-4 lg:px-8">
@@ -33,6 +41,23 @@ const Navbar = () => {
           <Link to="/" className="text-white text-2xl font-bold">
             TaskBridge
           </Link>
+
+          {/* Search Input */}
+          <div className="hidden lg:flex items-center space-x-4">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name or task"
+              className="px-4 py-2 border rounded-lg"
+            />
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+            >
+              Search
+            </button>
+          </div>
 
           {/* Navigation Links */}
           {isAuthenticated ? (
@@ -131,6 +156,21 @@ const Navbar = () => {
                 </Link>
               </>
             )}
+            <div className="flex flex-col space-y-2">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by name or task"
+                className="px-4 py-2 border rounded-lg"
+              />
+              <button
+                onClick={handleSearch}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg"
+              >
+                Search
+              </button>
+            </div>
           </div>
         )}
       </div>
