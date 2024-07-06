@@ -44,11 +44,12 @@ class TaskerSerializer(serializers.ModelSerializer):
 class TaskerFetchingSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     task = WorkCategorySerializer(read_only=True)
+    profile_pic = serializers.ImageField(source='user.profile_pic', read_only=True)
 
     class Meta:
         model = Tasker
         fields = [
-            'user', 'full_name', 'phone_number', 'aadhar_number', 'task', 'task_fee',
+            'user', 'full_name','profile_pic', 'phone_number', 'aadhar_number', 'task', 'task_fee',
             'city', 'state', 'address', 'work_photo'
         ]
 

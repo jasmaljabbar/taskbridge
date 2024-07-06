@@ -32,6 +32,11 @@ import TaskShow from "./Components/tasker_side/TaskShow/TaskShow";
 import TaskerProfile from "./Components/admin_side/TaskerProfile ";
 import Filtered_tasker from "./Components/user_side/Services/Filtered_tasker";
 import SearchTasker from "./Components/user_side/Services/SearchTasker ";
+import Details from "./Components/user_side/Tasker/Details";
+// import MeetTasker from "./Components/user_side/MeetTasker";
+import UserTaskerLayout from "./Components/user_side/Tasker/UserTaskerLayout";
+import Message from "./Components/user_side/Tasker/Message";
+import BookNow from "./Components/user_side/Tasker/BookNow";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -68,6 +73,7 @@ const App = () => {
           <Route path="/services" element={<Services />} />
           <Route path="/Filtered_tasker/:id" element={<Filtered_tasker />} />
           <Route path="/search_results" element={<SearchTasker />} />
+          {/* <Route path="/meetTasker" element={<MeetTasker />} />  */}
           <Route
             path="/register"
             element={
@@ -98,6 +104,22 @@ const App = () => {
               />
             }
           />
+
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute
+                element={<UserTaskerLayout />}
+                isAuthenticated={isAuthenticated}
+                redirectTo="/login"
+              />
+            }
+          >
+            <Route path="details/:id" element={<Details />} />
+            <Route path="message" element={<Message />} />
+            <Route path="booknow" element={<BookNow />} />
+          </Route>
+
           <Route path="/debugging" element={<DebugTokenComponent />} />
           <Route path="*" element={<NotFound />} />
 

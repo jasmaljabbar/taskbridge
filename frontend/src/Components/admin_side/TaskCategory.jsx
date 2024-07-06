@@ -123,7 +123,7 @@ const TaskCategory = () => {
   }, [taskInfo]);
 
   return (
-    <div>
+    <div className="flex items-center justify-center ml-32">
       <div className="flex flex-col items-center p-6  h-screen w-[90%] mt-14">
         <h1 className="text-purple-950 text-4xl font-bold">Taskes</h1>
         <button

@@ -14,7 +14,8 @@ from .models import UserData
 from rest_framework_simplejwt.views import TokenObtainPairView
 from task_workers.models import Tasker
 from task_workers.models import WorkCategory
-from task_workers.serializers import WorkCategorySerializer
+from task_workers.serializers import WorkCategorySerializer,TaskerFetchingSerializer
+
 
 
 class LoginView(TokenObtainPairView):
@@ -130,6 +131,20 @@ class SearchTasker(APIView):
         
         serializer = TaskerHomeSerializer(taskers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class TaskerDetails(APIView):
+    permission_classes = [IsAuthenticated]
+    print(permission_classes)
+    def get(self, request, user_id):
+        try:
+            tasker = Tasker.objects.get(user__id=user_id)
+            serializer = TaskerFetchingSerializer(tasker)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Tasker.DoesNotExist:
+            return Response({"error": "Tasker not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)

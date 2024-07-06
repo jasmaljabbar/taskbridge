@@ -63,6 +63,23 @@ const getUserProfile = async (token) =>{
     }
   }
 
+  const getTaskerDetails = async (user_id, token) => {
+    try {
+        const response = await axios.get(`${API_URL}tasker-details/${user_id}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        console.log('===================================');
+        console.log(response);
+        console.log('====================================');
+        return response.data;
+    } catch (error) {
+        throw error.response ? error.response.data : error;
+    }
+};
+
+
 const logout = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
     try {
@@ -84,11 +101,15 @@ const logout = async () => {
     }
 };
 
+
+
+
 const authService = {
     register,
     login,
     admin_login,
     getUserProfile,
+    getTaskerDetails,
     logout,
 };
 

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
-
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
 import ConfirmModal from "../common/ConfirmModal";
@@ -14,12 +13,13 @@ function UserList() {
   const [modalMessage, setModalMessage] = useState("");
   const [confirmAction, setConfirmAction] = useState(() => {});
   const accessToken = useSelector((state) => state.auth.token);
+
   const navigate = useNavigate();
 
   const handleRequest = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/adminside/accepting_request/",
+        `${API_URL_ADMIN}/accepting_request/`,
         { id: currentTaskerId },
         {
           headers: {
@@ -39,7 +39,7 @@ function UserList() {
   const handleUserAction = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/adminside/user_action/",
+        `${API_URL_ADMIN}/user_action/`,
         { id: currentTaskerId },
         {
           headers: {
@@ -103,15 +103,9 @@ function UserList() {
         message={modalMessage}
         confirmText="Yes, I am sure"
       />
-      <div className="flex flex-col items-center h-screen w-full mt-3">
-        <h1 className="text-purple-950 text-4xl font-bold">Users</h1>
-        <button
-          type="button"
-          onClick={() => navigate("/adduser")}
-          className="ml-52 mr-auto bg-purple-950 text-white border rounded-xl border-purple-950 px-4 py-3 mt-6 mb-4"
-        >
-          Add User +
-        </button>
+      <div className="flex  flex-col items-center h-screen w-full mt-24">
+        <h1 className="text-purple-950 p-10 text-4xl font-bold">Users</h1>
+
         <table className="w-3/4 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>

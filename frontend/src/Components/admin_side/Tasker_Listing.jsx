@@ -83,21 +83,15 @@ function Tasker_Listing() {
       {openTasker ? (
         <div className="relative ">
           <TaskerProfile
-          onClose={onClose}
-          openTasker={openTasker}
-          tasker={selectedTasker} />
-          
+            onClose={onClose}
+            openTasker={openTasker}
+            tasker={selectedTasker}
+          />
         </div>
       ) : (
-        <div className="flex flex-col items-center h-screen w-full mt-3">
-          <h1 className="text-purple-950 text-4xl font-bold">Tasker</h1>
-          <button
-            type="button"
-            onClick={() => navigate("/adduser")}
-            className="ml-52 mr-auto bg-purple-950 text-white border rounded-xl border-purple-950 px-4 py-3 mt-6 mb-4"
-          >
-            Add Tasker +
-          </button>
+        <div className="flex flex-col  items-center h-screen w-full mt-20">
+          <h1 className="text-purple-950 p-10 text-4xl font-bold">Tasker</h1>
+
           <table className="w-3/4 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>

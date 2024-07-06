@@ -1,26 +1,25 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import authService from '../actions/authService';
-import {jwtDecode} from "jwt-decode"
+import {jwtDecode} from 'jwt-decode';
 
 const user = JSON.parse(localStorage.getItem('user'));
 const token = JSON.parse(localStorage.getItem('token'));
 const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
-
-
-
 
 const initialState = {
     user: user ? user : null,
     isError: false,
     isLoading: false,
     isAuthenticated: !!user,
-    isadmin: user ? user.isadmin : false,
+    isAdmin: user ? user.isadmin : false,
     is_staff: user ? user.is_staff : false,
     isSuccess: false,
     token: token ? token : null,
     refreshToken: refreshToken ? refreshToken : null,
     message: '',
+    taskerDetails: null, // Add this for tasker details
 };
+
 
 export const register = createAsyncThunk(
     'auth/register',
@@ -84,7 +83,24 @@ export const fetchUserProfile = createAsyncThunk(
       }
     }
   );
-  
+
+
+  export const fetchTaskerDetails = createAsyncThunk(
+    'tasker/fetchTaskerDetails',
+    async ({ user_id, token }, thunkAPI) => {
+      try {
+        return await authService.getTaskerDetails(user_id, token);
+      } catch (error) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        return thunkAPI.rejectWithValue(message);
+      }
+    }
+);
 
 
 export const logout = createAsyncThunk(
@@ -220,8 +236,22 @@ const authSlice = createSlice({
                 state.isSuccess = true;
                 localStorage.setItem('tasker', JSON.stringify(action.payload));
             })
-    
             .addCase(fetchUserProfile.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = action.payload; 
+                state.isSuccess = false;
+            })
+            .addCase(fetchTaskerDetails.pending, (state) => {
+                state.isLoading = true;
+                state.isError = null; 
+            })
+            .addCase(fetchTaskerDetails.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.taskerDetails = action.payload; // Store tasker details separately
+                state.isSuccess = true;
+                localStorage.setItem('taskerDetails', JSON.stringify(action.payload));
+            })
+            .addCase(fetchTaskerDetails.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = action.payload; 
                 state.isSuccess = false;
