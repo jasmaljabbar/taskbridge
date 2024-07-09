@@ -23,6 +23,7 @@ class OtpSerializer(serializers.Serializer):
 class LoginSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
+       
         data = super().validate(attrs)
 
         user = self.user
@@ -42,6 +43,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         data['is_admin'] = user.is_superuser  
         data['requested_to_tasker'] = user.requested_to_tasker
 
+     
         return data
 
     @classmethod

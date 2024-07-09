@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'adminside',
     'task_workers',
     'profiles',
-    'djoser', 
+    'djoser',
+    'booking', 
 
 ]
 

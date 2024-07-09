@@ -70,10 +70,10 @@ const Sidebar = () => {
               <FaUser className="mr-3" /> Profile
             </Link>
             <Link
-              to="#"
+              to="/tasker/taskerAppoint"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
-              <FaLock className="mr-3" /> Login
+              <FaLock className="mr-3" /> Appoinm
             </Link>
             <Link
               to="#"

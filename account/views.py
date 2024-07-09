@@ -135,7 +135,6 @@ class SearchTasker(APIView):
 
 class TaskerDetails(APIView):
     permission_classes = [IsAuthenticated]
-    print(permission_classes)
     def get(self, request, user_id):
         try:
             tasker = Tasker.objects.get(user__id=user_id)

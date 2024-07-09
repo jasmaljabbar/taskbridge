@@ -27,7 +27,8 @@ urlpatterns = [
     path("account/", include("account.urls")),
     path("adminside/", include("adminside.urls")),
     path('task_workers/', include('task_workers.urls')),
-    path('profiles/', include('profiles.urls'))
+    path('profiles/', include('profiles.urls')),
+    path('booking/', include('booking.urls')),
     
 
 ]

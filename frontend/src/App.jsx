@@ -37,6 +37,8 @@ import Details from "./Components/user_side/Tasker/Details";
 import UserTaskerLayout from "./Components/user_side/Tasker/UserTaskerLayout";
 import Message from "./Components/user_side/Tasker/Message";
 import BookNow from "./Components/user_side/Tasker/BookNow";
+import AppointmentHistory from "./Components/user_side/Tasker/AppointmentHistory ";
+import TaskerAppointmentHistory from "./Components/tasker_side/TaskerAppointmentHistory ";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -118,6 +120,8 @@ const App = () => {
             <Route path="details/:id" element={<Details />} />
             <Route path="message" element={<Message />} />
             <Route path="booknow" element={<BookNow />} />
+            <Route path="history" element={<AppointmentHistory />} />
+            
           </Route>
 
           <Route path="/debugging" element={<DebugTokenComponent />} />
@@ -157,6 +161,7 @@ const App = () => {
             <Route path="tasker_dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Tasker_profile />} />
             <Route path="taskshow" element={<TaskShow />} />
+            <Route path="taskerAppoint" element={<TaskerAppointmentHistory />} />
           </Route>
           {/* admin_side */}
           <Route

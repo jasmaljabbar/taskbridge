@@ -92,6 +92,7 @@ const Signup = () => {
       const resultAction = await dispatch(tasker_register(formattedValues));
       if (tasker_register.fulfilled.match(resultAction)) {
         await dispatch(logout()).unwrap();
+        toast.success("Tasker request sent successfully. Please check your email after some time.")
         navigate("/login");
         resetForm();
       } else {

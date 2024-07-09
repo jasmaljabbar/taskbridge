@@ -19,7 +19,7 @@ function UserList() {
   const handleRequest = async () => {
     try {
       const response = await axios.post(
-        `${API_URL_ADMIN}/accepting_request/`,
+        `${API_URL_ADMIN}accepting_request/`,
         { id: currentTaskerId },
         {
           headers: {

@@ -144,7 +144,7 @@ class EditUser(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # Check if password and confirm_password are provided and match
+           
             if password and confirm_password:
                 if password != confirm_password:
                     return Response(

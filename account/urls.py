@@ -6,7 +6,7 @@ from .views import( RegisterView, HomeView, LogoutView, LoginView,
                     SearchTasker,TaskerDetails)
 
 urlpatterns = [
-    path("api/login/", LoginView.as_view(), name="token_obtain_pair"),
+    path('api/login/', LoginView.as_view(), name='api-login'),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/register/", RegisterView.as_view(), name="sign_up"),
     path('api/validate-otp', VerifyOTP.as_view(), name='validate_otp'),

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTaskerDetails } from "../../../redux/reducers/authSlice";
+import BookNow from "./BookNow";
 
 const Details = () => {
   const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const Details = () => {
         <button className="w-full bg-red-500 text-white py-2 rounded-lg">
           Report
         </button>
+        <BookNow taskerId={taskerInfo.user.id}/>
       </div>
     </div>
   );

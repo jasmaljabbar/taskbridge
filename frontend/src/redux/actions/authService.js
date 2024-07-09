@@ -2,6 +2,8 @@ import axios from 'axios';
 
 export const API_URL = 'http://127.0.0.1:8000/account/api/';
 
+export const API = 'http://127.0.0.1:8000/account//';
+
 export const API_URL_PROFIL = 'http://127.0.0.1:8000/profiles/'
 
 export const API_URL_ADMIN = 'http://127.0.0.1:8000/adminside/'
@@ -20,17 +22,18 @@ const register = async (userData) => {
 
 const login = async (userData) => {
     try {
-        const config = {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        };
-        const response = await axios.post(API_URL + 'login/', userData, config);
+        console.log("Sending userData:", userData);  // Log request payload
+        const response = await axios.post(`${API_URL}login/`, userData);
+        console.log("Login successful", response.data);
         return response.data;
     } catch (error) {
+        console.error("Login failed", error.response ? error.response.data : error);
         throw error.response ? error.response.data : error;
     }
 };
+
+
+
 const admin_login = async (userData) => {
     try {
         const config = {
