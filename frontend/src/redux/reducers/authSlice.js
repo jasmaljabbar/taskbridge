@@ -14,6 +14,7 @@ const initialState = {
     isAdmin: user ? user.isadmin : false,
     is_staff: user ? user.is_staff : false,
     isSuccess: false,
+    requested_to_tasker : false , 
     token: token ? token : null,
     refreshToken: refreshToken ? refreshToken : null,
     message: '',
@@ -164,6 +165,9 @@ const authSlice = createSlice({
             })
             .addCase(login.fulfilled, (state, action) => {
                 const user = jwtDecode(action.payload.access)
+                console.log('==========666666666666666666==========================');
+                console.log(user);
+                console.log('====================================');
                 state.isLoading = false;
                 state.isAuthenticated = true;
                 state.user = user;
@@ -172,7 +176,8 @@ const authSlice = createSlice({
                 // state.isSuccess = true;
                 // state.isadmin = user.isadmin; 
                 state.is_staff = user.is_staff;
-                state.isadmin = user.is_admin;     
+                state.isadmin = user.is_admin;
+                state.requested_to_tasker = user.requested_to_tasker;     
          ;
                 localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('token', JSON.stringify(action.payload.access));

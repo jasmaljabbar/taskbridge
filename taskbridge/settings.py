@@ -17,7 +17,6 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -29,9 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,6 +50,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,11 +58,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-
 
 ROOT_URLCONF = "taskbridge.urls"
 
@@ -86,10 +82,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "taskbridge.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -101,10 +95,8 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -120,38 +112,38 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = 'Asia/Kolkata'
-
 USE_I18N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# updated part 
-
+# Custom settings
 AUTH_USER_MODEL = "account.UserData"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+ASGI_APPLICATION = "taskbridge.asgi.application"
+
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
@@ -159,8 +151,11 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+
+
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -178,28 +173,17 @@ DJOSER = {
     "ACTIVATION_URL": "activate/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SERIALIZERS": {
-        "user_create": "account.serializers.CreateUserSerializer,",
+        "user_create": "account.serializers.CreateUserSerializer",
         "user": "account.serializers.UserSerializer",
         "current_user": "account.serializers.UserSerializer",
         "user_delete": "djoser.serializers.UserDeleteSerializer",
     },
 }
 
-
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '520dc1d6a8476f'
-EMAIL_HOST_PASSWORD = 'b0e4a440066463'
-EMAIL_PORT = '2525'
-
-
-# sending otp 
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Replace with your preferred backend
-
-EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email host
-EMAIL_PORT = 587  # Replace with your email port
-EMAIL_USE_TLS = True  # Set to False if your email server doesn't use TLS
-EMAIL_HOST_USER = 'jasmaljabbarghazali@gmail.com'  # Replace with your email username
-EMAIL_HOST_PASSWORD = 'qrso bjfb yeit mxjk'  # Replace with your email password
-DEFAULT_FROM_EMAIL = 'jasmaljabbarghazali@gmail.com' 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'jasmaljabbarghazali@gmail.com'
+EMAIL_HOST_PASSWORD = 'qrso bjfb yeit mxjk'
+DEFAULT_FROM_EMAIL = 'jasmaljabbarghazali@gmail.com'

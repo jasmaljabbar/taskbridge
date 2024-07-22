@@ -6,8 +6,8 @@ import { fetchUserProfile } from "../../redux/reducers/authSlice";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
-  const profile = useSelector((state) => state.auth.user); 
-  const accessToken = useSelector((state) => state.auth.token); 
+  const profile = useSelector((state) => state.auth.user);
+  const accessToken = useSelector((state) => state.auth.token);
   const [profile_data, setprofile_data] = useState([]);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -141,6 +141,19 @@ const UserProfile = () => {
         {editing ? (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  disabled
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Phone Number

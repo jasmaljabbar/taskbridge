@@ -4,11 +4,11 @@ import MeetTasker from "../MeetTasker";
 
 const UserTaskerLayout = () => {
   return (
-    <div>
-      <div className=" w-full h-20">
+    <div className="flex">
+      <div className=" h-8">
         <MeetTasker />
       </div>
-      <div className="h-full mt-52">
+      <div className="h-full flex items-center justify-center ml-[30%] w-[60vw] mt-56">
         <Outlet />
       </div>
     </div>

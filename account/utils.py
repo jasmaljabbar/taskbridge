@@ -31,3 +31,11 @@ def send_tasker_email(email,user):
     recipient_list = [email]
     send_mail(subject, message, from_email, recipient_list)
 
+
+def send_user_appointment_email(email,sub,info):
+    subject = f'Your Appintment {sub}'
+    message = info
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list)
+

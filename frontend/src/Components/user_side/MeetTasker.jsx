@@ -18,8 +18,8 @@ const MeetTasker = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center">
-      <div className="bg-slate-500 z-20 fixed w-full h-1/4  flex items-center justify-center">
+    <div className="h-screen">
+      <div className="bg-slate-500 z-20 fixed w-full h-1/5 flex items-center justify-center">
         <img
           src={
             taskerInfo.work_photo
@@ -53,11 +53,11 @@ const MeetTasker = () => {
         </button>
       </div>
       <div
-        className={`fixed top-40 left-0 h-full w-64 bg-gray-800 text-white p-3 transform ${
+        className={`fixed top-[20%] left-0 h-full w-64 bg-gray-800 text-white p-3 transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 transition-transform duration-300 ease-in-out z-10`}
       >
-        <nav className="mt-10">
+        <nav className="mt-[45%]">
           <div className="mb-4">
             <Link
               to={`/details/${taskerInfo.user}?user=${taskerInfo.user}`}
@@ -66,7 +66,7 @@ const MeetTasker = () => {
               <TbListDetails className="mr-3" /> Details
             </Link>
             <Link
-              to="message"
+              to={`/message/${taskerInfo.user}?user=${taskerInfo.user.id}`}
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
               <TiMessages className="mr-3" /> Message
@@ -75,7 +75,7 @@ const MeetTasker = () => {
               to="history"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
-              <TbCalendarCheck className="mr-3" /> Book Now
+              <TbCalendarCheck className="mr-3" /> Appointment History
             </Link>
           </div>
         </nav>

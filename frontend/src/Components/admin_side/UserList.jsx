@@ -4,7 +4,8 @@ import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
-import ConfirmModal from "../common/ConfirmModal";
+
+import Confirm_without_msg from "../common/Confirm_without_msg";
 
 function UserList() {
   const [usersInfo, setUsersInfo] = useState([]);
@@ -39,7 +40,7 @@ function UserList() {
   const handleUserAction = async () => {
     try {
       const response = await axios.post(
-        `${API_URL_ADMIN}/user_action/`,
+        `${API_URL_ADMIN}user_action/`,
         { id: currentTaskerId },
         {
           headers: {
@@ -96,7 +97,7 @@ function UserList() {
 
   return (
     <div>
-      <ConfirmModal
+      <Confirm_without_msg
         show={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={confirmAction}

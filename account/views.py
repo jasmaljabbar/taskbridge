@@ -8,7 +8,9 @@ from rest_framework import status
 from .utils import generate_otp,send_otp_email
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from rest_framework.decorators import permission_classes
 from django.utils import timezone
+from rest_framework.permissions import AllowAny
 from datetime import timedelta
 from .models import UserData
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -17,10 +19,11 @@ from task_workers.models import WorkCategory
 from task_workers.serializers import WorkCategorySerializer,TaskerFetchingSerializer
 
 
-
+@permission_classes([AllowAny])
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
-    
+
+@permission_classes([AllowAny])
 class VerifyOTP(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -49,7 +52,7 @@ class VerifyOTP(APIView):
             return Response({'detail': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+@permission_classes([AllowAny])
 class RegisterView(APIView):
      def post(self, request, *args, **kwargs):
         serializer = UserSerializer(data=request.data)
@@ -67,7 +70,8 @@ class RegisterView(APIView):
             return Response({'message': 'User registered successfully. OTP sent to your email.'}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-     
+
+@permission_classes([AllowAny])    
 class ResendOtpView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -100,19 +104,21 @@ class HomeView(APIView):
         content = {"user": user_info}
         return Response(content)
 
-
+@permission_classes([AllowAny])
 class Tasker_ListingView(APIView):
     def get(self,request):
         taskers = Tasker.objects.filter(user__is_staff=True)[:9]
         serializer = TaskerHomeSerializer(taskers, many=True)
         return Response(serializer.data)
-    
+
+@permission_classes([AllowAny])
 class TaskCategory_ListingView(APIView):
     def get(self,request):
         taskCategoty = WorkCategory.objects.all()
         serializer = WorkCategorySerializer(taskCategoty, many=True)
         return Response(serializer.data)
-  
+    
+@permission_classes([AllowAny])
 class Category_Tasker_filter(APIView):
     def get(self, request, taskId, *args, **kwargs):
         try:
@@ -123,6 +129,7 @@ class Category_Tasker_filter(APIView):
         except Tasker.DoesNotExist:
             return Response({"error": "Tasker not found"}, status=status.HTTP_404_NOT_FOUND)
         
+@permission_classes([AllowAny])
 class SearchTasker(APIView):
     def get(self, request, *args, **kwargs):
 

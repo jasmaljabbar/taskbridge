@@ -7,6 +7,7 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { TiMessages } from "react-icons/ti";
 import {
   MdOutlineSubdirectoryArrowRight,
   MdOutlineHelpOutline,
@@ -58,10 +59,10 @@ const Sidebar = () => {
             </Link>
 
             <Link
-              to=""
+              to="/tasker/message_tasker"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
-              <MdOutlineSubdirectoryArrowRight className="mr-3" /> Forms
+              <TiMessages className="mr-3" /> Messages
             </Link>
             <Link
               to="/tasker/profile"
@@ -70,7 +71,7 @@ const Sidebar = () => {
               <FaUser className="mr-3" /> Profile
             </Link>
             <Link
-              to="/tasker/taskerAppoint"
+              to="/tasker/appointments"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
               <FaLock className="mr-3" /> Appoinm

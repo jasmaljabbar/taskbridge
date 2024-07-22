@@ -64,6 +64,7 @@ class Accepting_request(APIView):
         try:
             user = UserData.objects.get(id=user_id)
             user.is_staff = True
+            user.requested_to_tasker=False
             user.save()
             return Response({"Success": "User Deleted"}, status=status.HTTP_200_OK)
         except UserData.DoesNotExist:

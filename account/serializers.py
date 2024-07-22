@@ -52,17 +52,11 @@ class LoginSerializer(TokenObtainPairSerializer):
         token['name'] = user.name
         token['email'] = user.email
         token['is_staff'] = user.is_staff
-        token['is_admin'] = user.is_superuser  
+        token['is_admin'] = user.is_superuser
+        token['requested_to_tasker']  = user.requested_to_tasker    
         return token
 
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token['name'] = user.name
-        token['email'] = user.email
-        token['is_staff'] = user.is_staff
-        token['is_admin'] = user.is_superuser  
-        return token
+    
 
 
 class TaskerHomeSerializer(serializers.ModelSerializer):

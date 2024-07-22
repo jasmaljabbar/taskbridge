@@ -149,7 +149,7 @@ const TaskerProfile = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row w-full">
+    <div className="flex flex-col mt-80 md:flex-row w-full">
       <div className="min-h-screen flex flex-1 items-center justify-center py-12 px-4 sm:px-6  lg:px-10 lg:w-2/3">
         <div className="max-w-4xl  w-[50%] bg-white shadow-lg rounded-lg p-8 md:mt-0 mt-[800px]">
           <div className="flex items-center justify-between border-b pb-6 mb-6">
@@ -172,7 +172,7 @@ const TaskerProfile = () => {
               EditProfile
             </button>
           </div>
-          {error && <div className="text-red-500 mb-4">{error}</div>}
+
           {editing ? (
             <Formik
               initialValues={{
@@ -327,7 +327,7 @@ const TaskerProfile = () => {
                   <div className="col-span-1 md:col-span-2">
                     <button
                       type="submit"
-                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
+                      className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
                       disabled={isSubmitting}
                     >
                       Save Profile
@@ -335,7 +335,7 @@ const TaskerProfile = () => {
                     <button
                       type="button"
                       onClick={() => setEditing(false)}
-                      className="w-full bg-red-500 text-white rounded-md py-2 px-4 hover:bg-red-700 transition duration-300 mt-2"
+                      className="w-full bg-red-600 text-white rounded-md py-2 px-4 hover:bg-red-700 transition duration-300 mt-2"
                     >
                       Cancel
                     </button>

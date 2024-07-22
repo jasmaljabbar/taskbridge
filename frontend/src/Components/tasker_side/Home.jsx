@@ -4,14 +4,11 @@ import Footer from "./Home/Footer";
 
 const Home = () => {
   return (
-    <>
-      <div>
-        <Become_tasker />
-      </div>
-      <div>
-        <Footer />
-      </div>
-    </>
+    <div>
+      <Become_tasker />
+
+      <Footer />
+    </div>
   );
 };
 
