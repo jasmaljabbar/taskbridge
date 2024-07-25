@@ -9,9 +9,12 @@ urlpatterns = [
     path('api/v1/auth/', include('djoser.urls')),
     path("account/", include("account.urls")),
     path("adminside/", include("adminside.urls")),
+    path("dashboard/",include('dashboard.urls')),
     path('task_workers/', include('task_workers.urls')),
     path('profiles/', include('profiles.urls')),
     path('booking/', include('booking.urls')),
+    path('api/chat/',include('chat.api.urls')),
+    
 
 ]
 

@@ -3,7 +3,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from .views import( RegisterView, HomeView, LogoutView, LoginView,
                     VerifyOTP,ResendOtpView,Tasker_ListingView,
                     TaskCategory_ListingView,Category_Tasker_filter,
-                    SearchTasker,TaskerDetails)
+                    SearchTasker,TaskerDetails,UserIndivualView,test_view)
 
 urlpatterns = [
     path('api/login/', LoginView.as_view(), name='api-login'),
@@ -18,5 +18,10 @@ urlpatterns = [
     path("api/tasker_filter/<int:taskId>/", Category_Tasker_filter.as_view(), name="tasker_filter"),
     path("api/search_tasker/", SearchTasker.as_view(), name="search_tasker"),
     path('api/tasker-details/<int:user_id>/', TaskerDetails.as_view(), name='tasker-details'),
+    path("api/userindivual/<int:pk>/", UserIndivualView.as_view(),name='token_refersh'),
+
+
+
+    path('test-endpoint/', test_view, name='test_view'),
 
 ]

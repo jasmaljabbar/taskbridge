@@ -20,6 +20,8 @@ const UserProfile = () => {
     profile_photo: null,
   });
 
+  
+
   useEffect(() => {
     const a = async () => {
       if (accessToken) {
@@ -55,6 +57,7 @@ const UserProfile = () => {
   };
 
   const handleSave = async () => {
+
     if (!accessToken) {
       console.error("No access token available");
       return;
@@ -141,7 +144,7 @@ const UserProfile = () => {
         {editing ? (
           <div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Email
                 </label>

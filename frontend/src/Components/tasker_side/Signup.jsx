@@ -19,7 +19,7 @@ const Signup = () => {
   useEffect(() => {
     const fetchWorkCategories = async () => {
       try {
-        const categories = await tasker_authService.getWork_Categories_for_user();
+        const categories = await tasker_authService.getWorkCategories();
         setWorkCategories(
           categories.map((category) => ({
             value: category.id,

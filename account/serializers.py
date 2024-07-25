@@ -5,6 +5,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from task_workers.models import Tasker
 from task_workers.serializers import WorkCategorySerializer
+from profiles.serializers import ProfileSerializer
+from profiles.models import Profile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -23,7 +25,6 @@ class OtpSerializer(serializers.Serializer):
 class LoginSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
-       
         data = super().validate(attrs)
 
         user = self.user
@@ -40,10 +41,19 @@ class LoginSerializer(TokenObtainPairSerializer):
         data['name'] = user.name
         data['email'] = user.email
         data['is_staff'] = user.is_staff
-        data['is_admin'] = user.is_superuser  
+        data['is_admin'] = user.is_superuser
         data['requested_to_tasker'] = user.requested_to_tasker
 
-     
+        # Fetch the profile and include additional fields
+        try:
+            profile = Profile.objects.get(user=user)
+            profile_data = ProfileSerializer(profile).data
+            data['profile_photo'] = profile_data.get('profile_photo')
+            data['username'] = profile_data.get('username')
+        except Profile.DoesNotExist:
+            data['profile_photo'] = None
+            data['username'] = None
+
         return data
 
     @classmethod
@@ -54,6 +64,14 @@ class LoginSerializer(TokenObtainPairSerializer):
         token['is_staff'] = user.is_staff
         token['is_admin'] = user.is_superuser
         token['requested_to_tasker']  = user.requested_to_tasker    
+        try:
+            profile = Profile.objects.get(user=user)
+            profile_data = ProfileSerializer(profile).data
+            token['profile_photo'] = profile_data.get('profile_photo')
+            token['username'] = profile_data.get('username')
+        except Profile.DoesNotExist:
+            token['profile_photo'] = None
+            token['username'] = None
         return token
 
     

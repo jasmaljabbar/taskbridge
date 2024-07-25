@@ -14,6 +14,8 @@ from django.shortcuts import get_object_or_404
 from task_workers.models import WorkCategory
 from task_workers.serializers import TaskerFetchingSerializer
 from task_workers.models import Tasker
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.decorators import permission_classes
 
 
 
@@ -55,6 +57,8 @@ class Dashboard(APIView):
         users = UserData.objects.filter(is_staff=False)
         serializer = UserDataSerializer(users, many=True)
         return Response(serializer.data)
+    
+
 
 
 class Accepting_request(APIView):

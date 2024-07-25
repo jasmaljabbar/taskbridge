@@ -164,25 +164,21 @@ const authSlice = createSlice({
                 state.message = '';
             })
             .addCase(login.fulfilled, (state, action) => {
-                const user = jwtDecode(action.payload.access)
-                console.log('==========666666666666666666==========================');
-                console.log(user);
-                console.log('====================================');
+                const user = jwtDecode(action.payload.access);
                 state.isLoading = false;
                 state.isAuthenticated = true;
                 state.user = user;
                 state.token = action.payload.access;
                 state.refreshToken = action.payload.refresh;
-                // state.isSuccess = true;
-                // state.isadmin = user.isadmin; 
                 state.is_staff = user.is_staff;
                 state.isadmin = user.is_admin;
-                state.requested_to_tasker = user.requested_to_tasker;     
-         ;
+                state.requested_to_tasker = user.requested_to_tasker;
+                state.profile_photo = user.profile_photo; // Add profile photo
+                state.username = user.username; // Add username
                 localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('token', JSON.stringify(action.payload.access));
                 localStorage.setItem('refreshToken', JSON.stringify(action.payload.refresh));
-            })
+              })
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
@@ -190,32 +186,32 @@ const authSlice = createSlice({
                 state.user = null;
                 state.isSuccess = false;
             })
-            .addCase(admin_login.pending, (state) => {
-                state.isLoading = true;
-                state.isError = false;
-                state.message = '';
-            })
-            .addCase(admin_login.fulfilled, (state, action) => {
-                const user = jwtDecode(action.payload.access);
-                state.isLoading = false;
-                state.isAuthenticated = true;
-                state.user = action.payload;
-                state.token = action.payload.access;
-                state.isadmin = true;
-                state.refreshToken = action.payload.refresh;
-                state.isSuccess = true;
-                localStorage.setItem('user', JSON.stringify(user));
-                localStorage.setItem('token', JSON.stringify(action.payload.access));
-                localStorage.setItem('refreshToken', JSON.stringify(action.payload.refresh));
-                localStorage.setItem('user', JSON.stringify(action.payload));
-            })
-            .addCase(admin_login.rejected, (state, action) => {
-                state.isLoading = false;
-                state.isError = true;
-                state.message = action.payload;
-                state.user = null;
-                state.isSuccess = false;
-            })
+            // .addCase(admin_login.pending, (state) => {
+            //     state.isLoading = true;
+            //     state.isError = false;
+            //     state.message = '';
+            // })
+            // .addCase(admin_login.fulfilled, (state, action) => {
+            //     const user = jwtDecode(action.payload.access);
+            //     state.isLoading = false;
+            //     state.isAuthenticated = true;
+            //     state.user = action.payload;
+            //     state.token = action.payload.access;
+            //     state.isadmin = true;
+            //     state.refreshToken = action.payload.refresh;
+            //     state.isSuccess = true;
+            //     localStorage.setItem('user', JSON.stringify(user));
+            //     localStorage.setItem('token', JSON.stringify(action.payload.access));
+            //     localStorage.setItem('refreshToken', JSON.stringify(action.payload.refresh));
+            //     localStorage.setItem('user', JSON.stringify(action.payload));
+            // })
+            // .addCase(admin_login.rejected, (state, action) => {
+            //     state.isLoading = false;
+            //     state.isError = true;
+            //     state.message = action.payload;
+            //     state.user = null;
+            //     state.isSuccess = false;
+            // })
             .addCase(logout.fulfilled, (state) => {
                 state.isAuthenticated = false;
                 state.token = null;
@@ -239,7 +235,7 @@ const authSlice = createSlice({
                 state.isAuthenticated = true; 
                 state.user = action.payload;
                 state.isSuccess = true;
-                localStorage.setItem('tasker', JSON.stringify(action.payload));
+                localStorage.setItem('userdata', JSON.stringify(action.payload));
             })
             .addCase(fetchUserProfile.rejected, (state, action) => {
                 state.isLoading = false;

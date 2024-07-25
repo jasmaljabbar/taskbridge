@@ -137,7 +137,7 @@ const AppointmentHistory = () => {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 ml-72 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-12 px-4 ml-72 mt-64 sm:px-6 lg:px-8">
       <Confirm_without_msg
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -172,21 +172,22 @@ const AppointmentHistory = () => {
                       <span className="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
                         {appointment.minimum_hours_to_work} hours
                       </span>
-                      { (appointment.status == "pending" ||appointment.status == "accepted")   && (
+                      {(appointment.status == "pending" ||
+                        appointment.status == "accepted") && (
                         <>
-                      <button
-                        onClick={() => openModal(appointment)}
-                        className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600"
-                      >
-                        Edit
-                      </button>
-                      
-                        <button
-                          onClick={() => handleCancel(appointment.id)}
-                          className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-full hover:bg-red-600"
-                        >
-                          Cancel
-                        </button>
+                          <button
+                            onClick={() => openModal(appointment)}
+                            className="px-3 py-1 text-sm font-medium text-white bg-blue-500 rounded-full hover:bg-blue-600"
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            onClick={() => handleCancel(appointment.id)}
+                            className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-full hover:bg-red-600"
+                          >
+                            Cancel
+                          </button>
                         </>
                       )}
                       {/* {appointment.status == "pending" || appointment.status == "accepted" && (

@@ -2,7 +2,9 @@ import axios from 'axios';
 
 export const API_URL = 'http://127.0.0.1:8000/account/api/';
 
-export const API = 'http://127.0.0.1:8000/account//';
+export const API = 'http://127.0.0.1:8000/account/';
+
+export const BASE_URL = 'http://127.0.0.1:8000/'
 
 export const API_URL_PROFIL = 'http://127.0.0.1:8000/profiles/'
 
@@ -73,9 +75,6 @@ const getUserProfile = async (token) =>{
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log('===================================');
-        console.log(response);
-        console.log('====================================');
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;

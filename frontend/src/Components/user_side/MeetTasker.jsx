@@ -1,24 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { TbListDetails, TbCalendarCheck } from "react-icons/tb";
 import { TiMessages } from "react-icons/ti";
+import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 
 const MeetTasker = () => {
   const taskerInfo = useSelector((state) => state.auth.taskerDetails);
   const [isOpen, setIsOpen] = useState(false);
+  const user_profile = useSelector((state) => state.auth.token);
+  const [user_in, setUser_in] = useState({
+    user_id: "",
+    user_image: "",
+  });
+  const [tasker_in, setTasker_in] = useState({
+    tasker_id: "",
+  });
+
+  const user = jwtDecode(user_profile);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    if (user) {
+      setUser_in({ user_id: user.user_id, user_image: user.profile_photo });
+    } else {
+      console.log("User not found");
+    }
+    if (taskerInfo) {
+      setTasker_in({ tasker_id: taskerInfo.user.id });
+    } else {
+      console.log("Tasker not found");
+    }
+  }, []);
 
   if (!taskerInfo) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="h-screen">
+    <div className="h-screen ">
       <div className="bg-slate-500 z-20 fixed w-full h-1/5 flex items-center justify-center">
         <img
           src={
@@ -60,13 +84,19 @@ const MeetTasker = () => {
         <nav className="mt-[45%]">
           <div className="mb-4">
             <Link
-              to={`/details/${taskerInfo.user}?user=${taskerInfo.user}`}
+              to={{
+                pathname: `/details/${taskerInfo.user.id}`,
+                search: `?user=${taskerInfo.user.id}`,
+              }}
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
               <TbListDetails className="mr-3" /> Details
             </Link>
             <Link
-              to={`/message/${taskerInfo.user}?user=${taskerInfo.user.id}`}
+              to={{
+                pathname: `/chat/${taskerInfo.user.id}`,
+                state: { user_in:user_in.user_id, tasker_in:tasker_in.tasker_id },
+              }}
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
               <TiMessages className="mr-3" /> Message

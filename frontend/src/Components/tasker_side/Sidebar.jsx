@@ -8,12 +8,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import { TiMessages } from "react-icons/ti";
-import {
-  MdOutlineSubdirectoryArrowRight,
-  MdOutlineHelpOutline,
-  MdOutlineMenuBook,
-  MdDashboard,
-} from "react-icons/md";
+import { MdDashboard } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -50,7 +45,6 @@ const Sidebar = () => {
             </Link>
           </div>
           <div className="mb-4">
-            <p className="text-gray-400 uppercase text-sm mb-2">Examples</p>
             <Link
               to=""
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
@@ -59,7 +53,7 @@ const Sidebar = () => {
             </Link>
 
             <Link
-              to="/tasker/message_tasker"
+              to="/tasker/chat"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
               <TiMessages className="mr-3" /> Messages
@@ -74,34 +68,7 @@ const Sidebar = () => {
               to="/tasker/appointments"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
-              <FaLock className="mr-3" /> Appoinm
-            </Link>
-            <Link
-              to="#"
-              className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-            >
-              <MdOutlineSubdirectoryArrowRight className="mr-3" /> Submenus
-            </Link>
-          </div>
-          <div>
-            <p className="text-gray-400 uppercase text-sm mb-2">About</p>
-            <Link
-              to="#"
-              className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-            >
-              <MdOutlineMenuBook className="mr-3" /> Premium Demo
-            </Link>
-            <Link
-              to="#"
-              className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-            >
-              <MdOutlineHelpOutline className="mr-3" /> About
-            </Link>
-            <Link
-              to="#"
-              className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
-            >
-              <FaGithub className="mr-3" /> GitHub
+              <FaTable className="mr-3" /> Appoinm
             </Link>
           </div>
         </nav>

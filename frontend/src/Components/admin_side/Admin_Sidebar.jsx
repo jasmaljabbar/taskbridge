@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { FaTable, FaUser, FaLock, FaGithub, FaUsers } from "react-icons/fa";
-import {
-  MdOutlineSubdirectoryArrowRight,
-  MdOutlineHelpOutline,
-  MdOutlineMenuBook,
-  MdDashboard,
-} from "react-icons/md";
+import { MdOutlineSubdirectoryArrowRight, MdDashboard } from "react-icons/md";
 import { GrUserWorker } from "react-icons/gr";
 import { Link } from "react-router-dom";
 
@@ -50,26 +45,6 @@ const Admin_Sidebar = () => {
             <NavLink to="/admin/task_list" icon={FaUser}>
               Task Category
             </NavLink>
-            <NavLink to="#" icon={FaLock}>
-              Login
-            </NavLink>
-            <NavLink to="#" icon={MdOutlineSubdirectoryArrowRight}>
-              Submenus
-            </NavLink>
-          </div>
-          <div>
-            <p className="text-gray-400 uppercase text-sm mb-2">About</p>
-            <div className="space-y-2">
-              <NavLink to="#" icon={MdOutlineMenuBook}>
-                Premium Demo
-              </NavLink>
-              <NavLink to="#" icon={MdOutlineHelpOutline}>
-                About
-              </NavLink>
-              <NavLink to="#" icon={FaGithub}>
-                GitHub
-              </NavLink>
-            </div>
           </div>
         </nav>
       </div>

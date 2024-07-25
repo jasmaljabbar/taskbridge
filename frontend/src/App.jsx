@@ -19,7 +19,8 @@ import Filtered_tasker from "./Components/user_side/Services/Filtered_tasker";
 import SearchTasker from "./Components/user_side/Services/SearchTasker ";
 import UserTaskerLayout from "./Components/user_side/Tasker/UserTaskerLayout";
 import Details from "./Components/user_side/Tasker/Details";
-import Message from "./Components/user_side/Tasker/Message";
+
+import OneOneChat from "./Components/user_side/Tasker/Employee-user/OneOneChat";
 import BookNow from "./Components/user_side/Tasker/BookNow";
 import AppointmentHistory from "./Components/user_side/Tasker/AppointmentHistory ";
 import UserLayout from "./Components/user_side/UserLayout";
@@ -41,8 +42,8 @@ import TaskerAppointmentHistory from "./Components/tasker_side/TaskerAppointment
 
 import NotFound from "./Components/common/NotFount";
 import DebugTokenComponent from "./Components/Test";
-
-
+// import MessageSidebar from "./Components/tasker_side/MessageSidebar";
+import MainLayout from "./Components/tasker_side/MainLayout";
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -70,15 +71,13 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Navigate to="/home" replace />} />
 
-          
-
           {/* User Routes */}
           <Route element={<UserLayout />}>
             <Route path="/home" element={<HomePage />} />
             <Route path="/services" element={<Services />} />
             <Route path="/Filtered_tasker/:id" element={<Filtered_tasker />} />
             <Route path="/search_results" element={<SearchTasker />} />
-            
+
             <Route
               path="/register"
               element={
@@ -142,7 +141,7 @@ const App = () => {
               }
             >
               <Route path="details/:id" element={<Details />} />
-              <Route path="message/:id" element={<Message />} />
+              <Route path="chat/:id" element={<OneOneChat />} />
               <Route path="booknow" element={<BookNow />} />
               <Route path="history" element={<AppointmentHistory />} />
             </Route>
@@ -180,7 +179,19 @@ const App = () => {
             <Route path="tasker_dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Tasker_profile />} />
             <Route path="taskshow" element={<TaskShow />} />
-
+            <Route path="message" element={<MainLayout />} />
+            <Route
+              path="chat"
+              element={
+                <ProtectedRoute
+                  element={<MainLayout />}
+                  isAuthenticated={isAuthenticated}
+                  redirectTo="/login"
+                />
+              }
+            >
+              <Route path=":id" element={<OneOneChat />} />
+            </Route>
 
             <Route path="appointments" element={<TaskerAppointmentHistory />} />
           </Route>

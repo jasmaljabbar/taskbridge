@@ -28,8 +28,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1 
+
 # Application definition
 INSTALLED_APPS = [
+    'daphne' , 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "corsheaders",
     "account",
+    'chat',
+    'channels' , 
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -46,6 +51,7 @@ INSTALLED_APPS = [
     'profiles',
     'djoser',
     'booking', 
+    'dashboard',
 
 ]
 
@@ -62,7 +68,26 @@ MIDDLEWARE = [
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
+ASGI_APPLICATION = "chat.routing.application"
+
 ROOT_URLCONF = "taskbridge.urls"
+
+
+
+REDIS_HOST = os.environ.get('REDIS_HOST', '127.0.0.1')
+REDIS_PORT = os.environ.get('REDIS_PORT', 6379)
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(REDIS_HOST, REDIS_PORT)],
+        },
+    },
+}
+
+
+
 
 TEMPLATES = [
     {

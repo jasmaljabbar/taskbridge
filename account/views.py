@@ -12,6 +12,7 @@ from rest_framework.decorators import permission_classes
 from django.utils import timezone
 from rest_framework.permissions import AllowAny
 from datetime import timedelta
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from .models import UserData
 from rest_framework_simplejwt.views import TokenObtainPairView
 from task_workers.models import Tasker
@@ -50,6 +51,13 @@ class VerifyOTP(APIView):
                               status=status.HTTP_200_OK)
         except UserData.DoesNotExist:
             return Response({'detail': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@permission_classes([IsAuthenticated])
+class UserIndivualView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UserSerializer
+    queryset = UserData.objects.all()
 
 
 @permission_classes([AllowAny])
@@ -165,3 +173,25 @@ class LogoutView(APIView):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# account/views.py
+from django.http import JsonResponse
+
+def test_view(request):
+    return JsonResponse({'message': 'This is a test endpoint.'})

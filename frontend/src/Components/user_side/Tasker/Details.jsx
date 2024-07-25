@@ -28,7 +28,7 @@ const Details = () => {
   }
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 mx-auto px-4">
+    <div className="flex flex-col md:flex-row gap-4 mx-auto mt-56 px-4">
       <div className="md:w-2/3 space-y-4">
         <div className="bg-slate-800 text-white p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">About Me</h3>
