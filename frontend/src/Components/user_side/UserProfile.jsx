@@ -10,6 +10,7 @@ const UserProfile = () => {
   const accessToken = useSelector((state) => state.auth.token);
   const [profile_data, setprofile_data] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
@@ -24,9 +25,11 @@ const UserProfile = () => {
 
   useEffect(() => {
     const a = async () => {
+      setLoading(true)
       if (accessToken) {
         const user_profile = await dispatch(fetchUserProfile(accessToken));
         setprofile_data(user_profile.payload?.profile);
+        setLoading(false)
       }
     };
     a();
@@ -57,9 +60,10 @@ const UserProfile = () => {
   };
 
   const handleSave = async () => {
-
+    setLoading(true)
     if (!accessToken) {
       console.error("No access token available");
+      setLoading(false)
       return;
     }
 
@@ -101,14 +105,20 @@ const UserProfile = () => {
       setprofile_data(updatedProfile);
       dispatch(fetchUserProfile(accessToken));
       setEditing(false);
+      setLoading(false)
     } catch (error) {
       console.error("Error saving profile:", error);
+      setLoading(false)
     }
   };
 
-  if (!profile) {
-    return <div>Loading...</div>;
-  }
+
+  if (loading) return (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -134,12 +144,13 @@ const UserProfile = () => {
               </h2>
             </div>
           </div>
+          {editing ? null:
           <button
             onClick={() => setEditing(true)}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Edit Profile
-          </button>
+          </button>}
         </div>
         {editing ? (
           <div>

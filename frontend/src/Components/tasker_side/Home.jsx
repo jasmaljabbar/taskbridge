@@ -6,8 +6,9 @@ const Home = () => {
   return (
     <div>
       <Become_tasker />
-
+    <div className="">
       <Footer />
+    </div>
     </div>
   );
 };

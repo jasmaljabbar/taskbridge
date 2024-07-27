@@ -122,10 +122,10 @@ const UserNavbar = () => {
                   isOpen={isModalOpen}
                   onClose={() => setIsModalOpen(false)}
                 >
-                  <p>
-                    Your request has not been accepted yet. Please check back
-                    later.
-                  </p>
+                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                  <strong class="font-bold">Tasker Request Pending!</strong>
+                  <span class="block sm:inline">Your Tasker request has not been accepted yet. Please check back later.</span>
+                </div>
                 </Modal>
               </>
             ) : user.is_admin ? (

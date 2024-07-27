@@ -26,6 +26,16 @@ const SearchTasker = () => {
       alert(error.message);
     }
   };
+
+  if (!taskersInfo) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+
   return (
     <div className="min-h-screen mt-24 bg-gray-100 py-12">
       <Link to="/details">

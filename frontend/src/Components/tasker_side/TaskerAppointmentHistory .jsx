@@ -73,8 +73,10 @@ const TaskerAppointmentHistory = () => {
   };
 
   const handleStatusChange = async (info) => {
+    setIsLoading(true)
     if (!selectedAppointment) {
         toast.error("Invalid appointment ID");
+        setIsLoading(false)
         return;
     }
     try {
@@ -96,23 +98,26 @@ const TaskerAppointmentHistory = () => {
             )
         );
         toast.success(`Appointment ${newStatus} successfully!`);
+        setIsLoading(false)
     } catch (error) {
         console.error("Error updating appointment status:", error);
         toast.error("Failed to update appointment status");
+        setIsLoading(false)
     } finally {
         setShowModal(false);
+        setIsLoading(false)
     }
 };
 
   return (
     <div className="min-h-screen py-12 px-4 ml-72 sm:px-6 lg:px-8 bg-gray-50">
-      <ConfirmModal
+      {isLoading?null:<ConfirmModal
         show={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleStatusChange}
         message={`Are you sure you want to ${newStatus} this appointment?`}
         confirmText={`Yes, ${newStatus} it`}
-      />
+      />}
       <div className="max-w-7xl mt-72 mx-auto ">
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
           Appointment History
@@ -124,7 +129,7 @@ const TaskerAppointmentHistory = () => {
         ) : appointments.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {appointments.map((appointment) => {
-              console.log("Rendering appointment:", appointment); // Log the appointment object
+              console.log("Rendering appointment:", appointment); 
               return (
                 <div
                   key={appointment.id}

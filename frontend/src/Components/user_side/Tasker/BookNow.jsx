@@ -15,6 +15,7 @@ const BookNow = ({ taskerId }) => {
   const user_profile = useSelector((state) => state.auth.userProfile);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     employee: taskerId || "",
     minimum_hours_to_work: "",
@@ -48,6 +49,7 @@ const BookNow = ({ taskerId }) => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
     const appointmentData = { ...formData };
 
@@ -62,19 +64,30 @@ const BookNow = ({ taskerId }) => {
         }
       );
       toast.success("Appointment created successfully");
+      setLoading(false)
       setIsModalOpen(false);
     } catch (error) {
       toast.error("There was an error creating the appointment");
+      setLoading(false)
     }
   };
 
   const handleModalOpen = () => {
     if (!taskerId) {
       toast.error("Tasker details are not available");
+      setLoading(false)
     } else {
+      setLoading(true)
       setIsModalOpen(true);
+      setLoading(false)
     }
   };
+
+  if (loading) return (
+    <div className="flex justify-center items-center ">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col items-center justify-center">

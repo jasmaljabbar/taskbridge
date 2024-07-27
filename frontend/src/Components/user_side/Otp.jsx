@@ -6,8 +6,8 @@ import toast from "react-hot-toast";
 const Otp = (props) => {
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
-  const [timeLeft, setTimeLeft] = useState(60); // 60 seconds countdown
-
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleOtpChange = (e) => {
@@ -15,19 +15,22 @@ const Otp = (props) => {
   };
 
   const handleResendOtp = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/account/api/resend-otp`,
         { email: props?.email }
       );
       if (response.status === 200) {
-        toast.success("New OTP sent to your email. ")
+        toast.success("New OTP sent to your email. ");
+        setLoading(false);
         setMessage("New OTP sent to your email.");
         setTimeLeft(60); // reset the countdown
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
       setMessage("Failed to resend OTP. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -43,6 +46,7 @@ const Otp = (props) => {
   }, [timeLeft]);
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     try {
@@ -52,20 +56,28 @@ const Otp = (props) => {
           otp: otp,
           email: props?.email,
         }
-    
       );
       console.log(response);
 
       if (response.status === 200) {
-        toast.success("Email verified successfully!")
+        toast.success("Email verified successfully!");
+        setLoading(false);
         setMessage("Email verified successfully!");
         // handle token storage or redirection here
         return navigate("/login");
       }
     } catch (error) {
       setMessage("Invalid OTP. Please try again.");
+      setLoading(false);
     }
   };
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
 
   return (
     <div className="">
@@ -101,7 +113,7 @@ const Otp = (props) => {
           </button>
         </form>
         <div className="pr-36 pl-10">
-        {timeLeft === 0 && (
+          {timeLeft === 0 && (
             <button
               onClick={handleResendOtp}
               className="left-0 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mt-4"

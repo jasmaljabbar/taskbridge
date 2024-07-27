@@ -14,6 +14,7 @@ function Register() {
     confirm_password: "",
   });
   const [isOtp, setIsOtp] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { isError, message } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -24,9 +25,11 @@ function Register() {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
     if (formData.password !== formData.confirm_password) {
       toast.error("Passwords do not match.");
+      setLoading(false)
       return;
     }
 
@@ -35,17 +38,23 @@ function Register() {
     if (register.fulfilled.match(resultAction)) {
       toast.success("User registered successfully. OTP sent to your email.");
       setIsOtp(true);
+      setLoading(false)
     } else {
       if (resultAction.payload) {
-        console.log("====================================");
-        console.log(resultAction);
-        console.log("====================================");
         toast.error("Email or Username  alredy exist");
+        setLoading(false)
       } else {
         toast.error("Registration failed.");
+        setLoading(false)
       }
     }
   };
+
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
 
   return (
     <div>

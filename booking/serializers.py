@@ -14,7 +14,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Appointment
-        fields = ['id', 'user', 'user_name', 'employee', 'employee_name', 'minimum_hours_to_work', 'address', 'phone_number', 'date', 'status']
+        fields = ['id', 'user', 'user_name', 'employee', 'employee_name', 'minimum_hours_to_work', 'address', 'phone_number', 'date', 'status','rejection_reason']
 
 
     def get_employee_name(self, obj):

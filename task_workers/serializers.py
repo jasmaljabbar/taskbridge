@@ -31,7 +31,7 @@ class TaskerSerializer(serializers.ModelSerializer):
         model = Tasker
         fields = [
             'user', 'full_name', 'phone_number', 'aadhar_number', 'task', 'task_fee',
-            'city', 'state', 'address', 'work_photo'
+            'city', 'state', 'address', 'work_photo','subscribed'
         ]
 
     def create(self, validated_data):

@@ -44,6 +44,9 @@ import NotFound from "./Components/common/NotFount";
 import DebugTokenComponent from "./Components/Test";
 // import MessageSidebar from "./Components/tasker_side/MessageSidebar";
 import MainLayout from "./Components/tasker_side/MainLayout";
+import Checkout from "./Components/tasker_side/Checkout";
+
+
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
   return isAuthenticated ? element : <Navigate to={redirectTo} replace />;
@@ -130,6 +133,16 @@ const App = () => {
                 />
               }
             />
+            <Route
+                    path="/tasker_checkout"
+                    element={
+                        <ProtectedRoute
+                            element={<Checkout />}
+                            isAuthenticated={isAuthenticated}
+                            redirectTo="/login"
+                        />
+                    }
+                />
             <Route
               path="/"
               element={

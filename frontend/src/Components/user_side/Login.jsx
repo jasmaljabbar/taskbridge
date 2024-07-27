@@ -9,6 +9,7 @@ const user = localStorage.getItem("user");
 
 function Login() {
   const [userInfo, setUserInfo] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,7 +25,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Perform form validation
+    setLoading(true); 
 
     try {
       const userData = {
@@ -37,6 +38,7 @@ function Login() {
       const a = await dispatch(login(userData));
       const user = jwtDecode(a.payload.access);
       toast.success("Login succesfully !");
+      setLoading(false)
       user.is_admin
         ? navigate("/admin/user_list ")
         : user.is_staff
@@ -44,8 +46,14 @@ function Login() {
         : navigate("/");
     } catch (error) {
       toast.error("Email or password is incorrect");
+      setLoading(false)
     }
   };
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
 
   return (
     <>

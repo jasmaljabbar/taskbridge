@@ -11,7 +11,7 @@ import * as Yup from "yup";
 
 const Signup = () => {
   const [workCategories, setWorkCategories] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { error, isAuthenticated } = useSelector((state) => state.tasker_auth);
@@ -19,7 +19,7 @@ const Signup = () => {
   useEffect(() => {
     const fetchWorkCategories = async () => {
       try {
-        const categories = await tasker_authService.getWorkCategories();
+        const categories = await tasker_authService.getWork_Categories_for_user();
         setWorkCategories(
           categories.map((category) => ({
             value: category.id,
@@ -83,32 +83,43 @@ const Signup = () => {
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setLoading(true)
     try {
       const formattedValues = {
         ...values,
-        task_service_charge: parseFloat(values.task_service_charge), // Convert to number if needed
+        task_service_charge: parseFloat(values.task_service_charge), 
       };
 
       const resultAction = await dispatch(tasker_register(formattedValues));
       if (tasker_register.fulfilled.match(resultAction)) {
         await dispatch(logout()).unwrap();
         toast.success("Tasker request sent successfully. Please check your email after some time.")
+        setLoading(false)
         navigate("/login");
         resetForm();
       } else {
         throw new Error(resultAction.payload || "Failed to register");
       }
+      setLoading(false)
     } catch (error) {
       console.error("Error during registration", error);
+      setLoading(false)
       let errorMessage = "Failed to register";
       if (error.response && error.response.data) {
         errorMessage = Object.values(error.response.data).flat().join(" ");
       }
       toast.error(errorMessage);
+      setLoading(false)
     } finally {
       setSubmitting(false);
     }
   };
+
+  if (loading) return (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
 
   return (
     <div className="flex justify-center items-center h-full p-10">
@@ -250,15 +261,6 @@ const Signup = () => {
             </Form>
           )}
         </Formik>
-        <p className="mt-4 block text-sm font-medium leading-6 text-gray-900 text-center">
-          Already have an account?{" "}
-          <span
-            onClick={() => navigate("/tasker_login")}
-            className="text-blue-700 cursor-pointer"
-          >
-            Log in
-          </span>
-        </p>
       </div>
     </div>
   );

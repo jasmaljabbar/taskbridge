@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../redux/actions/authService";
 import { useSelector } from "react-redux";
+import Unknown from "../../statics/user_side/Unknown.jpg";
 import { Link } from "react-router-dom";
 
 function MessageSidebar() {
@@ -27,13 +28,18 @@ function MessageSidebar() {
         }
       );
       setUsers(response.data);
-      console.log("====================================");
-      console.log(response.data);
-      console.log("====================================");
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
+
+  if (!users) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-64 bg-gray-800 text-white h-full overflow-y-auto">
@@ -46,11 +52,19 @@ function MessageSidebar() {
                 to={`/tasker/chat/${user.id}`}
                 className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
               >
+               {user.profile_pic ?(
                 <img
-                  src={user.profile_pic || "default-profile.png"}
+                src={user.profile_pic || "default-profile.png"}
+                alt={user.name}
+                className="w-10 h-10 rounded-full"
+              />
+               ):
+               <img
+                  src={Unknown}
                   alt={user.name}
                   className="w-10 h-10 rounded-full"
                 />
+                }
                 <span className="ml-3">
                   {user.name} {user.last_name}
                 </span>

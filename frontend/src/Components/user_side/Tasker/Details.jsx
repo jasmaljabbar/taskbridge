@@ -1,17 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 import { fetchTaskerDetails } from "../../../redux/reducers/authSlice";
 import BookNow from "./BookNow";
 
 const Details = () => {
+  const [user_in, setUser_in] = useState({
+    user_id: "",
+    user_image: "",
+  });
   const dispatch = useDispatch();
   const location = useLocation();
   const accessToken = useSelector((state) => state.auth.token);
   const taskerInfo = useSelector((state) => state.auth.taskerDetails);
   const searchParams = new URLSearchParams(location.search);
   const taskerId = searchParams.get("user");
+
+  const user = jwtDecode(accessToken);
+
+  const [tasker_in, setTasker_in] = useState({
+    tasker_id: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setUser_in({ user_id: user.user_id, user_image: user.profile_photo });
+    } else {
+      console.log("User not found");
+    }
+  }, []);
 
   useEffect(() => {
     if (accessToken && taskerId) {
@@ -21,8 +40,8 @@ const Details = () => {
 
   if (!taskerInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <p className="text-xl font-semibold text-gray-600">Loading...</p>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
@@ -55,7 +74,10 @@ const Details = () => {
       </div>
 
       <div className="md:w-1/3 space-y-4">
-        <Link to="/message">
+        <Link to={{
+                pathname: `/chat/${taskerInfo.user.id}`,
+                state: { user_in:user_in.user_id, tasker_in:tasker_in.tasker_id },
+              }}>
           <button className="w-full bg-orange-400 text-white py-2 rounded-lg">
             Message
           </button>

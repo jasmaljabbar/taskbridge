@@ -15,12 +15,14 @@ const TaskerProfile = () => {
   const profile = useSelector((state) => state.tasker_auth.user);
   const accessToken = useSelector((state) => state.auth.token);
   const [editing, setEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [taskerData, setTaskerData] = useState(null);
   const [userData, setUserData] = useState(null);
   const [workCategories, setWorkCategories] = useState([]);
   const [error, setError] = useState("");
 
   const fetchData = async () => {
+    setIsLoading(true);
     if (accessToken) {
       try {
         const taskerProfileResponse = await dispatch(
@@ -46,7 +48,7 @@ const TaskerProfile = () => {
   useEffect(() => {
     const fetchWorkCategories = async () => {
       try {
-        const categories = await tasker_authService.getWorkCategories();
+        const categories = await tasker_authService.getWork_Categories_for_user();
         setWorkCategories(
           categories.map((category) => ({
             value: category.id,
@@ -145,7 +147,9 @@ const TaskerProfile = () => {
   };
 
   if (!taskerData || !userData) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
   }
 
   return (

@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../../../../redux/actions/authService";
+import Unknown from "../../../../statics/user_side/Unknown.jpg";
 import axios from "axios";
 
 function OneOneChat() {
@@ -38,9 +39,6 @@ function OneOneChat() {
   const lastMessageRef = useRef(null);
   const { id } = useParams();
 
-  console.log("====================================");
-  console.log("taskerinfo:", user_info, "user info:", id);
-  console.log("====================================");
 
   const currentUsers = localStorage.getItem("userDetails");
   const Employee = JSON.parse(currentUsers);
@@ -144,7 +142,7 @@ function OneOneChat() {
       }
     );
     if (response.status === 200) {
-      setUser(response.data);
+
     }
   };
 
@@ -298,6 +296,14 @@ function OneOneChat() {
     scrollToBottom();
   }, [messages]);
 
+  if (!messages) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="flex h-[70%] mt-52  antialiased text-gray-800  bg-gray-50">
@@ -326,37 +332,46 @@ function OneOneChat() {
                               : "justify-start"
                           }`}
                         >
-                          {message.sender.id !== currentUser && (
-                            <>
-                              {taskerInfo ? (
-                                <img
-                                  src={
-                                    taskerInfo.profile_pic
-                                      ? `http://127.0.0.1:8000${taskerInfo.profile_pic}`
-                                      : "fallback_image_url"
-                                  }
-                                  alt="Receiver"
-                                  className="w-10 h-10 rounded-full mr-3"
-                                />
-                              ) : user_info ? (
-                                <img
-                                  src={
-                                    user_info.profile_photo
-                                      ? `${users_taskerside.profile_photo}`
-                                      : "fallback_image_url"
-                                  }
-                                  alt="U"
-                                  className="w-10 h-10 rounded-full mr-3"
-                                />
-                              ) : (
-                                <img
-                                  src="default_image_url" // replace this with your imported default image
-                                  alt="Default"
-                                  className="w-full h-full rounded-full"
-                                />
-                              )}
-                            </>
-                          )}
+                       {message.sender.id !== currentUser && (
+  <>
+                                {taskerInfo ? (
+                                  taskerInfo.profile_pic ? (
+                                    <img
+                                      src={`http://127.0.0.1:8000${taskerInfo.profile_pic}`}
+                                      alt="Receiver"
+                                      className="w-10 h-10 rounded-full mr-3"
+                                    />
+                                  ) : (
+                                    <img
+                                      src={Unknown}
+                                      alt="Receiver"
+                                      className="w-10 h-10 rounded-full mr-3"
+                                    />
+                                  )
+                                ) : user_info ? (
+                                  user_info.profile_photo ? (
+                                    <img
+                                      src={`${user_info.profile_photo}`}
+                                      alt="U"
+                                      className="w-10 h-10 rounded-full mr-3"
+                                    />
+                                  ) : (
+                                    <img
+                                      src={Unknown}
+                                      alt="U"
+                                      className="w-10 h-10 rounded-full mr-3"
+                                    />
+                                  )
+                                ) : (
+                                  <img
+                                    src={Unknown}
+                                    alt="Unknown"
+                                    className="w-10 h-10 rounded-full mr-3"
+                                  />
+                                )}
+                              </>
+                            )}
+
 
                           <div
                             className={`relative ml-3 text-sm bg-${

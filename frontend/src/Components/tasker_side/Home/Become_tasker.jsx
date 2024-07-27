@@ -44,7 +44,7 @@ const Become_tasker = () => {
             </select>
             <label className="mb-2">Choose a Category</label>
             <select className="border rounded-md p-2 mb-4">
-              <option value="Tea plucking">Tea plucking</option>
+              <option value="Tea plucking">You can select your Task</option>
               {/* Add more options as needed */}
             </select>
             <p className="mb-4">₹7500 per month</p>
@@ -52,15 +52,6 @@ const Become_tasker = () => {
               <Link to="/tasker_signup">Get started</Link>
             </button>
           </form>
-          <p className="mt-4">
-            Already have an account?{" "}
-            <span
-              onClick={tasker_login}
-              className="text-blue-700 cursor-pointer"
-            >
-              Sign in
-            </span>
-          </p>
         </div>
       </div>
     </div>

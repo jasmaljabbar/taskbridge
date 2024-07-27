@@ -1,9 +1,10 @@
+# models.py
 from django.db import models
 from account.models import UserData
 
 class Chat(models.Model):
-    sender = models.ForeignKey(UserData, on_delete=models.CASCADE, related_name='send_message')
-    receiver = models.ForeignKey(UserData, on_delete=models.CASCADE, related_name='receiver_message')
+    sender = models.ForeignKey(UserData, on_delete=models.SET_NULL, related_name='send_message', null=True, blank=True)
+    receiver = models.ForeignKey(UserData, on_delete=models.SET_NULL, related_name='receiver_message', null=True, blank=True)
     message = models.TextField()
     thread_name = models.CharField(max_length=200, null=True)
     date = models.DateTimeField(auto_now_add=True)

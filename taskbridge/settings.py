@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'djoser',
     'booking', 
     'dashboard',
+    'payments',
 
 ]
 
@@ -120,6 +121,10 @@ DATABASES = {
     }
 }
 
+STRIPE_SECRET_KEY = 'sk_test_51PgI85DMque14kFMh3FP6bVLGZwYE3RzJGE5CZNfuVwiSKyW6ETG7Kg2vLancv36QoweJeCQ1kwCKz2rYrUnXWBf00s6RVwxf6'
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51PgI85DMque14kFMK0soU7ITSRS6gmNTJXoHaaJwK3qscHFUuOubeUTVpfGxAZgMKjCn49XdpmCdIUcGT1LAh7Sj00C6qgA4eW'
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
@@ -172,13 +177,14 @@ ASGI_APPLICATION = "taskbridge.asgi.application"
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
 
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
 
+DEBUG = True
 
 
 
@@ -212,3 +218,20 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'jasmaljabbarghazali@gmail.com'
 EMAIL_HOST_PASSWORD = 'qrso bjfb yeit mxjk'
 DEFAULT_FROM_EMAIL = 'jasmaljabbarghazali@gmail.com'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'django_debug.log',
+        },
+    },
+    'root': {
+        'handlers': ['file'],
+        'level': 'DEBUG',
+    },
+}

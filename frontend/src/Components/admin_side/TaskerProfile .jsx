@@ -33,7 +33,11 @@ const TaskerProfile = ({ tasker, onClose }) => {
     }
   }, [tasker, accessToken]);
 
-  if (loading) return <p className="text-center mt-4">Loading...</p>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
   if (error)
     return <p className="text-center mt-4 text-red-500">Error: {error}</p>;
 

@@ -12,6 +12,8 @@ const AppointmentHistory = () => {
   const [showModal, setShowModal] = useState(false);
   const [appointmentIdToCancel, setAppointmentIdToCancel] = useState(null);
   const accessToken = useSelector((state) => state.auth.token);
+  const taskerInfo = useSelector((state) => state.auth.taskerDetails);
+
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -21,6 +23,9 @@ const AppointmentHistory = () => {
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
+            },
+            params: {
+              tasker_id: taskerInfo.user.id,
             },
           }
         );
@@ -136,11 +141,20 @@ const AppointmentHistory = () => {
     }
   };
 
+  if (!appointments) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+
   return (
     <div className="min-h-screen py-12 px-4 ml-72 mt-64 sm:px-6 lg:px-8">
       <Confirm_without_msg
         show={showModal}
-        onClose={() => setShowModal(false)}
+        onClose={closeModal}
         onConfirm={confirmCancel}
         message="Are you sure you want to cancel this appointment?"
         confirmText="Yes, cancel it"
@@ -172,8 +186,8 @@ const AppointmentHistory = () => {
                       <span className="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
                         {appointment.minimum_hours_to_work} hours
                       </span>
-                      {(appointment.status == "pending" ||
-                        appointment.status == "accepted") && (
+                      {(appointment.status === 'pending' ||
+                        appointment.status === 'accepted') && (
                         <>
                           <button
                             onClick={() => openModal(appointment)}
@@ -190,29 +204,27 @@ const AppointmentHistory = () => {
                           </button>
                         </>
                       )}
-                      {/* {appointment.status == "pending" || appointment.status == "accepted" && (
-                        <button
-                          onClick={() => handleCancel(appointment.id)}
-                          className="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-full hover:bg-red-600"
-                        >
-                          Cancel
-                        </button>
-                      )} */}
                     </div>
                   </div>
                   <div className="text-gray-600">
                     <p className="mb-2">
-                      <span className="font-medium">Address:</span>{" "}
+                      <span className="font-medium">Address:</span>{' '}
                       {appointment.address}
                     </p>
                     <p>
-                      <span className="font-medium">Phone:</span>{" "}
+                      <span className="font-medium">Phone:</span>{' '}
                       {appointment.phone_number}
                     </p>
                     <p>
-                      <span className="font-medium">Employee:</span>{" "}
+                      <span className="font-medium">Employee:</span>{' '}
                       {appointment.employee_name}
                     </p>
+                    {appointment.rejection_reason && (
+                      <p>
+                        <span className="font-medium">Message from our tasker:</span>{' '}
+                        {appointment.rejection_reason}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -225,11 +237,11 @@ const AppointmentHistory = () => {
         )}
       </div>
 
-      {isModalOpen && selectedAppointment && (
+      {showModal && selectedAppointment && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Edit Appointment</h2>
-            <form onSubmit={handleEdit}>
+            <form onSubmit={(e) => handleEdit(e, selectedAppointment)}>
               <div className="mb-4">
                 <label
                   htmlFor="date"

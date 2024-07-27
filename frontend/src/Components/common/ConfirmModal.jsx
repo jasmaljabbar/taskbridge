@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const ConfirmModal = ({ show, onClose, onConfirm, message, confirmText }) => {
     const [info, setInfo] = useState("");
+    
 
     const handleConfirm = () => {
         onConfirm(info);

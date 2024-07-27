@@ -7,10 +7,14 @@ from rest_framework.decorators import permission_classes
 from .models import Tasker, WorkCategory
 from rest_framework.views import APIView
 import json
+import stripe
 from account.utils import send_admin_email
 from rest_framework import status
 from account.models import UserData
+from django.conf import settings
 from .serializers import TaskerSerializer, WorkCategorySerializer,TaskerFetchingSerializer,TaskerUpdateSerializer
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @permission_classes([AllowAny])
 class WorkCategoryListView(generics.ListAPIView):
@@ -74,7 +78,40 @@ class TaskerSignupView(generics.CreateAPIView):
 
         return Response(response_data, status=status.HTTP_201_CREATED)
 
-    
+
+class TaskerCheckoutSessionView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
+            tasker = Tasker.objects.get(user=request.user)
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=[
+                    {
+                        'price_data': {
+                            'currency': 'usd',
+                            'product_data': {
+                                'name': 'Tasker Subscription',
+                            },
+                            'unit_amount': int(tasker.task_fee * 100),
+                        },
+                        'quantity': 1,
+                    },
+                ],
+                mode='payment',
+                success_url='http://localhost:5173/success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url='http://localhost:5173/',
+            )
+            return Response({'url': session.url})
+        except Tasker.DoesNotExist:
+            return Response({'error': 'Tasker profile not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 class TaskerProfileView(generics.RetrieveUpdateAPIView):

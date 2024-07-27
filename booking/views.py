@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from account.utils import send_tasker_email
 from django.core.exceptions import PermissionDenied
 from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.mixins import LoginRequiredMixin
 from account.utils import send_user_appointment_email
@@ -34,7 +35,6 @@ class CreateAppointmentAPIView(generics.CreateAPIView):
         user = appointment.user
         employee_email = appointment.employee.email
         print(employee_email)
-        # Send notification emails
         send_tasker_email(employee_email, user)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
@@ -57,13 +57,12 @@ class UpdateAppointmentAPIView(generics.UpdateAPIView):
         
         self.perform_update(serializer)
 
-        # Retrieve user and employee emails
         appointment = serializer.instance
         user = appointment.user
         employee_email = appointment.employee.email
         print("Updated employee email:", employee_email)
         
-        # Send notification emails
+
         send_tasker_email(employee_email, user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -98,8 +97,16 @@ class CancelAppointmentAPIView(APIView):
 class AppointmentHistory(generics.ListAPIView):
     serializer_class = AppointmentSerializer
     permission_classes = [permissions.IsAuthenticated]
-    def get_queryset(self):        
-        return Appointment.objects.filter(user=self.request.user)
+    def get_queryset(self):
+        user = self.request.user
+        tasker_id = self.request.query_params.get('tasker_id')
+
+        if not tasker_id:
+            raise ValidationError("Tasker ID is required")
+        print(user,tasker_id)
+        return Appointment.objects.filter(user=user, employee__id=tasker_id)
+
+
     
 class TaskerAppointmentHistoryView(generics.ListAPIView):
     serializer_class = AppointmentSerializer
@@ -142,6 +149,8 @@ class ManageAppointmentStatusView(APIView):
             appointment.status = new_status
             info_data = request.data
             info = info_data.get('info', '')
+            if info_data: 
+                appointment.rejection_reason = info
             if new_status == 'accepted':
                 info='Congratulations! your appointment is accepted'+' ' + info
             elif new_status == 'rejected':
