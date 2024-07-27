@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import WorkCategory, Tasker
+from .models import WorkCategory, Tasker, SubscriptionPrice
 
 class WorkCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -15,3 +15,8 @@ class TaskerAdmin(admin.ModelAdmin):
 # Check if TaskerAdmin is already registered
 if not admin.site.is_registered(Tasker):
     admin.site.register(Tasker, TaskerAdmin)
+
+@admin.register(SubscriptionPrice)
+class SubscriptionPriceAdmin(admin.ModelAdmin):
+    list_display = ('subscription_type', 'price')
+    list_editable = ('price',)

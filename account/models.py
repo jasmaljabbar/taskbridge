@@ -33,6 +33,7 @@ class UserData(AbstractUser):
     otp_time = models.DateTimeField(blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     requested_to_tasker = models.BooleanField(default=False)
+    payment_time = models.BooleanField(default=False)
     blocked_for_tasker = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

@@ -11,7 +11,7 @@ from profiles.models import Profile
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
-        fields = ['id', 'email', 'name', 'password', 'is_verified', 'otp']
+        fields = ['id', 'email', 'name', 'password', 'is_verified', 'otp','payment_time']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -64,6 +64,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         token['is_staff'] = user.is_staff
         token['is_admin'] = user.is_superuser
         token['requested_to_tasker']  = user.requested_to_tasker    
+        token['payment_time']  = user.payment_time    
         try:
             profile = Profile.objects.get(user=user)
             profile_data = ProfileSerializer(profile).data

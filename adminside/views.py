@@ -67,11 +67,14 @@ class Accepting_request(APIView):
         user_id = request.data.get("id")
         try:
             user = UserData.objects.get(id=user_id)
-            user.is_staff = True
-            user.requested_to_tasker=False
+            tasker = Tasker.objects.get(user=user)
+            tasker.admin_approval = True
+            user.requested_to_tasker = False
+            user.payment_time=True
             user.save()
-            return Response({"Success": "User Deleted"}, status=status.HTTP_200_OK)
-        except UserData.DoesNotExist:
+            tasker.save()  # Save the changes to the database
+            return Response({"Success": "User Approved"}, status=status.HTTP_200_OK)
+        except Tasker.DoesNotExist:
             return Response(
                 {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
             )

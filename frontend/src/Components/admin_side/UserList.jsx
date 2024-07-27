@@ -34,6 +34,9 @@ function UserList() {
       setShowModal(false);
     } catch (error) {
       alert(error.message);
+      console.log("====================================");
+      console.log(currentTaskerId);
+      console.log("====================================");
     }
   };
 

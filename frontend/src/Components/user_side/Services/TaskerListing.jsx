@@ -21,9 +21,6 @@ const TaskerListing = () => {
   }, []);
 
   useEffect(() => {
-    console.log("====================================");
-    console.log(taskersInfo);
-    console.log("====================================");
   }, [taskersInfo]);
 
   if (!taskersInfo) {

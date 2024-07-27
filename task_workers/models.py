@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
 
 
+
 class WorkCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -15,6 +16,11 @@ class WorkCategory(models.Model):
 
 
 class Tasker(models.Model):
+    SUBSCRIPTION_CHOICES = [
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly'),
+    ]
+
     user = models.OneToOneField(UserData, on_delete=models.CASCADE, related_name='tasker_profile')
     full_name = models.CharField(max_length=255)
     phone_number = models.CharField(
@@ -25,13 +31,48 @@ class Tasker(models.Model):
         max_length=12,
         validators=[RegexValidator(r'^\d{12}$', message="Aadhar number must be 12 digits")]
     )
-    address = models.TextField()    
+    address = models.TextField()
     work_photo = models.ImageField(verbose_name=_("Work Photo"), upload_to='work_photos/', default="")
     task = models.ForeignKey(WorkCategory, on_delete=models.CASCADE)
     task_fee = models.DecimalField(max_digits=10, decimal_places=2)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
-    subscribed = models.BooleanField(default=True)
+    admin_approval = models.BooleanField(default=False)
+    subscribed = models.BooleanField(default=False) 
+    subscription_type = models.CharField(max_length=10, choices=SUBSCRIPTION_CHOICES, default='monthly')
+    subscription_start_date = models.DateTimeField(null=True, blank=True)
+    subscription_end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.full_name
+
+    def activate_subscription(self):
+        from datetime import timedelta
+        from django.utils import timezone
+
+        self.subscription_start_date = timezone.now()
+        if self.subscription_type == 'monthly':
+            self.subscription_end_date = self.subscription_start_date + timedelta(days=30)
+        elif self.subscription_type == 'yearly':
+            self.subscription_end_date = self.subscription_start_date + timedelta(days=365)
+        self.subscribed = True
+        self.save()
+
+
+class SubscriptionPrice(models.Model):
+    MONTHLY = 'monthly'
+    YEARLY = 'yearly'
+    SUBSCRIPTION_CHOICES = [
+        (MONTHLY, 'Monthly'),
+        (YEARLY, 'Yearly'),
+    ]
+
+    subscription_type = models.CharField(
+        max_length=10,
+        choices=SUBSCRIPTION_CHOICES,
+        unique=True
+    )
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.get_subscription_type_display()} - {self.price}'

@@ -45,6 +45,9 @@ import DebugTokenComponent from "./Components/Test";
 // import MessageSidebar from "./Components/tasker_side/MessageSidebar";
 import MainLayout from "./Components/tasker_side/MainLayout";
 import Checkout from "./Components/tasker_side/Checkout";
+import PaymentPage from "./Components/tasker_side/PaymentPage";
+import SuccessPage from "./Components/tasker_side/SuccessPage";
+import CancelPage from "./Components/tasker_side/CancelPage";
 
 
 
@@ -137,11 +140,31 @@ const App = () => {
                     path="/tasker_checkout"
                     element={
                         <ProtectedRoute
-                            element={<Checkout />}
+                            element={<PaymentPage />}
                             isAuthenticated={isAuthenticated}
                             redirectTo="/login"
                         />
                     }
+                />
+             <Route
+                  path="/checkout_success"
+                  element={
+                    <ProtectedRoute
+                      element={<SuccessPage />}
+                      isAuthenticated={isAuthenticated}
+                      redirectTo="/login"
+                    />
+                  }
+                />
+                <Route
+                  path="/checkout_cancel"
+                  element={
+                    <ProtectedRoute
+                      element={<CancelPage />}
+                      isAuthenticated={isAuthenticated}
+                      redirectTo="/login"
+                    />
+                  }
                 />
             <Route
               path="/"

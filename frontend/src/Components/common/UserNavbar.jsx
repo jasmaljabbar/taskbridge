@@ -110,38 +110,49 @@ const UserNavbar = () => {
 
           {/* Become a Tasker Button */}
           {user ? (
-            user.requested_to_tasker ? (
-              <>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="bg-green-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600"
+          user.requested_to_tasker ? (
+            <>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-green-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600"
+              >
+                Pending Request
+              </button>
+              <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+              >
+                <div
+                  className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+                  role="alert"
                 >
-                  Pending Request
-                </button>
-                <Modal
-                  isOpen={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
-                >
-                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                  <strong class="font-bold">Tasker Request Pending!</strong>
-                  <span class="block sm:inline">Your Tasker request has not been accepted yet. Please check back later.</span>
+                  <strong className="font-bold">Tasker Request Pending!</strong>
+                  <span className="block sm:inline">
+                    Your Tasker request has not been accepted yet. Please check back later.
+                  </span>
+                  
                 </div>
-                </Modal>
-              </>
-            ) : user.is_admin ? (
-              <button className="bg-green-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600">
-                <Link to={"/admin/user_list"}>Go to Admin side</Link>
-              </button>
-            ) : user.is_staff ? (
-              <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
-                <Link to={"/tasker/tasker_dashboard"}>Go to Tasker side</Link>
-              </button>
-            ) : (
-              <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
-                <Link to={"become_a_tasker"}>Become a Tasker</Link>
-              </button>
-            )
-          ) : null}
+              </Modal>
+            </>
+          ) : user.payment_time ? (
+            <button className="bg-green-800 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600">
+              <Link to={"tasker_checkout"}>Time to Payment</Link>
+            </button>
+          ) : user.is_admin ? (
+            <button className="bg-green-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-green-600">
+              <Link to={"/admin/user_list"}>Go to Admin side</Link>
+            </button>
+          ) : user.is_staff ? (
+            <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
+              <Link to={"/tasker/tasker_dashboard"}>Go to Tasker side</Link>
+            </button>
+          ) : (
+            <button className="bg-blue-500 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-blue-600">
+              <Link to={"become_a_tasker"}>Become a Tasker</Link>
+            </button>
+          )
+        ) : null}
+
 
           {/* Mobile Menu Button */}
           <button
