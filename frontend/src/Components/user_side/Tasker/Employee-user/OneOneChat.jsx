@@ -39,7 +39,6 @@ function OneOneChat() {
   const lastMessageRef = useRef(null);
   const { id } = useParams();
 
-
   const currentUsers = localStorage.getItem("userDetails");
   const Employee = JSON.parse(currentUsers);
   let employeeId;
@@ -80,6 +79,8 @@ function OneOneChat() {
       title: "Please Login",
     });
   }
+
+
 
   useEffect(() => {
     if (!userId) {
@@ -142,7 +143,6 @@ function OneOneChat() {
       }
     );
     if (response.status === 200) {
-
     }
   };
 
@@ -332,46 +332,45 @@ function OneOneChat() {
                               : "justify-start"
                           }`}
                         >
-                       {message.sender.id !== currentUser && (
-  <>
-                                {taskerInfo ? (
-                                  taskerInfo.profile_pic ? (
-                                    <img
-                                      src={`http://127.0.0.1:8000${taskerInfo.profile_pic}`}
-                                      alt="Receiver"
-                                      className="w-10 h-10 rounded-full mr-3"
-                                    />
-                                  ) : (
-                                    <img
-                                      src={Unknown}
-                                      alt="Receiver"
-                                      className="w-10 h-10 rounded-full mr-3"
-                                    />
-                                  )
-                                ) : user_info ? (
-                                  user_info.profile_photo ? (
-                                    <img
-                                      src={`${user_info.profile_photo}`}
-                                      alt="U"
-                                      className="w-10 h-10 rounded-full mr-3"
-                                    />
-                                  ) : (
-                                    <img
-                                      src={Unknown}
-                                      alt="U"
-                                      className="w-10 h-10 rounded-full mr-3"
-                                    />
-                                  )
+                          {message.sender.id !== currentUser && (
+                            <>
+                              {taskerInfo ? (
+                                taskerInfo.profile_pic ? (
+                                  <img
+                                    src={`http://127.0.0.1:8000${taskerInfo.profile_pic}`}
+                                    alt="Receiver"
+                                    className="w-10 h-10 rounded-full mr-3"
+                                  />
                                 ) : (
                                   <img
                                     src={Unknown}
-                                    alt="Unknown"
+                                    alt="Receiver"
                                     className="w-10 h-10 rounded-full mr-3"
                                   />
-                                )}
-                              </>
-                            )}
-
+                                )
+                              ) : user_info ? (
+                                user_info.profile_photo ? (
+                                  <img
+                                    src={`http://127.0.0.1:8000${user_info.profile_photo}`}
+                                    alt="A"
+                                    className="w-10 h-10 rounded-full mr-3"
+                                  />
+                                ) : (
+                                  <img
+                                    src={Unknown}
+                                    alt="R"
+                                    className="w-10 h-10 rounded-full mr-3"
+                                  />
+                                )
+                              ) : (
+                                <img
+                                  src={Unknown}
+                                  alt="Unknown"
+                                  className="w-10 h-10 rounded-full mr-3"
+                                />
+                              )}
+                            </>
+                          )}
 
                           <div
                             className={`relative ml-3 text-sm bg-${

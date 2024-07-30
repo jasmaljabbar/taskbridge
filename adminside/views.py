@@ -8,15 +8,18 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from account.models import UserData
 from task_workers.serializers import WorkCategorySerializer
-from .serializers import UserDataSerializer
+from .serializers import UserDataSerializer,SubscriptionPriceSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from task_workers.models import WorkCategory
 from task_workers.serializers import TaskerFetchingSerializer
 from task_workers.models import Tasker
+from task_workers.models import SubscriptionPrice
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.decorators import permission_classes
-
+from rest_framework import viewsets
+from rest_framework.permissions import IsAdminUser
+from rest_framework.viewsets import ModelViewSet
 
 
 class AdminLogin(APIView):
@@ -170,7 +173,25 @@ class EditUser(APIView):
             )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
 
+
+class SubscriptionPriceViewSet(viewsets.ModelViewSet):
+    queryset = SubscriptionPrice.objects.all()
+    serializer_class = SubscriptionPriceSerializer
+    permission_classes = [IsAdminUser]
+
+    def create(self, request, *args, **kwargs):
+        subscription_type = request.data.get('subscription_type')
+        price = request.data.get('price')
+        
+        try:
+            subscription_price = SubscriptionPrice.objects.get(subscription_type=subscription_type)
+            subscription_price.price = price
+            subscription_price.save()
+            return Response(SubscriptionPriceSerializer(subscription_price).data, status=status.HTTP_200_OK)
+        except SubscriptionPrice.DoesNotExist:
+            return super().create(request, *args, **kwargs)
 
 class Tasker_Listing(APIView):
     def get(self, request):

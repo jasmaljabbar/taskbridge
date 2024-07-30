@@ -93,5 +93,6 @@ class TaskerHomeSerializer(serializers.ModelSerializer):
             "task_fee",
             "city",
             "state",
+            'subscribed',
             
         ]

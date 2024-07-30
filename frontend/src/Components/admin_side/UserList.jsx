@@ -4,7 +4,7 @@ import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
 import { useSelector } from "react-redux";
 import { API_URL_ADMIN } from "../../redux/actions/authService";
-
+import toast from "react-hot-toast";
 import Confirm_without_msg from "../common/Confirm_without_msg";
 
 function UserList() {
@@ -30,16 +30,21 @@ function UserList() {
         }
       );
       console.log(response.data);
-      setUsersInfo(usersInfo.filter((user) => user.id !== currentTaskerId));
+      toast.success('Requested succesfully')
+      // Update the user's requested_to_tasker status in the state
+      setUsersInfo((prevUsersInfo) =>
+        prevUsersInfo.map((user) =>
+          user.id === currentTaskerId
+            ? { ...user, requested_to_tasker: false }
+            : user
+        )
+      );
+
       setShowModal(false);
     } catch (error) {
       alert(error.message);
-      console.log("====================================");
-      console.log(currentTaskerId);
-      console.log("====================================");
     }
   };
-
   const handleUserAction = async () => {
     try {
       const response = await axios.post(

@@ -2,6 +2,9 @@ from django.db import models
 from account.models import UserData
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
+from datetime import timedelta
+from django.utils import timezone
+from dashboard.models import SubscriptionIncome  
 
 
 
@@ -49,15 +52,23 @@ class Tasker(models.Model):
     def activate_subscription(self):
         from datetime import timedelta
         from django.utils import timezone
+        from .models import SubscriptionIncome, SubscriptionPrice  # Ensure this import is correct
+
+        # Fetch the appropriate subscription price
+        try:
+            price = SubscriptionPrice.objects.get(subscription_type=self.subscription_type).price
+        except SubscriptionPrice.DoesNotExist:
+            price = 0
 
         self.subscription_start_date = timezone.now()
         if self.subscription_type == 'monthly':
             self.subscription_end_date = self.subscription_start_date + timedelta(days=30)
+            SubscriptionIncome.update_monthly_income(price)
         elif self.subscription_type == 'yearly':
             self.subscription_end_date = self.subscription_start_date + timedelta(days=365)
+            SubscriptionIncome.update_yearly_income(price)
         self.subscribed = True
         self.save()
-
 
 class SubscriptionPrice(models.Model):
     MONTHLY = 'monthly'
@@ -76,3 +87,8 @@ class SubscriptionPrice(models.Model):
 
     def __str__(self):
         return f'{self.get_subscription_type_display()} - {self.price}'
+
+    @classmethod
+    def get_prices(cls):
+        prices = cls.objects.all()
+        return {item.subscription_type: item.price for item in prices}

@@ -35,7 +35,7 @@ import TaskerProfile from "./Components/admin_side/TaskerProfile ";
 import TaskerLayout from "./Components/tasker_side/Home/TaskerLayout";
 import Signup from "./Components/tasker_side/Signup";
 import Home from "./Components/tasker_side/Home";
-import Dashboard from "./Components/tasker_side/Dashboard";
+import Dashboard from "./Components/admin_side/Dashboard ";
 import Tasker_profile from "./Components/tasker_side/Tasker_profile";
 import TaskShow from "./Components/tasker_side/TaskShow/TaskShow";
 import TaskerAppointmentHistory from "./Components/tasker_side/TaskerAppointmentHistory ";
@@ -48,6 +48,7 @@ import Checkout from "./Components/tasker_side/Checkout";
 import PaymentPage from "./Components/tasker_side/PaymentPage";
 import SuccessPage from "./Components/tasker_side/SuccessPage";
 import CancelPage from "./Components/tasker_side/CancelPage";
+import SetSubscriptionPrice from "./Components/admin_side/SetSubscriptionPrice ";
 
 
 
@@ -190,15 +191,17 @@ const App = () => {
               <ProtectedRoute
                 element={<AdminLayout />}
                 isAuthenticated={isAuthenticated && isadmin}
-                redirectTo="/admin_login"
+                redirectTo="/login"
               />
             }
           >
             <Route path="adduser" element={<AddUser />} />
+            <Route path="subscription_price" element={<SetSubscriptionPrice />} />
             <Route path="user_list" element={<UserList />} />
             <Route path="tasker/:id" element={<TaskerProfile />} />
             <Route path="tasker_showing" element={<Tasker_Listing />} />
             <Route path="task_list" element={<TaskCategory />} />
+            <Route path="dashboard" element={<Dashboard />} />
           </Route>
 
           {/* Tasker Routes */}
@@ -208,7 +211,7 @@ const App = () => {
               <ProtectedRoute
                 element={<TaskerLayout />}
                 isAuthenticated={isAuthenticated && isStaff}
-                redirectTo="/tasker_login"
+                redirectTo="/login"
               />
             }
           >

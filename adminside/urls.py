@@ -1,5 +1,14 @@
-from django.urls import path
-from adminside.views import AdminLogin, Dashboard,Block_user, Blocking_tasker,Accepting_request, EditUser, Tasker_Listing,Work_Listing,WorkCategoryAdding,EditWorkCategory,BlockWorkCategory,TaskerDetails
+from django.urls import path, include
+from adminside.views import (
+    AdminLogin, Dashboard, Block_user, Blocking_tasker, Accepting_request, 
+    EditUser, Tasker_Listing, Work_Listing, WorkCategoryAdding, 
+    EditWorkCategory, BlockWorkCategory, TaskerDetails
+)
+from rest_framework.routers import DefaultRouter
+from .views import SubscriptionPriceViewSet
+
+router = DefaultRouter()
+router.register(r'subscription-prices', SubscriptionPriceViewSet)
 
 urlpatterns = [
     path("admin_login/", AdminLogin.as_view(), name="admin_login"),
@@ -14,4 +23,5 @@ urlpatterns = [
     path('work/edit/<int:pk>/', EditWorkCategory.as_view(), name='work-edit'),
     path('work/block/<int:pk>/', BlockWorkCategory.as_view(), name='work-block'),
     path('tasker_details/', TaskerDetails.as_view(), name='tasker_details'),
+    path('', include(router.urls)), 
 ]

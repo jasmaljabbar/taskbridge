@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { FaTable, FaUser, FaLock, FaGithub, FaUsers } from "react-icons/fa";
-import { MdOutlineSubdirectoryArrowRight, MdDashboard } from "react-icons/md";
+import { FaUser, FaUsers } from "react-icons/fa";
+import { RiPriceTag3Line } from "react-icons/ri";
+import {MdDashboard } from "react-icons/md";
 import { GrUserWorker } from "react-icons/gr";
 import { Link } from "react-router-dom";
 
@@ -33,7 +34,7 @@ const Admin_Sidebar = () => {
       >
         <nav className="mt-16 md:mt-20">
           <div className="mb-4 space-y-2">
-            <NavLink to="" icon={MdDashboard}>
+            <NavLink to="/admin/dashboard" icon={MdDashboard}>
               Dashboard
             </NavLink>
             <NavLink to="/admin/tasker_showing" icon={GrUserWorker}>
@@ -44,6 +45,9 @@ const Admin_Sidebar = () => {
             </NavLink>
             <NavLink to="/admin/task_list" icon={FaUser}>
               Task Category
+            </NavLink>
+            <NavLink to="/admin/subscription_price" icon={RiPriceTag3Line}>
+              Subscription Price
             </NavLink>
           </div>
         </nav>

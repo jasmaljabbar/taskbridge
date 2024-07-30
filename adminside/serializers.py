@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from account.models import UserData
+from task_workers.models import SubscriptionPrice
 
 class UserDataSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,3 +17,9 @@ class UserDataSerializer(serializers.ModelSerializer):
             "requested_to_tasker",
             "profile_pic",
         ]
+
+
+class SubscriptionPriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubscriptionPrice
+        fields = ['subscription_type', 'price']

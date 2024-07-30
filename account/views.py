@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from rest_framework.decorators import permission_classes
 from django.utils import timezone
+from django.db.models import Q
 from rest_framework.permissions import AllowAny
 from datetime import timedelta
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
@@ -115,7 +116,7 @@ class HomeView(APIView):
 @permission_classes([AllowAny])
 class Tasker_ListingView(APIView):
     def get(self,request):
-        taskers = Tasker.objects.filter(user__is_staff=True)[:9]
+        taskers = Tasker.objects.filter(subscribed=True)[:9]
         serializer = TaskerHomeSerializer(taskers, many=True)
         return Response(serializer.data)
 
@@ -130,19 +131,21 @@ class TaskCategory_ListingView(APIView):
 class Category_Tasker_filter(APIView):
     def get(self, request, taskId, *args, **kwargs):
         try:
-            workCategory = WorkCategory.objects.get(id = taskId)
-            taskers = Tasker.objects.filter(task=workCategory)
+            workCategory = WorkCategory.objects.get(id=taskId)
+            taskers = Tasker.objects.filter(task=workCategory, subscribed=True)
             serializer = TaskerHomeSerializer(taskers, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except Tasker.DoesNotExist:
-            return Response({"error": "Tasker not found"}, status=status.HTTP_404_NOT_FOUND)
+        except WorkCategory.DoesNotExist:
+            return Response({"error": "Work category not found"}, status=status.HTTP_404_NOT_FOUND)
         
 @permission_classes([AllowAny])
 class SearchTasker(APIView):
     def get(self, request, *args, **kwargs):
-
         query = request.query_params.get('query', '')
-        taskers = Tasker.objects.filter(full_name__icontains=query) | Tasker.objects.filter(task__name__icontains=query)
+        taskers = Tasker.objects.filter(
+            Q(full_name__icontains=query) | Q(task__name__icontains=query),
+            subscribed=True
+        )
         
         serializer = TaskerHomeSerializer(taskers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

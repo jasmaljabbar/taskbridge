@@ -11,12 +11,13 @@ const AppointmentHistory = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [appointmentIdToCancel, setAppointmentIdToCancel] = useState(null);
+  const [loading, setLoading] = useState(false);
   const accessToken = useSelector((state) => state.auth.token);
   const taskerInfo = useSelector((state) => state.auth.taskerDetails);
 
-
   useEffect(() => {
     const fetchAppointments = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/booking/appointment/history/",
@@ -30,9 +31,11 @@ const AppointmentHistory = () => {
           }
         );
         setAppointments(response.data);
+        setLoading(false);
       } catch (error) {
         console.log("Error fetching appointments:", error);
         toast.error("Failed to fetch appointment history");
+        setLoading(false);
       }
     };
 
@@ -72,6 +75,7 @@ const AppointmentHistory = () => {
   };
 
   const handleEdit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     try {
       const response = await axios.put(
@@ -91,11 +95,13 @@ const AppointmentHistory = () => {
             : appointment
         )
       );
+      setLoading(false);
       toast.success("Appointment updated successfully");
       closeModal();
     } catch (error) {
       console.log("Error updating appointment:", error);
       toast.error("Failed to update appointment");
+      setLoading(false);
     }
   };
 
@@ -113,6 +119,7 @@ const AppointmentHistory = () => {
   };
 
   const confirmCancel = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/booking/appointment/cancel/${appointmentIdToCancel}/`,
@@ -132,23 +139,25 @@ const AppointmentHistory = () => {
           )
         );
         toast.success("Appointment canceled successfully");
+        setLoading(false);
       }
     } catch (error) {
       console.log("Error canceling appointment:", error);
       toast.error("Failed to cancel appointment");
+      setLoading(false);
     } finally {
       setShowModal(false);
+      setLoading(false);
     }
   };
 
-  if (!appointments) {
+  if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex justify-center items-center pt-[40%]">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
-
 
   return (
     <div className="min-h-screen py-12 px-4 ml-72 mt-64 sm:px-6 lg:px-8">
@@ -186,8 +195,8 @@ const AppointmentHistory = () => {
                       <span className="px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full">
                         {appointment.minimum_hours_to_work} hours
                       </span>
-                      {(appointment.status === 'pending' ||
-                        appointment.status === 'accepted') && (
+                      {(appointment.status === "pending" ||
+                        appointment.status === "accepted") && (
                         <>
                           <button
                             onClick={() => openModal(appointment)}
@@ -208,20 +217,22 @@ const AppointmentHistory = () => {
                   </div>
                   <div className="text-gray-600">
                     <p className="mb-2">
-                      <span className="font-medium">Address:</span>{' '}
+                      <span className="font-medium">Address:</span>{" "}
                       {appointment.address}
                     </p>
                     <p>
-                      <span className="font-medium">Phone:</span>{' '}
+                      <span className="font-medium">Phone:</span>{" "}
                       {appointment.phone_number}
                     </p>
                     <p>
-                      <span className="font-medium">Employee:</span>{' '}
+                      <span className="font-medium">Employee:</span>{" "}
                       {appointment.employee_name}
                     </p>
                     {appointment.rejection_reason && (
                       <p>
-                        <span className="font-medium">Message from our tasker:</span>{' '}
+                        <span className="font-medium">
+                          Message from our tasker:
+                        </span>{" "}
                         {appointment.rejection_reason}
                       </p>
                     )}
