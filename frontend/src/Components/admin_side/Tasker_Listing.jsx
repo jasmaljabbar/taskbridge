@@ -61,6 +61,9 @@ function Tasker_Listing() {
         });
         setUsersInfo(response.data);
       } catch (error) {
+        console.log('=========================fereeeeeeeeeeeeeeeeeeeeeeee===========');
+        console.log(accessToken);
+        console.log('====================================');
         alert(error.message);
       }
     };
@@ -79,7 +82,7 @@ function Tasker_Listing() {
   }
 
   return (
-    <div>
+    <div className="w-full ">
       <ConfirmModal
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -96,7 +99,7 @@ function Tasker_Listing() {
           />
         </div>
       ) : (
-        <div className="flex flex-col  items-center h-screen w-full mt-20">
+        <div className="flex flex-col  items-center h-screen w-full mt-20 ms-36">
           <h1 className="text-purple-950 p-10 text-4xl font-bold">Tasker</h1>
 
           <table className="w-3/4 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6">
@@ -112,7 +115,7 @@ function Tasker_Listing() {
                   Role
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Active
+                  Status
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Action

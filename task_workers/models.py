@@ -54,7 +54,6 @@ class Tasker(models.Model):
         from django.utils import timezone
         from .models import SubscriptionIncome, SubscriptionPrice  # Ensure this import is correct
 
-        # Fetch the appropriate subscription price
         try:
             price = SubscriptionPrice.objects.get(subscription_type=self.subscription_type).price
         except SubscriptionPrice.DoesNotExist:
@@ -69,6 +68,14 @@ class Tasker(models.Model):
             SubscriptionIncome.update_yearly_income(price)
         self.subscribed = True
         self.save()
+
+    @property
+    def formatted_subscription_start_date(self):
+        return self.subscription_start_date.date()
+    
+    @property
+    def formatted_subscription_end_date(self):
+        return self.subscription_end_date.date()
 
 class SubscriptionPrice(models.Model):
     MONTHLY = 'monthly'

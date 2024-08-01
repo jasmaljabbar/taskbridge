@@ -38,7 +38,7 @@ const Sidebar = () => {
           <div className="mb-4">
             <p className="text-gray-400 uppercase text-sm mb-2">General</p>
             <Link
-              to=""
+              to="/tasker/tasker_dashboard"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
               <MdDashboard className="mr-3" /> Dashboard

@@ -42,12 +42,12 @@ function MessageSidebar() {
   }
 
   return (
-    <div className="w-64 bg-gray-800 text-white h-full overflow-y-auto">
+    <div className="w-80 bg-gray-900 text-white h-full overflow-y-auto">
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">Users</h2>
         <ul>
           {users.map((user) => (
-            <li key={user.id} className="p-2 hover:bg-gray-700 rounded-md">
+            <li key={user.id} className="p-2 hover:bg-gray-700 rounded-md border-b border-gray-600">
               <Link
                 to={`/tasker/chat/${user.id}`}
                 className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"

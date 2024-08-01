@@ -112,7 +112,7 @@ function UserList() {
   }
 
   return (
-    <div>
+    <div className="w-full ms-28 flex justify-center">
       <Confirm_without_msg
         show={showModal}
         onClose={() => setShowModal(false)}
@@ -120,10 +120,10 @@ function UserList() {
         message={modalMessage}
         confirmText="Yes, I am sure"
       />
-      <div className="flex  flex-col items-center h-screen w-full mt-24">
+      <div className="flex flex-col items-center h-screen w-full mt-24 ms-40 p-6">
         <h1 className="text-purple-950 p-10 text-4xl font-bold">Users</h1>
 
-        <table className="w-3/4 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">

@@ -306,7 +306,7 @@ function OneOneChat() {
 
   return (
     <>
-      <div className="flex h-[70%] mt-52  antialiased text-gray-800  bg-gray-50">
+      <div className="flex h-[70%] mt-52 antialiased text-gray-800  bg-gray-50">
         <div className="flex flex-row h-full w-full overflow-x-hidden">
           <div className="flex flex-col flex-auto h-full p-6">
             <div className="flex flex-col flex-auto flex-shrink-0  rounded-2xl bg-white shadow-lg h-full p-4">

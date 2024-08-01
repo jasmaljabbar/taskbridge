@@ -2,6 +2,8 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from task_workers.models import Tasker,WorkCategory,SubscriptionPrice
 from profiles.models import Profile
+from booking.models import Appointment
+from account.models import UserData
 
 
 class EmployeeIndvualSerializers(ModelSerializer):
@@ -39,3 +41,16 @@ class TaskerSubscriptionSerializer(serializers.ModelSerializer):
     def get_subscription_price(self, obj):
         price = SubscriptionPrice.objects.filter(subscription_type=obj.subscription_type).first()
         return price.price if price else None
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserData
+        fields = ['name']
+
+class BookingAppointmentSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Appointment
+        fields = ['user', 'minimum_hours_to_work', 'date']

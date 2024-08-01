@@ -75,6 +75,9 @@ const getUserProfile = async (token) =>{
                 Authorization: `Bearer ${token}`
             }
         });
+        console.log('=============tasker=======================');
+        console.log(response.data);
+        console.log('====================================');
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;

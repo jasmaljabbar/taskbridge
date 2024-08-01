@@ -10,4 +10,6 @@ urlpatterns = [
     path('subscriptions/', TaskerSubscriptionView.as_view(), name='tasker-subscriptions'),
     path('user_distribution/', UserDistributionView.as_view(), name='user_distribution'),
     path('user_growth/', UserGrowthView.as_view(), name='user_growth'),
+    path('accepted-appointments/', AcceptedAppointmentsView.as_view(), name='accepted-appointments'),
+     path('download_report/', DownloadReportView.as_view(), name='download_report'),
 ]

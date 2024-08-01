@@ -125,9 +125,15 @@ const TaskCategory = () => {
   }
 
   return (
-    <div className="flex items-center justify-center ml-32">
-      <div className="flex flex-col items-center p-6  h-screen w-[90%] mt-14">
+    <div className="flex items-center justify-center ml-32 w-full">
+      <div className="flex flex-col p-6  h-screen w-[90%] mt-14">
+        <div className="">
+
+        <div className="flex justify-center">
         <h1 className="text-purple-950 text-4xl font-bold">Taskes</h1>
+        </div>
+        <div className="flex  w-full ms-28 justify-end items-end">
+
         <button
           type="button"
           onClick={() => setIsFormVisible(!isFormVisible)}
@@ -135,6 +141,8 @@ const TaskCategory = () => {
         >
           Add Task Category +
         </button>
+        </div>
+        </div>
         {isFormVisible && (
           <form
             onSubmit={handleAddCategory}
@@ -176,7 +184,7 @@ const TaskCategory = () => {
             </button>
           </form>
         )}
-        <table className="w-3/4 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ml-6 ms-28">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="px-6 py-3">

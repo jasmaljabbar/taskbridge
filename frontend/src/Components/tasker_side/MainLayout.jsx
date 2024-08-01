@@ -4,9 +4,9 @@ import MessageSidebar from "./MessageSidebar"; // Adjust the path as necessary
 
 function MainLayout() {
   return (
-    <div className="flex h-screen pt-7">
+    <div className="flex w-[75%] h-screen pt-7">
       <MessageSidebar />
-      <div className="flex-1  bg-gray-100 overflow-hidden">
+      <div className="flex-1   overflow-hidden">
         <Outlet className="h-full overflow-auto" />{" "}
       </div>
     </div>

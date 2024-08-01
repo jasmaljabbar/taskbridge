@@ -42,7 +42,7 @@ function Login() {
       user.is_admin
         ? navigate("/admin/user_list ")
         : user.is_staff
-        ? navigate("/tasker/tasker_dashboard")
+        ? navigate("/tasker/profile")
         : navigate("/");
     } catch (error) {
       toast.error("Email or password is incorrect");

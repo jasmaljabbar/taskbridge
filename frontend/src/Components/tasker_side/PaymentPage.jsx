@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const PaymentPage = () => {
   const [options, setOptions] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
@@ -29,6 +30,7 @@ const PaymentPage = () => {
   }, [accessToken]);
 
   const handleCheckout = async (subscriptionType) => {
+    setIsLoading(true)
     try {
       const response = await axios.post(
         `${BASE_URL}task_workers/create-checkout-session/`,
@@ -40,14 +42,22 @@ const PaymentPage = () => {
         }
       );
       if (response.data.url) {
-        window.location.href = response.data.url; // Redirect to Stripe checkout
+        window.location.href = response.data.url; 
+        setIsLoading(false)
       } else {
         alert("Failed to get checkout URL");
+        setIsLoading(false)
       }
     } catch (error) {
       alert(error.message);
     }
   };
+
+  if (isLoading) return (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-100 min-h-screen p-6">

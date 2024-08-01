@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -50,6 +50,10 @@ import SuccessPage from "./Components/tasker_side/SuccessPage";
 import CancelPage from "./Components/tasker_side/CancelPage";
 import SetSubscriptionPrice from "./Components/admin_side/SetSubscriptionPrice ";
 
+import { jwtDecode } from 'jwt-decode';
+import AcceptedAppointments from "./Components/tasker_side/dashboard/AcceptedAppointments";
+
+
 
 
 const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
@@ -57,19 +61,33 @@ const ProtectedRoute = ({ element, isAuthenticated, redirectTo }) => {
 };
 
 const App = () => {
+  const [user, setUser] = useState(null);
   const accessToken = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (accessToken) {
+      try {
+        const decodedUser = jwtDecode(accessToken);
+        setUser(decodedUser);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        // Handle the error appropriately, e.g., clearing the invalid token
+        localStorage.removeItem("token");
+      }
+    }
+  }, [accessToken]);
+
   const dispatch = useDispatch();
-  const {
-    isAuthenticated,
-    isadmin,
-    is_staff: isStaff,
-  } = useSelector((state) => state.auth);
+  const { isAuthenticated, isAdmin, is_staff: isStaff } = useSelector((state) => state.auth);
 
   useEffect(() => {
     if (accessToken) {
       dispatch(login({ accessToken }));
     }
   }, [dispatch, accessToken]);
+
+  // Use optional chaining to safely access is_admin
+  const isUserAdmin = user?.is_admin || false;
 
   return (
     <>
@@ -190,7 +208,7 @@ const App = () => {
             element={
               <ProtectedRoute
                 element={<AdminLayout />}
-                isAuthenticated={isAuthenticated && isadmin}
+                isAuthenticated={isAuthenticated && isUserAdmin}
                 redirectTo="/login"
               />
             }
@@ -215,7 +233,7 @@ const App = () => {
               />
             }
           >
-            <Route path="tasker_dashboard" element={<Dashboard />} />
+            <Route path="tasker_dashboard" element={<AcceptedAppointments />} />
             <Route path="profile" element={<Tasker_profile />} />
             <Route path="taskshow" element={<TaskShow />} />
             <Route path="message" element={<MainLayout />} />

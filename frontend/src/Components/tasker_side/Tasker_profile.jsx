@@ -88,6 +88,7 @@ const TaskerProfile = () => {
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("full_name", values.full_name);
@@ -128,13 +129,14 @@ const TaskerProfile = () => {
         }
       );
 
+
       setTaskerData((prevData) => ({
         ...prevData,
         ...response.data,
       }));
 
       fetchData();
-
+      setIsLoading(false);
       setEditing(false);
       dispatch(fetchTaskerProfile(accessToken));
       resetForm();
