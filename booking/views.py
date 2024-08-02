@@ -9,6 +9,9 @@ from django.shortcuts import get_object_or_404
 from account.utils import send_tasker_email
 from django.core.exceptions import PermissionDenied
 from rest_framework.views import APIView
+from django.utils import timezone
+from datetime import timedelta
+from account.utils import generate_otp,send_otp_email
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -135,6 +138,63 @@ class ManagingAppointment:
         appointment.save()
         send_user_appointment_email(email, 'rejected', info)
         return appointment
+    
+class CompleteAppointmentAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, appointment_id):
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+            
+            if appointment.employee != request.user:
+                return Response({"detail": "You do not have permission to complete this appointment."}, 
+                                status=status.HTTP_403_FORBIDDEN)
+
+            otp = generate_otp()
+            print(otp)
+            appointment.otp = otp
+            appointment.otp_time = timezone.now()
+            appointment.save()
+
+            send_otp_email(appointment.user.email, otp)
+
+            return Response({"message": "OTP sent successfully."}, status=status.HTTP_200_OK)
+        
+        except Appointment.DoesNotExist:
+            return Response({"detail": "Appointment not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class VerifyOTP(APIView):
+    def post(self, request, appointment_id):
+        otp_entered = request.data.get('otp')
+        print(f"OTP entered: {otp_entered}, Appointment ID: {appointment_id}")
+        
+        if not otp_entered:
+            return Response({'detail': 'OTP is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            appointment = Appointment.objects.get(id=appointment_id)
+            
+            if appointment.otp != otp_entered:
+                return Response({'detail': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if appointment.otp_time:
+                current_time = timezone.now()
+                otp_time = appointment.otp_time
+
+                # Check if the OTP is within 1 minute
+                if current_time - otp_time > timedelta(minutes=1):
+                    return Response({'detail': 'OTP expired'}, status=status.HTTP_400_BAD_REQUEST)
+
+            appointment.status = 'complete'
+            appointment.otp = None
+            appointment.otp_time = None
+            appointment.save()
+
+            return Response({'message': 'Task completed successfully.'}, 
+                            status=status.HTTP_200_OK)
+        except Appointment.DoesNotExist:
+            return Response({'detail': 'Appointment not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class ManageAppointmentStatusView(APIView):

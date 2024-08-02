@@ -45,6 +45,8 @@ class Tasker(models.Model):
     subscription_type = models.CharField(max_length=10, choices=SUBSCRIPTION_CHOICES, default='monthly')
     subscription_start_date = models.DateTimeField(null=True, blank=True)
     subscription_end_date = models.DateTimeField(null=True, blank=True)
+    rating = models.IntegerField(null=True, default=0)
+
 
     def __str__(self):
         return self.full_name

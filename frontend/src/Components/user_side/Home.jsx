@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Img1 from "../../statics/user_side/images/login.jpg";
 import { FiSearch } from "react-icons/fi";
 import WorkCategory from "./Home/Work_catogory";
@@ -7,9 +7,14 @@ import Add1 from "../user_side/Home/Add1";
 
 import Services from "../user_side/Home/Services";
 import Footer from "../user_side/Home/Footer";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
- 
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const handleSearch = () => {
+    navigate(`/search_results?query=${encodeURIComponent(searchQuery)}`);
+  };
 
   return (
     <div className="w-full h-screen">
@@ -44,9 +49,14 @@ const HomePage = () => {
               <input
                 className="border w-[30vw] text-gray-600 font-semibold h-[7vh] border-gray-400 p-2 pl-6 outline-none border-r-0 rounded-bl-full rounded-tl-full"
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search"
               />
-              <button className="bg-blue-700 rounded-tr-full rounded-br-full w-20 flex justify-center items-center">
+              <button
+                className="bg-blue-700 rounded-tr-full rounded-br-full w-20 flex justify-center items-center"
+                onClick={handleSearch}
+              >
                 <FiSearch className="text-white text-2xl" />
               </button>
             </div>
