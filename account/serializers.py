@@ -79,7 +79,9 @@ class LoginSerializer(TokenObtainPairSerializer):
 
 
 class TaskerHomeSerializer(serializers.ModelSerializer):
-    task = WorkCategorySerializer() 
+    task = WorkCategorySerializer()
+    profile_pic = serializers.SerializerMethodField()
+
     class Meta:
         model = Tasker
         fields = [
@@ -93,6 +95,9 @@ class TaskerHomeSerializer(serializers.ModelSerializer):
             "task_fee",
             "city",
             "state",
-            'subscribed',
-            
+            "subscribed",
+            "profile_pic",
         ]
+
+    def get_profile_pic(self, obj):
+        return obj.user.profile_pic.url if obj.user.profile_pic else None

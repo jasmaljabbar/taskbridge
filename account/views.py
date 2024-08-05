@@ -121,11 +121,38 @@ class Tasker_ListingView(APIView):
         return Response(serializer.data)
 
 @permission_classes([AllowAny])
+class BestTaskers(APIView):
+    def get(self, request):
+        taskers = Tasker.objects.filter(rating__gt=0).order_by('-rating')[:3]
+        serializer = TaskerHomeSerializer(taskers, many=True)
+        return Response(serializer.data)
+    
+
+@permission_classes([AllowAny])
+class Adds_Taskers(APIView):
+    def get(self, request):
+        taskers = Tasker.objects.filter(rating__gt=0).order_by('-rating')[3:6]
+        serializer = TaskerHomeSerializer(taskers, many=True)
+        return Response(serializer.data)
+
+
+
+@permission_classes([AllowAny])
+class Service_Taskers(APIView):
+    def get(self, request):
+        taskers = Tasker.objects.filter(rating__gt=0).order_by('-rating')[6:9]
+        serializer = TaskerHomeSerializer(taskers, many=True)
+        return Response(serializer.data)
+
+
+
+@permission_classes([AllowAny])
 class TaskCategory_ListingView(APIView):
     def get(self,request):
         taskCategoty = WorkCategory.objects.all()
         serializer = WorkCategorySerializer(taskCategoty, many=True)
         return Response(serializer.data)
+    
     
 @permission_classes([AllowAny])
 class Category_Tasker_filter(APIView):
@@ -149,6 +176,8 @@ class SearchTasker(APIView):
         
         serializer = TaskerHomeSerializer(taskers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
     
 
 class TaskerDetails(APIView):

@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
+import axios from "axios";
+import { API_URL } from "../../../redux/actions/authService";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import Img1 from "../../../statics/user_side/worker_image/jnj.png";
+import Unknown from '../../../statics/user_side/Unknown.jpg';
+import { Link } from "react-router-dom";
 
-const Add1 = ({ title, description1, description2, imgSrc }) => {
+
+const Add1 = ({ title, description, imgSrc }) => {
   return (
     <div className="flex items-center justify-center bg-blue-300 rounded-lg p-8 mx-4">
       <div className="flex flex-col justify-center items-start w-1/2">
         <h2 className="text-3xl font-bold mb-4">{title}</h2>
-        <p className="text-lg mb-2">{description1}</p>
-        <p className="text-lg">{description2}</p>
+        <p className="text-lg mb-2">{description}</p>
       </div>
       <div className="w-1/2 flex justify-center">
         <img
@@ -25,6 +28,7 @@ const Add1 = ({ title, description1, description2, imgSrc }) => {
 };
 
 const AdSlider = () => {
+  const [taskersInfo, setTaskersInfo] = useState([]);
   const settings = {
     dots: true,
     infinite: true,
@@ -33,34 +37,42 @@ const AdSlider = () => {
     slidesToScroll: 1,
   };
 
-  const ads = [
-    {
-      title: "Assembly",
-      description1:
-        "Assemble or disassemble furniture items by unboxing, building, and any cleanup.",
-      description2:
-        "Now Trending: Curved sofas, computer desks, and sustainable materials.",
-      imgSrc: Img1,
-    },
-    {
-      title: "Cleaning",
-      description1: "Professional cleaning services for homes and offices.",
-      description2: "Now Trending: Eco-friendly cleaning products.",
-      imgSrc: Img1,
-    },
-    // Add more ads as needed
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}addsTasker/`);
+        setTaskersInfo(response.data);
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const generateDescription = (title) => {
+    switch (title) {
+      case "Assembly":
+        return "Expert assembly services for your home and office furniture, ensuring every piece is built to perfection.";
+      case "Cleaning":
+        return "Professional and thorough cleaning services, leaving your spaces spotless and refreshed.";
+      // Add more cases as needed based on the tasker's title
+      default:
+        return "Dedicated and skilled professional ready to provide top-notch services.";
+    }
+  };
 
   return (
     <Slider {...settings}>
-      {ads.map((ad, index) => (
+      {taskersInfo.map((tasker, index) => (
+        <Link key={index} to={`/details/${tasker.user}?user=${tasker.user}`}>
         <Add1
           key={index}
-          title={ad.title}
-          description1={ad.description1}
-          description2={ad.description2}
-          imgSrc={ad.imgSrc}
+          title={tasker.task.name}
+          description={generateDescription(tasker.task.name)}
+          imgSrc={tasker.profile_pic ? `http://127.0.0.1:8000${tasker.profile_pic}` : Unknown}
         />
+        </Link>
       ))}
     </Slider>
   );

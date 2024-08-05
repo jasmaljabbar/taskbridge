@@ -4,6 +4,7 @@ from .serializers import AppointmentSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.views import View
+from task_workers.models import Tasker
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from account.utils import send_tasker_email
@@ -190,6 +191,10 @@ class VerifyOTP(APIView):
             appointment.otp = None
             appointment.otp_time = None
             appointment.save()
+            employee = Tasker.objects.get(user=appointment.employee)
+            employee.rating+=1
+            employee.save()
+
 
             return Response({'message': 'Task completed successfully.'}, 
                             status=status.HTTP_200_OK)

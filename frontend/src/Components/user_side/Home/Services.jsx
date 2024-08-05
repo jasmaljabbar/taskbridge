@@ -1,11 +1,14 @@
-import React from "react";
-import Img4 from "../../../statics/user_side/images/group-61.jpg"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { API_URL } from "../../../redux/actions/authService";
+import { Link } from "react-router-dom";
+import Img4 from "../../../statics/user_side/images/group-61.jpg";
 
-const ServiceCard = ({ imgSrc, title, description }) => {
+const ServiceCard = ({ imgSrc, title, description, userId }) => {
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md m-4">
       <a href="#">
-        <img className="rounded-t-lg w-full" src={imgSrc} alt="" />
+        <img className="rounded-t-lg w-full" src={imgSrc} alt={title} />
       </a>
       <div className="p-5">
         <a href="#">
@@ -14,60 +17,74 @@ const ServiceCard = ({ imgSrc, title, description }) => {
           </h5>
         </a>
         <p className="mb-3 font-normal text-gray-700">{description}</p>
-        <a
-          href="#"
-          className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
-        >
-          Read more
-          <svg
-            className="w-3.5 h-3.5 ml-2"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 10"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 5h12m0 0L9 1m4 4L9 9"
-            />
-          </svg>
-        </a>
+        <Link to={`/details/${userId}?user=${userId}`}>
+          <span className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+            Read more
+            <svg
+              className="w-3.5 h-3.5 ml-2"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 10"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M1 5h12m0 0L9 1m4 4L9 9"
+              />
+            </svg>
+          </span>
+        </Link>
       </div>
     </div>
   );
 };
 
 const Services = () => {
-  const serviceItems = [
-    {
-      imgSrc: Img4,
-      title: "Minor Plumbing Repairs",
-      description: "Projects starting at ₹760",
-    },
-    {
-      imgSrc: Img4,
-      title: "Furniture Assembly",
-      description: "Projects starting at $49",
-    },
-    {
-      imgSrc: Img4,
-      title: "Electrical Help",
-      description: "Projects starting at ₹760",
-    },
-    // Add more services as needed
-  ];
+  const [taskersInfo, setTaskersInfo] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}addsTasker/`);
+        setTaskersInfo(response.data);
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const generateDescription = (title) => {
+    switch (title) {
+      case "Minor Plumbing Repairs":
+        return "Projects starting at ₹760";
+      case "Furniture Assembly":
+        return "Projects starting at ₹49";
+      case "Electrical Help":
+        return "Projects starting at ₹760";
+      // Add more cases as needed
+      default:
+        return "High-quality service for your needs.";
+    }
+  };
 
   return (
     <div className="flex flex-wrap justify-center">
-      {serviceItems.map((item, index) => (
+      {taskersInfo.map((tasker, index) => (
         <ServiceCard
           key={index}
-          imgSrc={item.imgSrc}
-          title={item.title}
-          description={item.description}
+          imgSrc={
+            tasker.profile_pic
+              ? `http://127.0.0.1:8000${tasker.work_photo}`
+              : Img4
+          }
+          title={tasker.task.name}
+          description={generateDescription(tasker.task.name)}
+          userId={tasker.user}
         />
       ))}
     </div>
