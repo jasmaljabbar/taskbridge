@@ -5,10 +5,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework.response import Response
 from django.http import JsonResponse
+from django.db.models import Count, Q
 from rest_framework import serializers
 from rest_framework.views import APIView
 from rest_framework import status
 from account.models import UserData
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+
 
 
 @permission_classes([IsAuthenticated])
@@ -66,10 +71,9 @@ class GetEmployeeMessage(ListAPIView):
 @permission_classes([IsAuthenticated])
 class GetUsersChatWithTasker(ListAPIView):
     serializer_class = UserChatSeralizer
-    
+
     def get_queryset(self):
         tasker_id = self.kwargs['tasker_id']
-        
         # Get the latest chat messages by date for each sender
         latest_chats = (
             Chat.objects.filter(receiver_id=tasker_id)
@@ -79,13 +83,46 @@ class GetUsersChatWithTasker(ListAPIView):
 
         # Extract the sender ids from the latest chat messages
         sender_ids = latest_chats.values_list('sender_id', flat=True)
-        
+
         # Get the users corresponding to the sender ids
         users = UserData.objects.filter(id__in=sender_ids)
-        
+
         return users
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, many=True, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class SendMessage(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, *args, **kwargs):
+        message = request.data.get('message')
+        sender_id = request.data.get('sender')
+        receiver_id = request.data.get('receiver')
+        image = request.FILES.get('image')
+    
+
+        if not sender_id or not receiver_id:
+            return Response({"error": "Sender and receiver are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            sender = UserData.objects.get(id=sender_id)
+            receiver = UserData.objects.get(id=receiver_id)
+        except UserData.DoesNotExist:
+            return Response({"error": "Invalid sender or receiver"}, status=status.HTTP_400_BAD_REQUEST)
+
+        chat = Chat(sender=sender, receiver=receiver, message=message)
+
+        if image:
+            # Save the image and get its URL
+            image_name = default_storage.save(f'chat_images/{image.name}', ContentFile(image.read()))
+            image_url = default_storage.url(image_name)
+            chat.image = image_url
+
+            chat.save()
+
+        serializer = ChatSerializer(chat)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

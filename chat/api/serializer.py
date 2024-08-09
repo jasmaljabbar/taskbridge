@@ -6,10 +6,17 @@ from rest_framework import serializers
 from rest_framework.serializers import Serializer, IntegerField, CharField, ImageField
 
 
-class UserChatSeralizer(ModelSerializer):
+class UserChatSeralizer(serializers.ModelSerializer):
+    unread_message_count = serializers.SerializerMethodField()
+
     class Meta:
         model = UserData
-        fields = ['id','name','profile_pic']
+        fields = ['id', 'name', 'profile_pic', 'unread_message_count']
+
+    def get_unread_message_count(self, obj):
+        request = self.context.get('request')
+        tasker_id = request.user.id if request else None
+        return Chat.objects.filter(receiver=tasker_id, sender_id=obj, is_read=False).count()
 
 
 class EmployeeChatSeralizer(ModelSerializer):
@@ -23,7 +30,7 @@ class ChatSerializer(ModelSerializer):
     receiver = UserChatSeralizer(read_only = True)
     class Meta:
         model = Chat
-        fields = ['id','sender','receiver','message','date','is_read']
+        fields = ['id', 'sender', 'receiver', 'message', 'image', 'date', 'is_read']
 
         
 

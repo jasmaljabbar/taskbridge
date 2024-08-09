@@ -104,21 +104,54 @@ class AppointmentHistory(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         tasker_id = self.request.query_params.get('tasker_id')
+        now = timezone.now()
 
+        appointments = Appointment.objects.filter( date__lt=now,status='pending')
+        for appointment in appointments:
+            appointment.status = 'canceled'
+            appointment.save() 
+        
         if not tasker_id:
             raise ValidationError("Tasker ID is required")
-        print(user,tasker_id)
         return Appointment.objects.filter(user=user, employee__id=tasker_id)
 
 
     
+
 class TaskerAppointmentHistoryView(generics.ListAPIView):
     serializer_class = AppointmentSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return Appointment.objects.filter(employee=user)
+        now = timezone.now()
+
+        appointments = Appointment.objects.filter(employee=user, date__lt=now, status='pending')
+        for appointment in appointments:
+            appointment.status = 'canceled'
+            appointment.save() 
+
+        return Appointment.objects.filter(employee=user).order_by('date')
+    
+
+class TodayTomorrowAppointmentsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        today = timezone.now().date()
+        tomorrow = today + timezone.timedelta(days=1)
+
+        today_appointments = Appointment.objects.filter(employee=user, date=today)
+        tomorrow_appointments = Appointment.objects.filter(employee=user, date=tomorrow)
+
+        today_serializer = AppointmentSerializer(today_appointments, many=True)
+        tomorrow_serializer = AppointmentSerializer(tomorrow_appointments, many=True)
+
+        return Response({
+            'today': today_serializer.data,
+            'tomorrow': tomorrow_serializer.data
+        })
     
 class ManagingAppointment:
     def __init__(self, tasker):

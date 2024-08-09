@@ -34,7 +34,7 @@ class UserData(AbstractUser):
     date_joined = models.DateTimeField(auto_now_add=True)
     requested_to_tasker = models.BooleanField(default=False)
     payment_time = models.BooleanField(default=False)
-    blocked_for_tasker = models.BooleanField(default=True)
+    blocked_for_tasker = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)

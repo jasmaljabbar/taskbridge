@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { BASE_URL } from '../redux/actions/authService';
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/',
+    baseURL: BASE_URL,
 });
 
 const setAuthToken = (token) => {

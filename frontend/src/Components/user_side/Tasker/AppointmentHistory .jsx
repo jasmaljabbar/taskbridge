@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import ConfirmModal from "../../common/ConfirmModal";
 import Confirm_without_msg from "../../common/Confirm_without_msg";
+import { BASE_URL } from "../../../redux/actions/authService";
 
 const AppointmentHistory = () => {
   const [appointments, setAppointments] = useState([]);
@@ -20,7 +20,7 @@ const AppointmentHistory = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/booking/appointment/history/",
+          `${BASE_URL}booking/appointment/history/`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -79,7 +79,7 @@ const AppointmentHistory = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/booking/appointment/update/${selectedAppointment.id}/`,
+        `${BASE_URL}booking/appointment/update/${selectedAppointment.id}/`,
         selectedAppointment,
         {
           headers: {
@@ -122,7 +122,7 @@ const AppointmentHistory = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/booking/appointment/cancel/${appointmentIdToCancel}/`,
+        `${BASE_URL}booking/appointment/cancel/${appointmentIdToCancel}/`,
         {},
         {
           headers: {
@@ -163,12 +163,15 @@ const AppointmentHistory = () => {
     <div className="min-h-screen py-12 px-4 ml-72 mt-64 sm:px-6 lg:px-8">
       <Confirm_without_msg
         show={showModal}
-        onClose={closeModal}
+        onClose={() => {
+          closeModal();
+          setShowModal(false);
+        }}
         onConfirm={confirmCancel}
         message="Are you sure you want to cancel this appointment?"
         confirmText="Yes, cancel it"
       />
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl  mx-auto">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
           Appointment History
         </h1>
@@ -248,11 +251,11 @@ const AppointmentHistory = () => {
         )}
       </div>
 
-      {showModal && selectedAppointment && (
+      {isModalOpen && selectedAppointment && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4">Edit Appointment</h2>
-            <form onSubmit={(e) => handleEdit(e, selectedAppointment)}>
+            <form onSubmit={handleEdit}>
               <div className="mb-4">
                 <label
                   htmlFor="date"

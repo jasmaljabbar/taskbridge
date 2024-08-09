@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { BASE_URL } from './authService';
 
-const API_URL = 'http://127.0.0.1:8000/task_workers/';
-const API_URL_tasks = 'http://127.0.0.1:8000/adminside/';
+const API_URL = `${BASE_URL}task_workers/`;
+const API_URL_tasks = `${BASE_URL}adminside/`;
 
 const tasker_register = async (taskerData) => {
   const user = JSON.parse(localStorage.getItem('token'));

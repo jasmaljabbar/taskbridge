@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { API_URL } from "../../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../../redux/actions/authService";
 import next from "../../../statics/user_side/work_image/after.png";
 import previos from "../../../statics/user_side/work_image/previos.png";
 import Slider from "react-slick";
@@ -16,7 +16,7 @@ const Work_category = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}taskcategory/`);
+        const response = await axios.get(`${BASE_URL}account/api/taskcategory/`);
         setWorkItems(response.data);
       } catch (error) {
         alert(error.message);
@@ -79,7 +79,7 @@ const Work_category = () => {
             >
               <div className="flex justify-center">
                 <img
-                  src={`http://127.0.0.1:8000${item.work_image}`}
+                  src={`${B_URL}${item.work_image}`}
                   alt={item.alt}
                   className={`shadow rounded-full max-w-full h-auto align-middle border-none transition-transform transform hover:scale-105 ${item.className}`}
                   style={{

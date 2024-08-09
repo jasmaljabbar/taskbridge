@@ -7,7 +7,8 @@ from .views import (
     UpdateAppointmentAPIView,
     CancelAppointmentAPIView,
     VerifyOTP,
-    CompleteAppointmentAPIView
+    CompleteAppointmentAPIView,
+    TodayTomorrowAppointmentsView,
 )
 
 urlpatterns = [
@@ -18,6 +19,7 @@ urlpatterns = [
     path('appointment/update/<int:pk>/', UpdateAppointmentAPIView.as_view(), name='appointment-update'),
     path('appointment/cancel/<int:appointment_id>/', CancelAppointmentAPIView.as_view(), name='appointment-cancel'),
     path('verify-otp/<int:appointment_id>/', VerifyOTP.as_view(), name='verify_otp'),
+    path('today-tomorrow/', TodayTomorrowAppointmentsView.as_view(), name='today-tomorrow-appointments'),
     path('appointment/complete/<int:appointment_id>/', CompleteAppointmentAPIView.as_view(), name='complete_appointment'),
 
 ]

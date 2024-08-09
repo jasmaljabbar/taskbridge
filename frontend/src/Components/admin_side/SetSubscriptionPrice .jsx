@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { API_URL_ADMIN, BASE_URL } from "../../redux/actions/authService";
+import { BASE_URL } from "../../redux/actions/authService";
 import toast from "react-hot-toast";
 
 function SetSubscriptionPrice() {
@@ -32,7 +32,7 @@ function SetSubscriptionPrice() {
     setError(null); // Reset error before new request
     try {
       const response = await axios.post(
-        `${API_URL_ADMIN}subscription-prices/`,
+        `${BASE_URL}adminside/subscription-prices/`,
         { subscription_type: subscriptionType, price },
         {
           headers: {

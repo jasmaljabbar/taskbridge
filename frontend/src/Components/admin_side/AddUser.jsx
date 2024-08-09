@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import { API_URL } from '../../redux/actions/authService'
+import { BASE_URL } from '../../redux/actions/authService'
 
 function AddUser() {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' })
@@ -14,7 +14,7 @@ function AddUser() {
         e.preventDefault();
         console.log('Form Data:', formData);
         try {
-            const response = await axios.post(`${API_URL}/register/`, formData)
+            const response = await axios.post(`${BASE_URL}account/api/register/`, formData)
             console.log('User registered:', response.data);
             navigate("/dashboard")
 

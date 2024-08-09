@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { API_URL_ADMIN } from "../../redux/actions/authService";
+import { BASE_URL } from "../../redux/actions/authService";
 
 function EditUser({ id, setTaskInfo, item }) {
   const [updated, setUpdated] = useState({
@@ -31,7 +31,7 @@ function EditUser({ id, setTaskInfo, item }) {
 
     try {
       const response = await axios.put(
-        `${API_URL_ADMIN}edit_workcategory/${id}/`,
+        `${BASE_URL}adminside/edit_workcategory/${id}/`,
         formData,
         {
           headers: {

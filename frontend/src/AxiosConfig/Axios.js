@@ -6,7 +6,7 @@ import { BASE_URL } from "../redux/actions/authService";
 
 
 const useAxios = () => {
-  console.log('BASE_URL:', BASE_URL);
+
   let access_token = localStorage.getItem("token");
   const axiosInstance = axios.create({
     baseURL: BASE_URL, // This should be a string
@@ -35,7 +35,6 @@ const useAxios = () => {
     return req;
   });
 
-  console.log(axiosInstance);  // Log the Axios instance
 
   return axiosInstance;
 };

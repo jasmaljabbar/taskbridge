@@ -13,7 +13,7 @@ const AcceptedAppointments = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [chartData, setChartData] = useState({});
-  const [view, setView] = useState('daily');
+  const [view, setView] = useState("daily");
   const accessToken = useSelector((state) => state.auth.token);
   const chartRef = useRef(null);
 
@@ -30,9 +30,9 @@ const AcceptedAppointments = () => {
         }
       );
       setAppointments(response.data);
-      console.log('====================================');
+      console.log("================nnnnnnnnn===================");
       console.log(response.data);
-      console.log('====================================');
+      console.log("====================================");
       setChartData({
         daily: formatChartData(response.data.daily),
         monthly: formatChartData(response.data.monthly),
@@ -51,7 +51,9 @@ const AcceptedAppointments = () => {
   }, [fetchAppointments]);
 
   const formatChartData = (data) => ({
-    labels: data.map((item) => item.date || item.day || item.month || item.year),
+    labels: data.map(
+      (item) => item.date || item.day || item.month || item.year
+    ),
     datasets: [
       {
         label: "Minimum Hours to Work",
@@ -97,13 +99,19 @@ const AcceptedAppointments = () => {
 
   return (
     <div className="flex flex-col bg-gray-100 min-h-screen w-[92%] p-4 sm:p-6 lg:ms-60">
-      <h1 className="text-2xl font-bold mb-4 text-center">Accepted Appointments</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        Accepted Appointments
+      </h1>
 
       {appointments && (
         <div className="bg-white w-full shadow-md rounded p-4 mb-6">
           <h2 className="text-xl font-bold mb-4">Progress Graph</h2>
           <div className="flex justify-center mb-4">
-            <select value={view} onChange={handleViewChange} className="p-2 rounded">
+            <select
+              value={view}
+              onChange={handleViewChange}
+              className="p-2 rounded"
+            >
               <option value="daily">Daily</option>
               <option value="monthly">Monthly</option>
               <option value="yearly">Yearly</option>
@@ -118,16 +126,16 @@ const AcceptedAppointments = () => {
       <div className="bg-white shadow-md rounded p-4 w-full">
         {appointments ? (
           <div className="overflow-hidden">
-           <PaginatedTable
-            data={appointments[view]}
-            headers={["User", "Min Hours", "Date"]}
-            dataFields={["user_name", "total_hours", "day"]}
-            itemsPerPage={itemsPerPage}
-            setItemsPerPage={setItemsPerPage}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            className="w-full table-auto"
-          />
+            <PaginatedTable
+              data={appointments[view]}
+              headers={["User", "Min Hours", "Date"]}
+              dataFields={["user_name", "total_hours", "day"]}
+              itemsPerPage={itemsPerPage}
+              setItemsPerPage={setItemsPerPage}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              className="w-full table-auto"
+            />
           </div>
         ) : (
           <div>No accepted appointments found.</div>

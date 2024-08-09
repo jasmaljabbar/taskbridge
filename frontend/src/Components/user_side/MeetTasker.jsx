@@ -5,6 +5,7 @@ import { TbListDetails, TbCalendarCheck } from "react-icons/tb";
 import { TiMessages } from "react-icons/ti";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
+import { B_URL } from "../../redux/actions/authService";
 
 const MeetTasker = () => {
   const taskerInfo = useSelector((state) => state.auth.taskerDetails);
@@ -51,7 +52,7 @@ const MeetTasker = () => {
         <img
           src={
             taskerInfo.work_photo
-              ? `http://127.0.0.1:8000${taskerInfo.work_photo}`
+              ? `${B_URL}${taskerInfo.work_photo}`
               : "fallback_image_url"
           }
           alt="Tasker Work"
@@ -62,7 +63,7 @@ const MeetTasker = () => {
             className="w-32 h-32 rounded-full object-cover border-4 border-white"
             src={
               taskerInfo.profile_pic
-                ? `http://127.0.0.1:8000${taskerInfo.profile_pic}`
+                ? `${B_URL}${taskerInfo.profile_pic}`
                 : "fallback_profile_photo_url"
             }
             alt="Tasker"

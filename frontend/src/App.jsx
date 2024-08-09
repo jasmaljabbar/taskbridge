@@ -52,6 +52,9 @@ import SetSubscriptionPrice from "./Components/admin_side/SetSubscriptionPrice "
 
 import { jwtDecode } from 'jwt-decode';
 import AcceptedAppointments from "./Components/tasker_side/dashboard/AcceptedAppointments";
+import TaskerAppointments from "./Components/tasker_side/TaskerAppointments";
+
+
 
 
 
@@ -237,6 +240,7 @@ const App = () => {
             <Route path="profile" element={<Tasker_profile />} />
             <Route path="taskshow" element={<TaskShow />} />
             <Route path="message" element={<MainLayout />} />
+            <Route path="taskerAppointments" element={<TaskerAppointments />} />
             <Route
               path="chat"
               element={

@@ -1,18 +1,19 @@
 import axios from 'axios';
 
-export const API_URL = 'http://127.0.0.1:8000/account/api/';
+// export const API_URL = 'http://127.0.0.1:8000/account/api/';
 
-export const API = 'http://127.0.0.1:8000/account/';
+// export const API = 'http://127.0.0.1:8000/account/';
 
 export const BASE_URL = 'http://127.0.0.1:8000/'
+export const B_URL = 'http://127.0.0.1:8000'
 
-export const API_URL_PROFIL = 'http://127.0.0.1:8000/profiles/'
+// export const API_URL_PROFIL = 'http://127.0.0.1:8000/profiles/'
 
-export const API_URL_ADMIN = 'http://127.0.0.1:8000/adminside/'
+// export const API_URL_ADMIN = 'http://127.0.0.1:8000/adminside/'
 
 const register = async (userData) => {
     try {
-        const response = await axios.post(API_URL + 'register/', userData);
+        const response = await axios.post(BASE_URL + 'account/api/register/', userData);
         if (response.data) {
             localStorage.setItem('user', JSON.stringify(response.data));
         }
@@ -25,7 +26,7 @@ const register = async (userData) => {
 const login = async (userData) => {
     try {
         console.log("Sending userData:", userData);  // Log request payload
-        const response = await axios.post(`${API_URL}login/`, userData);
+        const response = await axios.post(`${BASE_URL}account/api/login/`, userData);
         console.log("Login successful", response.data);
         return response.data;
     } catch (error) {
@@ -43,7 +44,7 @@ const admin_login = async (userData) => {
                 "Content-Type": "application/json",
             },
         };
-        const response = await axios.post(API_URL_ADMIN + 'admin_login/', userData, config);
+        const response = await axios.post(BASE_URL + 'adminside/admin_login/', userData, config);
        
         if (response.data) {
             localStorage.setItem("user", JSON.stringify(response.data));
@@ -56,7 +57,7 @@ const admin_login = async (userData) => {
 
 const getUserProfile = async (token) =>{
     try{
-      const response = await axios.get(API_URL_PROFIL + 'me/',{
+      const response = await axios.get(BASE_URL + 'profiles/me/',{
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -70,14 +71,11 @@ const getUserProfile = async (token) =>{
 
   const getTaskerDetails = async (user_id, token) => {
     try {
-        const response = await axios.get(`${API_URL}tasker-details/${user_id}/`, {
+        const response = await axios.get(`${BASE_URL}account/api/tasker-details/${user_id}/`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        console.log('=============tasker=======================');
-        console.log(response.data);
-        console.log('====================================');
         return response.data;
     } catch (error) {
         throw error.response ? error.response.data : error;
@@ -90,7 +88,7 @@ const logout = async () => {
     try {
         if (user && user.refreshToken) {
             await axios.post(
-                API_URL + 'logout/',
+                BASE_URL + 'account/api/logout/',
                 { refreshToken: user.refreshToken },
                 {
                     headers: {

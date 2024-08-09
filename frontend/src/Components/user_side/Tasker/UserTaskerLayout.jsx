@@ -8,7 +8,7 @@ const UserTaskerLayout = () => {
       <div className="h-full">
         <MeetTasker />
       </div>
-      <div className="flex-1 flex items-center justify-center ml-[30%] w-[60vw]  relative">
+      <div className="flex-1 flex items-center justify-center ml-[30%] w-[60vw]  mt-44  relative">
         <div className="absolute top-0 left-0 w-[80%] h-full ">
           <Outlet />
         </div>

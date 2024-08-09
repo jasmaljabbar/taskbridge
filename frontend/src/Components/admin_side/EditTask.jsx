@@ -1,38 +1,45 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { API_URL_ADMIN } from "../../redux/actions/authService";
+import { BASE_URL } from "../../redux/actions/authService";
 import toast from "react-hot-toast";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  description: Yup.string().required("Description is required"),
+  work_image: Yup.mixed()
+    .nullable()
+    .notRequired()
+    .test(
+      "fileSize",
+      "File Size is too large",
+      value => value === null || (value && value.size <= 1024 * 1024)
+    )
+    .test(
+      "fileFormat",
+      "Unsupported Format",
+      value =>
+        value === null ||
+        (value && ["image/jpg", "image/jpeg", "image/png"].includes(value.type))
+    ),
+});
 
 function EditTask({ id, setTaskInfo, item }) {
-  const [updated, setUpdated] = useState({
-    name: item.name || "",
-    description: item.description || "",
-    work_image: null,
-  });
   const token = useSelector((state) => state.auth.token);
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "work_image") {
-      setUpdated({ ...updated, [name]: files[0] });
-    } else {
-      setUpdated({ ...updated, [name]: value });
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values, { setSubmitting }) => {
     const formData = new FormData();
-    formData.append("name", updated.name);
-    formData.append("description", updated.description);
-    if (updated.work_image) {
-      formData.append("work_image", updated.work_image);
+    formData.append("name", values.name);
+    formData.append("description", values.description);
+    if (values.work_image) {
+      formData.append("work_image", values.work_image);
     }
 
     try {
       const response = await axios.put(
-        `${API_URL_ADMIN}work/edit/${id}/`,
+        `${BASE_URL}adminside/work/edit/${id}/`,
         formData,
         {
           headers: {
@@ -46,9 +53,11 @@ function EditTask({ id, setTaskInfo, item }) {
           task.id === id ? { ...task, ...response.data, isEditing: false } : task
         )
       );
-      toast.success('Task edited succesfully')
+      toast.success("Task edited successfully");
     } catch (error) {
       toast.error(error.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -98,64 +107,86 @@ function EditTask({ id, setTaskInfo, item }) {
               </button>
             </div>
             <div className="p-4 md:p-5">
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Name
-                  </label>
-                  <input
-                    onChange={handleChange}
-                    value={updated.name}
-                    type="text"
-                    name="name"
-                    id="name"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    placeholder="Category name"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="description"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    onChange={handleChange}
-                    value={updated.description}
-                    name="description"
-                    id="description"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                    placeholder="Category description"
-                    required
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="work_image"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Work Image
-                  </label>
-                  <input
-                    onChange={handleChange}
-                    type="file"
-                    name="work_image"
-                    id="work_image"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Update
-                </button>
-              </form>
+              <Formik
+                initialValues={{
+                  name: item.name || "",
+                  description: item.description || "",
+                  work_image: null,
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ setFieldValue, isSubmitting }) => (
+                  <Form className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Name
+                      </label>
+                      <Field
+                        name="name"
+                        type="text"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="Category name"
+                      />
+                      <ErrorMessage
+                        name="name"
+                        component="div"
+                        className="text-red-500 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="description"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Description
+                      </label>
+                      <Field
+                        name="description"
+                        as="textarea"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                        placeholder="Category description"
+                      />
+                      <ErrorMessage
+                        name="description"
+                        component="div"
+                        className="text-red-500 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="work_image"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Work Image
+                      </label>
+                      <input
+                        type="file"
+                        name="work_image"
+                        onChange={(event) => {
+                          setFieldValue("work_image", event.currentTarget.files[0]);
+                        }}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      />
+                      <ErrorMessage
+                        name="work_image"
+                        component="div"
+                        className="text-red-500 text-sm"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      {isSubmitting ? "Updating..." : "Update"}
+                    </button>
+                  </Form>
+                )}
+              </Formik>
             </div>
           </div>
         </div>

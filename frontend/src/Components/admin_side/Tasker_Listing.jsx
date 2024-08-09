@@ -4,9 +4,10 @@ import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
 import EditUser from "./EditUser";
 import { useSelector } from "react-redux";
-import { API_URL_ADMIN } from "../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../redux/actions/authService";
 import ConfirmModal from "../common/ConfirmModal";
 import TaskerProfile from "./TaskerProfile ";
+import Confirm_without_msg from "../common/Confirm_without_msg";
 
 function Tasker_Listing() {
   const [usersInfo, setUsersInfo] = useState([]);
@@ -14,13 +15,14 @@ function Tasker_Listing() {
   const [currentTaskerId, setCurrentTaskerId] = useState(null);
   const [openTasker, setOpenTasker] = useState(false);
   const [selectedTasker, setSelectedTasker] = useState(null);
+
   const accessToken = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
   const handleRequest = async () => {
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/adminside/blocking_tasker/",
+        `${BASE_URL}adminside/blocking_tasker/`,
         { id: currentTaskerId },
         {
           headers: {
@@ -30,7 +32,16 @@ function Tasker_Listing() {
         }
       );
       console.log(response.data);
-      setUsersInfo(usersInfo.filter((user) => user.id !== currentTaskerId));
+
+      // Update the user's blocked status in the usersInfo state
+      setUsersInfo((prevUsersInfo) =>
+        prevUsersInfo.map((user) =>
+          user.id === currentTaskerId
+            ? { ...user, blocked_for_tasker: !user.blocked_for_tasker }
+            : user
+        )
+      );
+
       setShowModal(false);
     } catch (error) {
       alert(error.message);
@@ -47,23 +58,24 @@ function Tasker_Listing() {
     setSelectedTasker(tasker);
     setOpenTasker(true);
   };
-  const onClose = (tasker) => {
+
+  const onClose = () => {
     setOpenTasker(false);
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL_ADMIN}tasker_listing/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${BASE_URL}adminside/tasker_listing/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setUsersInfo(response.data);
       } catch (error) {
-        console.log('=========================fereeeeeeeeeeeeeeeeeeeeeeee===========');
-        console.log(accessToken);
-        console.log('====================================');
         alert(error.message);
       }
     };
@@ -83,11 +95,11 @@ function Tasker_Listing() {
 
   return (
     <div className="w-full ">
-      <ConfirmModal
+      <Confirm_without_msg
         show={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={handleRequest}
-        message="Are you sure you want to block this tasker?"
+        message="Are you sure you want to change your tasker status?"
         confirmText="Yes, I am sure"
       />
       {openTasker ? (
@@ -135,7 +147,7 @@ function Tasker_Listing() {
                         className="w-10 h-10 rounded-full"
                         src={
                           item.profile_pic
-                            ? `http://127.0.0.1:8000${item.profile_pic}`
+                            ? `${B_URL}${item.profile_pic}`
                             : Unknown
                         }
                         alt="profile picture"
@@ -168,7 +180,14 @@ function Tasker_Listing() {
                       </div>
                     </td>
                     <td className="px-6 py-4 flex flex-row">
-                      {item.is_staff && (
+                      {item.blocked_for_tasker ? (
+                        <button
+                          className="bg-red-300 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-red-600"
+                          onClick={(e) => handleModal(item.id, e)}
+                        >
+                          UnblockTasker
+                        </button>
+                      ) : (
                         <button
                           className="bg-purple-400 text-white md:px-4 md:py-2 px-2 py-0.5 text-[12px] md:text-md font-semibold rounded-lg hover:bg-red-600"
                           onClick={(e) => handleModal(item.id, e)}
@@ -177,6 +196,7 @@ function Tasker_Listing() {
                         </button>
                       )}
                     </td>
+
                     {item.isEditing && (
                       <td>
                         <EditUser

@@ -24,6 +24,14 @@ def send_admin_email(email, user):
     recipient_list = [email]
     send_mail(subject, message, from_email, recipient_list)
 
+def report_admin(email, message,subject):
+    subject = subject
+    message = message
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [email]
+    send_mail(subject, message, from_email, recipient_list)
+
+
 def send_tasker_email(email,user):
     subject = 'User Request'
     message = f'Booking requested by {user}'

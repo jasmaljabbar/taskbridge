@@ -3,12 +3,31 @@ import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUserProfile } from "../../redux/reducers/authSlice";
+import { BASE_URL } from "../../redux/actions/authService";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  full_name: Yup.string()
+    .min(2, "Full name must be at least 2 characters")
+    .required("Full name is required"),
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  phone_number: Yup.string()
+    .matches(/^[0-9]{10}$/, "Phone number is not valid")
+    .required("Phone number is required"),
+  address: Yup.string().required("Address is required"),
+  city: Yup.string().required("City is required"),
+  gender: Yup.string().required("Gender is required"),
+});
+
 
 const UserProfile = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.auth.user);
   const accessToken = useSelector((state) => state.auth.token);
-  const [profile_data, setprofile_data] = useState([]);
+  const [profile_data, setProfile_data] = useState([]);
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,18 +40,16 @@ const UserProfile = () => {
     profile_photo: null,
   });
 
-  
-
   useEffect(() => {
-    const a = async () => {
-      setLoading(true)
+    const fetchData = async () => {
+      setLoading(true);
       if (accessToken) {
         const user_profile = await dispatch(fetchUserProfile(accessToken));
-        setprofile_data(user_profile.payload?.profile);
-        setLoading(false)
+        setProfile_data(user_profile.payload?.profile);
+        setLoading(false);
       }
     };
-    a();
+    fetchData();
   }, [dispatch, accessToken]);
 
   useEffect(() => {
@@ -49,38 +66,28 @@ const UserProfile = () => {
     }
   }, [profile_data]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prevData) => ({ ...prevData, profile_photo: file }));
-  };
-
-  const handleSave = async () => {
-    setLoading(true)
+  const handleSave = async (values) => {
+    setLoading(true);
     if (!accessToken) {
       console.error("No access token available");
-      setLoading(false)
+      setLoading(false);
       return;
     }
 
     const formDataToSend = new FormData();
-    for (const key in formData) {
+    for (const key in values) {
       if (key === "profile_photo") {
-        if (formData[key] !== null) {
-          formDataToSend.append(key, formData[key]);
+        if (values[key] !== null) {
+          formDataToSend.append(key, values[key]);
         }
       } else {
-        formDataToSend.append(key, formData[key]);
+        formDataToSend.append(key, values[key]);
       }
     }
 
     try {
       await axios.put(
-        "http://127.0.0.1:8000/profiles/update/",
+        `${BASE_URL}profiles/update/`,
         formDataToSend,
         {
           headers: {
@@ -91,34 +98,33 @@ const UserProfile = () => {
       );
       const updatedProfile = {
         ...profile_data,
-        username: formData.full_name,
-        email: formData.email,
-        phone_number: formData.phone_number,
-        address: formData.address,
-        city: formData.city,
-        gender: formData.gender,
+        username: values.full_name,
+        email: values.email,
+        phone_number: values.phone_number,
+        address: values.address,
+        city: values.city,
+        gender: values.gender,
         profile_photo:
-          formData.profile_photo instanceof File
-            ? URL.createObjectURL(formData.profile_photo)
+          values.profile_photo instanceof File
+            ? URL.createObjectURL(values.profile_photo)
             : profile_data.profile_photo,
       };
-      setprofile_data(updatedProfile);
+      setProfile_data(updatedProfile);
       dispatch(fetchUserProfile(accessToken));
       setEditing(false);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       console.error("Error saving profile:", error);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
-
-  if (loading) return (
-    <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  );
-
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -144,109 +150,116 @@ const UserProfile = () => {
               </h2>
             </div>
           </div>
-          {editing ? null:
-          <button
-            onClick={() => setEditing(true)}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Edit Profile
-          </button>}
+          {editing ? null : (
+            <button
+              onClick={() => setEditing(true)}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Edit Profile
+            </button>
+          )}
         </div>
         {editing ? (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  disabled
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
-                />
-              </div>
+          <Formik
+            initialValues={formData}
+            validationSchema={validationSchema}
+            onSubmit={handleSave}
+          >
+            {({ setFieldValue }) => (
+              <Form>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
+                    <Field
+                      type="email"
+                      name="email"
+                      disabled
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                    />
+                  </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  name="phone_number"
-                  value={formData.phone_number}
-                  onChange={handleChange}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  City
-                </label>
-                <input
-                  type="text"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Gender
-                </label>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                >
-                  <option value="">Select</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Profile Photo
-                </label>
-                <input
-                  type="file"
-                  name="profile_photo"
-                  onChange={handleFileChange}
-                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end space-x-4">
-              <button
-                onClick={() => setEditing(false)}
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Save
-              </button>
-            </div>
-          </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Phone Number
+                    </label>
+                    <Field
+                      type="text"
+                      name="phone_number"
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                    />
+                    <ErrorMessage name="phone_number" component="div" className="text-red-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Address
+                    </label>
+                    <Field
+                      type="text"
+                      name="address"
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                    />
+                    <ErrorMessage name="address" component="div" className="text-red-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      City
+                    </label>
+                    <Field
+                      type="text"
+                      name="city"
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                    />
+                    <ErrorMessage name="city" component="div" className="text-red-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Gender
+                    </label>
+                    <Field
+                      as="select"
+                      name="gender"
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                    >
+                      <option value="">Select</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </Field>
+                    <ErrorMessage name="gender" component="div" className="text-red-500" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Profile Photo
+                    </label>
+                    <input
+                      type="file"
+                      onChange={(event) => {
+                        setFieldValue("profile_photo", event.currentTarget.files[0]);
+                      }}
+                      className="mt-1 p-2 block w-full border border-gray-300 rounded-md"
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => setEditing(false)}
+                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Save
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>

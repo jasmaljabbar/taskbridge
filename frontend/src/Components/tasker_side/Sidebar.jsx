@@ -46,10 +46,10 @@ const Sidebar = () => {
           </div>
           <div className="mb-4">
             <Link
-              to=""
+              to="/tasker/taskerAppointments"
               className="flex items-center py-2.5 px-4 rounded hover:bg-gray-700"
             >
-              <FaTable className="mr-3" /> Tables
+              <FaTable className="mr-3" /> Today's Tasks
             </Link>
 
             <Link

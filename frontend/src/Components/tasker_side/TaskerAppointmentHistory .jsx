@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import ConfirmModal from "../common/ConfirmModal";
 import OtpInputModal from "../common/OtpInputModal";
+import { BASE_URL } from "../../redux/actions/authService";
 
 const TaskerAppointmentHistory = () => {
   const [appointments, setAppointments] = useState([]);
@@ -27,7 +28,7 @@ const TaskerAppointmentHistory = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/booking/appointment/taskerHistory/",
+          `${BASE_URL}booking/appointment/taskerHistory/`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -59,7 +60,7 @@ const TaskerAppointmentHistory = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/booking/appointment/complete/${appointment.id}/`,
+        `${BASE_URL}booking/appointment/complete/${appointment.id}/`,
         {},
         {
           headers: {
@@ -83,7 +84,7 @@ const TaskerAppointmentHistory = () => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/booking/verify-otp/${selectedAppointment.id}/`,
+        `${BASE_URL}booking/verify-otp/${selectedAppointment.id}/`,
         { otp },
         {
           headers: {
@@ -108,9 +109,8 @@ const TaskerAppointmentHistory = () => {
     }
   };
 
-
   const handleStatusChange = async (info) => {
-    setShowConfirmModal(false)
+    setShowConfirmModal(false);
     setIsLoading(true);
     if (!selectedAppointment) {
       toast.error("Invalid appointment ID");
@@ -120,7 +120,7 @@ const TaskerAppointmentHistory = () => {
     try {
       const appointmentId = selectedAppointment.id;
       const response = await axios.post(
-        `http://127.0.0.1:8000/booking/appointment/manage/${appointmentId}/${newStatus}/`,
+        `${BASE_URL}booking/appointment/manage/${appointmentId}/${newStatus}/`,
         { info },
         {
           headers: {
@@ -145,8 +145,6 @@ const TaskerAppointmentHistory = () => {
     }
   };
 
-  
-
   const getStatusColor = (status) => {
     switch (status) {
       case "pending":
@@ -168,7 +166,7 @@ const TaskerAppointmentHistory = () => {
   };
 
   return (
-    <div className="min-h-screen py-12 px-4 ml-72 sm:px-6 lg:px-8 bg-gray-50">
+    <div className="min-h-screen  px-4 ml-72 sm:px-6 lg:px-8 bg-gray-50">
       {showConfirmModal && (
         <ConfirmModal
           show={showConfirmModal}

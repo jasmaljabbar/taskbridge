@@ -57,7 +57,7 @@ class AdminLogin(APIView):
 class Dashboard(APIView):
 
     def get(self, request):
-        users = UserData.objects.filter(is_staff=False)
+        users = UserData.objects.filter(is_superuser=False)
         serializer = UserDataSerializer(users, many=True)
         return Response(serializer.data)
     
@@ -70,18 +70,22 @@ class Accepting_request(APIView):
         user_id = request.data.get("id")
         try:
             user = UserData.objects.get(id=user_id)
+        except UserData.DoesNotExist:
+            return Response({"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
             tasker = Tasker.objects.get(user=user)
             tasker.admin_approval = True
             user.requested_to_tasker = False
-            user.payment_time=True
+            user.payment_time = True
             user.save()
-            tasker.save()  # Save the changes to the database
+            tasker.save()
             return Response({"Success": "User Approved"}, status=status.HTTP_200_OK)
         except Tasker.DoesNotExist:
-            return Response(
-                {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "Tasker does not exist for this user"}, status=status.HTTP_404_NOT_FOUND)
 
+
+            
 class TaskerDetails(APIView):
     serializer_class = TaskerFetchingSerializer
     
@@ -125,7 +129,7 @@ class Blocking_tasker(APIView):
         user_id = request.data.get("id")
         try:
             user = UserData.objects.get(id=user_id)
-            user.is_staff = False
+            user.blocked_for_tasker = not user.blocked_for_tasker
             user.save()
             return Response({"Success": "User Deleted"}, status=status.HTTP_200_OK)
         except UserData.DoesNotExist:

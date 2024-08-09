@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { BASE_URL } from "../../redux/actions/authService";
 
 const Otp = (props) => {
   const [otp, setOtp] = useState("");
@@ -18,7 +19,7 @@ const Otp = (props) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/account/api/resend-otp`,
+        `${BASE_URL}account/api/resend-otp`,
         { email: props?.email }
       );
       if (response.status === 200) {
@@ -51,7 +52,7 @@ const Otp = (props) => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/account/api/validate-otp`,
+        `${BASE_URL}account/api/validate-otp`,
         {
           otp: otp,
           email: props?.email,

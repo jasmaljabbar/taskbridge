@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { API_URL } from "../../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../../redux/actions/authService";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -9,7 +9,7 @@ const BestWorker = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}bestTasker/`);
+        const response = await axios.get(`${BASE_URL}account/api/bestTasker/`);
         setTaskersInfo(response.data);
       } catch (error) {
         alert(error.message);
@@ -28,7 +28,7 @@ const BestWorker = () => {
               <img
                 src={
                   item.profile_pic
-                    ? `http://127.0.0.1:8000${item.profile_pic}`
+                    ? `${B_URL}${item.profile_pic}`
                     : "fallback_image_url"
                 }
                 alt={item.full_name}

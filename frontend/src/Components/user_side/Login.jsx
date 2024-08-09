@@ -41,7 +41,7 @@ function Login() {
       setLoading(false)
       user.is_admin
         ? navigate("/admin/user_list ")
-        : user.is_staff
+        : user.is_staff && !user.blocked_for_tasker
         ? navigate("/tasker/profile")
         : navigate("/");
     } catch (error) {
@@ -122,17 +122,6 @@ function Login() {
               </button>
             </div>
           </form>
-
-          <p className="mt-4 block text-sm font-medium leading-6 text-gray-900">
-            Admin?
-            <span
-              className=" text-blue-700"
-              onClick={() => navigate("/admin_login")}
-            >
-              {" "}
-              Sign in
-            </span>
-          </p>
           <p className="mt-2 block text-sm font-medium leading-6 text-gray-900">
             Don't have an account?{" "}
             <span

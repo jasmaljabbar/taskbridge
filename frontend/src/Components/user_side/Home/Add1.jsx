@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import axios from "axios";
-import { API_URL } from "../../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../../redux/actions/authService";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Unknown from '../../../statics/user_side/Unknown.jpg';
@@ -40,7 +40,7 @@ const AdSlider = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}addsTasker/`);
+        const response = await axios.get(`${BASE_URL}account/api/addsTasker/`);
         setTaskersInfo(response.data);
       } catch (error) {
         alert(error.message);
@@ -70,7 +70,7 @@ const AdSlider = () => {
           key={index}
           title={tasker.task.name}
           description={generateDescription(tasker.task.name)}
-          imgSrc={tasker.profile_pic ? `http://127.0.0.1:8000${tasker.profile_pic}` : Unknown}
+          imgSrc={tasker.profile_pic ? `${B_URL}${tasker.profile_pic}` : Unknown}
         />
         </Link>
       ))}

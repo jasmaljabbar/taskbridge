@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image_not_available from "../../../statics/user_side/work_image/Image_not_available.png";
-import { API_URL } from "../../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../../redux/actions/authService";
 import { Link } from "react-router-dom";
 
 const TaskerListing = () => {
@@ -10,7 +10,7 @@ const TaskerListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}taskers/`);
+        const response = await axios.get(`${BASE_URL}account/api/taskers/`);
         setTaskersInfo(response.data);
       } catch (error) {
         alert(error.message);
@@ -47,7 +47,7 @@ const TaskerListing = () => {
                 <img
                   src={
                     tasker.work_photo
-                      ? `http://127.0.0.1:8000${tasker.work_photo}`
+                      ? `${B_URL}${tasker.work_photo}`
                       : Image_not_available
                   }
                   alt="Work photo"

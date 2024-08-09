@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL_ADMIN } from "../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../redux/actions/authService";
 import { useSelector } from "react-redux";
 import coming_soon from "../../statics/user_side/work_image/coming_soon.jpg";
 
@@ -14,7 +14,7 @@ const TaskerProfile = ({ tasker, onClose }) => {
     const fetchTasker = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${API_URL_ADMIN}tasker_details/`, {
+        const response = await axios.get(`${BASE_URL}adminside/tasker_details/`, {
           params: { id: tasker.id }, // Make sure tasker.id is correct
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -91,7 +91,7 @@ const TaskerProfile = ({ tasker, onClose }) => {
             <img
               src={
                 taskerInfo.work_photo
-                  ? `http://127.0.0.1:8000${taskerInfo.work_photo}`
+                  ? `${B_URL}${taskerInfo.work_photo}`
                   : coming_soon
               }
               alt="Work"

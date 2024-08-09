@@ -5,12 +5,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import { fetchTaskerDetails } from "../../../redux/reducers/authSlice";
 import BookNow from "./BookNow";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { BASE_URL } from "../../../redux/actions/authService";
 
 const Details = () => {
   const [user_in, setUser_in] = useState({
     user_id: "",
     user_image: "",
   });
+  const [Loding, setLoding] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
   const accessToken = useSelector((state) => state.auth.token);
@@ -38,16 +42,37 @@ const Details = () => {
     }
   }, [dispatch, accessToken, taskerId]);
 
-  if (!taskerInfo) {
+  if (!taskerInfo | Loding) {
     return (
-      <div className="flex justify-center items-center h-64">
+      <div className="flex justify-center h-screen items-center ">
         <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
 
+  const handleReport = async () => {
+    setLoding(true);
+    try {
+      const response = await axios.post(
+        `${BASE_URL}account/report-worker/${taskerId}/`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      toast.success("Report sent successfully.");
+      setLoding(false);
+    } catch (error) {
+      console.error("Error reporting:", error);
+      toast.error("Failed to send report.");
+      setLoding(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col md:flex-row gap-4 mx-auto mt-56 px-4">
+    <div className="flex flex-col md:flex-row gap-4 mx-auto mt-24 px-4">
       <div className="md:w-2/3 space-y-4">
         <div className="bg-slate-800 text-white p-4 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">About Me</h3>
@@ -74,15 +99,20 @@ const Details = () => {
       </div>
 
       <div className="md:w-1/3 space-y-4">
-        <Link to={{
-                pathname: `/chat/${taskerInfo.user.id}`,
-                state: { user_in:user_in.user_id, tasker_in:tasker_in.tasker_id },
-              }}>
+        <Link
+          to={{
+            pathname: `/chat/${taskerInfo.user.id}`,
+            state: { user_in: user_in.user_id, tasker_in: tasker_in.tasker_id },
+          }}
+        >
           <button className="w-full bg-orange-400 text-white py-2 rounded-lg">
             Message
           </button>
         </Link>
-        <button className="w-full bg-red-500 text-white py-2 rounded-lg">
+        <button
+          className="w-full bg-red-500 text-white py-2 rounded-lg"
+          onClick={handleReport}
+        >
           Report
         </button>
         <BookNow taskerId={taskerInfo.user.id} />

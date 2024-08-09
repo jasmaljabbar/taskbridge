@@ -15,6 +15,7 @@ class UserDataSerializer(serializers.ModelSerializer):
             "is_staff",
             "is_superuser",
             "requested_to_tasker",
+            "blocked_for_tasker",
             "profile_pic",
         ]
 

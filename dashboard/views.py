@@ -134,23 +134,21 @@ class UserGrowthView(APIView):
 
 
 
-class AcceptedAppointmentsView(APIView):
+class CompletedAppointmentsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         worker = request.user
-        accepted_appointments = Appointment.objects.filter(employee=worker, status=Appointment.ACCEPTED)
-
+        completed_appointments = Appointment.objects.filter(employee=worker, status=Appointment.COMPLETE)
         # Group by day with user
-        daily_data = accepted_appointments.annotate(day=TruncDay('date'), user_name=F('user__name')).values('day', 'user_name').annotate(
+        daily_data = completed_appointments.annotate(day=TruncDay('date'), user_name=F('user__name')).values('day', 'user_name').annotate(
             total_hours=Sum('minimum_hours_to_work')).order_by('day')
-
         # Group by month with user
-        monthly_data = accepted_appointments.annotate(month=TruncMonth('date'), user_name=F('user__name')).values('month', 'user_name').annotate(
+        monthly_data = completed_appointments.annotate(month=TruncMonth('date'), user_name=F('user__name')).values('month', 'user_name').annotate(
             total_hours=Sum('minimum_hours_to_work')).order_by('month')
 
         # Group by year with user
-        yearly_data = accepted_appointments.annotate(year=TruncYear('date'), user_name=F('user__name')).values('year', 'user_name').annotate(
+        yearly_data = completed_appointments.annotate(year=TruncYear('date'), user_name=F('user__name')).values('year', 'user_name').annotate(
             total_hours=Sum('minimum_hours_to_work')).order_by('year')
 
         return Response({

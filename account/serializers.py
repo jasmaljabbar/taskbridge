@@ -8,6 +8,8 @@ from task_workers.serializers import WorkCategorySerializer
 from profiles.serializers import ProfileSerializer
 from profiles.models import Profile
 
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserData
@@ -43,6 +45,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         data['is_staff'] = user.is_staff
         data['is_admin'] = user.is_superuser
         data['requested_to_tasker'] = user.requested_to_tasker
+        data['blocked_for_tasker'] = user.blocked_for_tasker
 
         # Fetch the profile and include additional fields
         try:
@@ -65,6 +68,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         token['is_admin'] = user.is_superuser
         token['requested_to_tasker']  = user.requested_to_tasker    
         token['payment_time']  = user.payment_time    
+        token['blocked_for_tasker']  = user.blocked_for_tasker    
         try:
             profile = Profile.objects.get(user=user)
             profile_data = ProfileSerializer(profile).data

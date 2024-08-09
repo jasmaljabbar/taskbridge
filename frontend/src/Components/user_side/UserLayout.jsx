@@ -4,11 +4,11 @@ import UserNavbar from "../common/UserNavbar";
 
 const UserLayout = () => {
   return (
-    <div>
+    <div className="pt-20">
       <UserNavbar />
 
-      <div className=" mt-[5%]">
-        <Outlet />
+      <div className="">
+        <Outlet  />
       </div>
     </div>
   );

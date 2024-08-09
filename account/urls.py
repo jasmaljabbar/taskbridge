@@ -4,7 +4,7 @@ from .views import( RegisterView, HomeView, LogoutView, LoginView,
                     VerifyOTP,ResendOtpView,Tasker_ListingView,
                     TaskCategory_ListingView,Category_Tasker_filter,
                     SearchTasker,TaskerDetails,UserIndivualView,test_view,
-                    BestTaskers,Adds_Taskers,Service_Taskers)
+                    BestTaskers,Adds_Taskers,Service_Taskers,ReportToAdmin)
 
 urlpatterns = [
     path('api/login/', LoginView.as_view(), name='api-login'),
@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/serviceTasker/', Service_Taskers.as_view(), name='service-tasker'),
     path("api/tasker_filter/<int:taskId>/", Category_Tasker_filter.as_view(), name="tasker_filter"),
     path("api/search_tasker/", SearchTasker.as_view(), name="search_tasker"),
+    path('report-worker/<int:user_id>/', ReportToAdmin.as_view(), name='report-worker'),
     path('api/tasker-details/<int:user_id>/', TaskerDetails.as_view(), name='tasker-details'),
     path("api/userindivual/<int:pk>/", UserIndivualView.as_view(),name='token_refersh'),
 

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
-import axios from "axios";
-import { API_URL } from "../../redux/actions/authService";
 import { logout } from "../../redux/reducers/authSlice";
 
 const AdminNavbar = () => {

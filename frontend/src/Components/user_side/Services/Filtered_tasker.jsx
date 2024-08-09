@@ -1,7 +1,7 @@
 // Filtered_tasker.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL } from "../../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../../redux/actions/authService";
 import { useLocation } from "react-router-dom";
 import Work_category from "../Home/Work_catogory";
 import not_available from "../../../statics/user_side/images/not-available.png";
@@ -16,7 +16,7 @@ const Filtered_tasker = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}tasker_filter/${taskId}/`); // Ensure correct URL format
+        const response = await axios.get(`${BASE_URL}account/api/tasker_filter/${taskId}/`); // Ensure correct URL format
         setTaskersInfo(response.data);
       } catch (error) {
         alert(error.message);
@@ -69,7 +69,7 @@ const Filtered_tasker = () => {
                 <img
                   src={
                     tasker.work_photo
-                      ? `http://127.0.0.1:8000${tasker.work_photo}`
+                      ? `${B_URL}${tasker.work_photo}`
                       : "Image_not_available" // Provide fallback image
                   }
                   alt="Work photo"

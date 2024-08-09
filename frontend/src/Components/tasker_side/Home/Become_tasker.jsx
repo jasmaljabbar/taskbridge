@@ -47,7 +47,6 @@ const Become_tasker = () => {
               <option value="Tea plucking">You can select your Task</option>
               {/* Add more options as needed */}
             </select>
-            <p className="mb-4">₹7500 per month</p>
             <button className="bg-green-500 text-white rounded-md py-2 px-4 hover:bg-green-700 transition duration-300">
               <Link to="/tasker_signup">Get started</Link>
             </button>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL } from "../../../redux/actions/authService";
+import { B_URL, BASE_URL } from "../../../redux/actions/authService";
 import { Link } from "react-router-dom";
 import Img4 from "../../../statics/user_side/images/group-61.jpg";
 
@@ -48,7 +48,7 @@ const Services = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}addsTasker/`);
+        const response = await axios.get(`${BASE_URL}account/api/addsTasker/`);
         setTaskersInfo(response.data);
       } catch (error) {
         alert(error.message);
@@ -79,7 +79,7 @@ const Services = () => {
           key={index}
           imgSrc={
             tasker.profile_pic
-              ? `http://127.0.0.1:8000${tasker.work_photo}`
+              ? `${B_URL}${tasker.work_photo}`
               : Img4
           }
           title={tasker.task.name}

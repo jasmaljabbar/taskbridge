@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import Unknown from "../../statics/user_side/Unknown.jpg";
 import TaskShow from "./TaskShow/TaskShow";
+import { BASE_URL } from "../../redux/actions/authService";
 
 const TaskerProfile = () => {
   const dispatch = useDispatch();
@@ -119,7 +120,7 @@ const TaskerProfile = () => {
       formData.append("task_fee", values.task_fee);
 
       const response = await axios.put(
-        "http://127.0.0.1:8000/task_workers/update/",
+        `${BASE_URL}task_workers/update/`,
         formData,
         {
           headers: {
