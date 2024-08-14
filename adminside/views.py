@@ -61,6 +61,11 @@ class Dashboard(APIView):
         serializer = UserDataSerializer(users, many=True)
         return Response(serializer.data)
     
+class UserTasker_request(APIView):
+    def get(self,requst):
+        users = UserData.objects.filter(requested_to_tasker=True)
+        serializer = UserDataSerializer(users,many=True)
+        return Response(serializer.data)    
 
 
 
@@ -87,6 +92,7 @@ class Accepting_request(APIView):
 
             
 class TaskerDetails(APIView):
+    
     serializer_class = TaskerFetchingSerializer
     
     def get(self, request):
@@ -96,6 +102,7 @@ class TaskerDetails(APIView):
         try:
             user_data = get_object_or_404(UserData, id=user_id)
             tasker = get_object_or_404(Tasker, user=user_data)
+
             
         except UserData.DoesNotExist:
            
